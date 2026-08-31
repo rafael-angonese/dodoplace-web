@@ -11,6 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as BuscarRouteImport } from './routes/buscar'
+import { Route as ProfissionaisRouteImport } from './routes/profissionais'
+import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as UiRouteImport } from './routes/ui'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +26,21 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BuscarRoute = BuscarRouteImport.update({
+  id: '/buscar',
+  path: '/buscar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfissionaisRoute = ProfissionaisRouteImport.update({
+  id: '/profissionais',
+  path: '/profissionais',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicosRoute = ServicosRouteImport.update({
+  id: '/servicos',
+  path: '/servicos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UiRoute = UiRouteImport.update({
   id: '/ui',
   path: '/ui',
@@ -32,30 +50,49 @@ const UiRoute = UiRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/buscar': typeof BuscarRoute
+  '/profissionais': typeof ProfissionaisRoute
+  '/servicos': typeof ServicosRoute
   '/ui': typeof UiRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/buscar': typeof BuscarRoute
+  '/profissionais': typeof ProfissionaisRoute
+  '/servicos': typeof ServicosRoute
   '/ui': typeof UiRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/buscar': typeof BuscarRoute
+  '/profissionais': typeof ProfissionaisRoute
+  '/servicos': typeof ServicosRoute
   '/ui': typeof UiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/ui'
+  fullPaths: '/' | '/about' | '/buscar' | '/profissionais' | '/servicos' | '/ui'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/ui'
-  id: '__root__' | '/' | '/about' | '/ui'
+  to: '/' | '/about' | '/buscar' | '/profissionais' | '/servicos' | '/ui'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/buscar'
+    | '/profissionais'
+    | '/servicos'
+    | '/ui'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  BuscarRoute: typeof BuscarRoute
+  ProfissionaisRoute: typeof ProfissionaisRoute
+  ServicosRoute: typeof ServicosRoute
   UiRoute: typeof UiRoute
 }
 
@@ -75,6 +112,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/buscar': {
+      id: '/buscar'
+      path: '/buscar'
+      fullPath: '/buscar'
+      preLoaderRoute: typeof BuscarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profissionais': {
+      id: '/profissionais'
+      path: '/profissionais'
+      fullPath: '/profissionais'
+      preLoaderRoute: typeof ProfissionaisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/servicos': {
+      id: '/servicos'
+      path: '/servicos'
+      fullPath: '/servicos'
+      preLoaderRoute: typeof ServicosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ui': {
       id: '/ui'
       path: '/ui'
@@ -88,6 +146,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  BuscarRoute: BuscarRoute,
+  ProfissionaisRoute: ProfissionaisRoute,
+  ServicosRoute: ServicosRoute,
   UiRoute: UiRoute,
 }
 export const routeTree = rootRouteImport

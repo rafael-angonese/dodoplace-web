@@ -130,9 +130,11 @@ function UiShowcase() {
   const [notify, setNotify] = useState(true)
 
   return (
-    <main className="demo-page demo-page-wide flex flex-col gap-10">
+    <main className="mx-auto flex max-w-7xl flex-col gap-10 px-4 py-10 md:px-6">
       <header className="flex flex-col gap-2">
-        <span className="island-kicker">Design system</span>
+        <span className="text-sm font-bold tracking-[0.18em] text-brand-coral uppercase">
+          Design system
+        </span>
         <Heading variant="h1">UI Kit</Heading>
         <p className="max-w-2xl text-sm text-muted-foreground">
           Componentes shadcn/ui portados de <code>loytrustweb</code>, sobre

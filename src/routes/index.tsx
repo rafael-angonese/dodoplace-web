@@ -1,87 +1,140 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/')({ component: App })
+import { CATEGORIES } from '@/components/discovery/categories'
+import { CategoryGrid } from '@/components/discovery/category-grid'
+import { SearchForm } from '@/components/discovery/search-form'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Heading } from '@/components/ui/heading'
 
-function App() {
+export const Route = createFileRoute('/')({
+  component: Home,
+  head: () => ({
+    meta: [
+      { title: 'FazPerto | Serviços perto de você' },
+      {
+        name: 'description',
+        content:
+          'Encontre quem faz perto de você. Descubra profissionais e serviços na sua região.',
+      },
+    ],
+  }),
+})
+
+const STEPS = [
+  {
+    number: '1',
+    title: 'Descreva',
+    description: 'Conte o que precisa ser feito, seu orçamento e sua região.',
+  },
+  {
+    number: '2',
+    title: 'Compare',
+    description: 'Veja profissionais, propostas e reputação antes de decidir.',
+  },
+  {
+    number: '3',
+    title: 'Combine',
+    description:
+      'Converse com o profissional e alinhe os detalhes diretamente.',
+  },
+]
+
+function Home() {
+  const categories = CATEGORIES.slice(0, 12)
+
   return (
-    <main className="page-wrap px-4 pb-8 pt-14">
-      <section className="island-shell rise-in relative overflow-hidden rounded-[2rem] px-6 py-10 sm:px-10 sm:py-14">
-        <div className="pointer-events-none absolute -left-20 -top-24 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(79,184,178,0.32),transparent_66%)]" />
-        <div className="pointer-events-none absolute -bottom-20 -right-20 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(47,106,74,0.18),transparent_66%)]" />
-        <p className="island-kicker mb-3">TanStack Start Base Template</p>
-        <h1 className="display-title mb-5 max-w-3xl text-4xl leading-[1.02] font-bold tracking-tight text-[var(--sea-ink)] sm:text-6xl">
-          Start simple, ship quickly.
-        </h1>
-        <p className="mb-8 max-w-2xl text-base text-[var(--sea-ink-soft)] sm:text-lg">
-          This base starter intentionally keeps things light: two routes, clean
-          structure, and the essentials you need to build from scratch.
+    <>
+      <section className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-20">
+        <p className="mb-3 text-sm font-bold tracking-[0.18em] text-brand-coral uppercase">
+          Marketplace de serviços
         </p>
-        <div className="flex flex-wrap gap-3">
-          <a
-            href="/about"
-            className="rounded-full border border-[rgba(50,143,151,0.3)] bg-[rgba(79,184,178,0.14)] px-5 py-2.5 text-sm font-semibold text-[var(--lagoon-deep)] no-underline transition hover:-translate-y-0.5 hover:bg-[rgba(79,184,178,0.24)]"
-          >
-            About This Starter
-          </a>
-          <a
-            href="https://tanstack.com/router"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full border border-[rgba(23,58,64,0.2)] bg-white/50 px-5 py-2.5 text-sm font-semibold text-[var(--sea-ink)] no-underline transition hover:-translate-y-0.5 hover:border-[rgba(23,58,64,0.35)]"
-          >
-            Router Guide
-          </a>
+        <Heading
+          variant="h1"
+          className="max-w-3xl text-4xl font-extrabold tracking-tight md:text-6xl"
+        >
+          Encontre quem faz perto de você. ⚡
+        </Heading>
+        <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
+          Busque serviços e profissionais da sua região ou publique o que você
+          precisa fazer.
+        </p>
+        <div className="mt-8">
+          <SearchForm />
         </div>
       </section>
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          [
-            'Type-Safe Routing',
-            'Routes and links stay in sync across every page.',
-          ],
-          [
-            'Server Functions',
-            'Call server code from your UI without creating API boilerplate.',
-          ],
-          [
-            'Streaming by Default',
-            'Ship progressively rendered responses for faster experiences.',
-          ],
-          [
-            'Tailwind Native',
-            'Design quickly with utility-first styling and reusable tokens.',
-          ],
-        ].map(([title, desc], index) => (
-          <article
-            key={title}
-            className="island-shell feature-card rise-in rounded-2xl p-5"
-            style={{ animationDelay: `${index * 90 + 80}ms` }}
-          >
-            <h2 className="mb-2 text-base font-semibold text-[var(--sea-ink)]">
-              {title}
-            </h2>
-            <p className="m-0 text-sm text-[var(--sea-ink-soft)]">{desc}</p>
-          </article>
-        ))}
+      <section className="mx-auto max-w-7xl px-4 pb-14 md:px-6">
+        <div className="mb-5 flex items-end justify-between gap-4">
+          <div>
+            <p className="text-sm font-bold text-brand-coral">Descubra</p>
+            <Heading variant="h2" className="font-extrabold">
+              Serviços populares
+            </Heading>
+          </div>
+          <Link to="/servicos" className="text-sm font-bold underline">
+            Ver todos
+          </Link>
+        </div>
+        <CategoryGrid categories={categories} />
       </section>
 
-      <section className="island-shell mt-8 rounded-2xl p-6">
-        <p className="island-kicker mb-2">Quick Start</p>
-        <ul className="m-0 list-disc space-y-2 pl-5 text-sm text-[var(--sea-ink-soft)]">
-          <li>
-            Edit <code>src/routes/index.tsx</code> to customize the home page.
-          </li>
-          <li>
-            Update <code>src/components/Header.tsx</code> and{' '}
-            <code>src/components/Footer.tsx</code> for brand links.
-          </li>
-          <li>
-            Add routes in <code>src/routes</code> and tweak visual tokens in{' '}
-            <code>src/styles.css</code>.
-          </li>
-        </ul>
+      <section className="bg-surface-muted">
+        <div className="mx-auto max-w-7xl px-4 py-14 md:px-6">
+          <Heading variant="h2" className="font-extrabold">
+            Resolver um serviço deve ser simples.
+          </Heading>
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
+            {STEPS.map((step) => (
+              <Card key={step.number} className="rounded-2xl p-6">
+                <span className="grid size-9 place-items-center rounded-full bg-brand-yellow font-extrabold text-[#202124]">
+                  {step.number}
+                </span>
+                <Heading variant="h4" className="mt-4">
+                  {step.title}
+                </Heading>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {step.description}
+                </p>
+              </Card>
+            ))}
+          </div>
+        </div>
       </section>
-    </main>
+
+      <section className="mx-auto grid max-w-7xl gap-4 px-4 py-14 md:grid-cols-2 md:px-6">
+        <div className="rounded-3xl border border-border p-7">
+          <Heading variant="h2" className="font-extrabold">
+            Precisa de um serviço?
+          </Heading>
+          <p className="mt-2 text-muted-foreground">
+            Pesquise profissionais próximos ou publique o que precisa.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Button asChild variant="outline">
+              <Link to="/buscar">Buscar</Link>
+            </Button>
+            {/* Rota de publicação ainda não implementada. */}
+            <Button asChild>
+              <a href="/publicar">Publicar serviço</a>
+            </Button>
+          </div>
+        </div>
+
+        <div className="rounded-3xl bg-[#202124] p-7 text-white dark:bg-card dark:text-card-foreground">
+          <Heading variant="h2" className="font-extrabold text-white dark:text-card-foreground">
+            Você presta serviços?
+          </Heading>
+          <p className="mt-2 text-white/70 dark:text-muted-foreground">
+            Crie seu perfil e prepare sua presença para aparecer perto de novos
+            clientes.
+          </p>
+          {/* Rota de cadastro profissional ainda não implementada. */}
+          <Button asChild className="mt-5">
+            <a href="/oferecer-servico">Começar como profissional</a>
+          </Button>
+        </div>
+      </section>
+    </>
   )
 }

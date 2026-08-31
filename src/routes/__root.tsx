@@ -1,8 +1,10 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import Footer from '../components/Footer'
-import Header from '../components/Header'
+import { AppFooter } from '../components/layout/app-footer'
+import { AppHeader } from '../components/layout/app-header'
+import { MobileNav } from '../components/layout/mobile-nav'
+import { LocationProvider } from '../components/location/location-context'
 import { Toaster } from '../components/ui/toaster'
 import { ThemeProvider } from '../providers/theme-context'
 
@@ -21,7 +23,7 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'FazPerto | Serviços perto de você',
       },
     ],
     links: [
@@ -36,17 +38,20 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
       </head>
-      <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]">
+      <body className="font-sans antialiased [overflow-wrap:anywhere]">
         <ThemeProvider>
-          <Header />
-          {children}
-          <Footer />
-          <Toaster />
+          <LocationProvider>
+            <AppHeader />
+            <main className="min-h-[70vh] pb-20 md:pb-0">{children}</main>
+            <AppFooter />
+            <MobileNav />
+            <Toaster />
+          </LocationProvider>
         </ThemeProvider>
         <TanStackDevtools
           config={{

@@ -30,6 +30,32 @@ If you prefer not to use Tailwind CSS:
 3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
 4. Remove `@tailwindcss/vite` and `tailwindcss` from `package.json`
 
+## Páginas
+
+O layout público foi portado do protótipo Next.js em `../FazPerto`, reconstruído
+sobre o kit de UI e o TanStack Router.
+
+| Rota | Arquivo | Conteúdo |
+| --- | --- | --- |
+| `/` | `src/routes/index.tsx` | Hero + busca, categorias, "como funciona", CTAs |
+| `/buscar` | `src/routes/buscar.tsx` | Busca com filtros (desabilitados) e estado vazio |
+| `/servicos` | `src/routes/servicos.tsx` | Grade de categorias |
+| `/profissionais` | `src/routes/profissionais.tsx` | Busca + estado vazio |
+
+O chrome (`AppHeader`, `AppFooter`, `MobileNav`) vive em `src/components/layout/`
+e é montado no `__root.tsx`. As peças de descoberta estão em
+`src/components/discovery/` e o seletor de cidade em `src/components/location/`.
+
+**É layout apenas — sem integração.** Categorias (`categories.ts`) e cidades
+(`location-context.tsx`) são listas estáticas que espelham o seed do FazPerto;
+a geolocalização do navegador só exibe a mensagem de fallback. `/buscar` lê
+`q`, `categoria`, `cidade` e `uf` da URL via `validateSearch` e usa isso no `<h1>`,
+mas não consulta nada.
+
+Links para rotas ainda não implementadas (`/entrar`, `/publicar`, `/conta`,
+`/mensagens`, `/oferecer-servico`) são `<a href>` comuns, não `Link` tipado —
+eles retornam 404 até que as páginas existam.
+
 ## UI Kit (shadcn-style)
 
 `src/components/ui/` holds a shadcn/ui-style component kit ported from the
@@ -44,6 +70,9 @@ If you prefer not to use Tailwind CSS:
   writes the `.dark` class onto `<html>`; the blocking script in
   `src/routes/__root.tsx` applies it before first paint to avoid a flash.
 - **`cn()`** (clsx + tailwind-merge) lives in `src/utils/cn.ts`.
+- **Brand:** `src/styles/brand.css` loads after `ui.css` and re-points the shadcn
+  tokens at the FazPerto palette (yellow `--primary`, coral accent), and adds the
+  `bg-brand-yellow` / `text-brand-coral` / `bg-surface-muted` utilities.
 - `src/routes/ui.tsx` (`/ui`) is a live gallery of the kit.
 
 ```tsx

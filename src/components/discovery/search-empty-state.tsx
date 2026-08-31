@@ -1,0 +1,26 @@
+import { Link } from '@tanstack/react-router'
+
+import { Button } from '@/components/ui/button'
+import { Heading } from '@/components/ui/heading'
+
+export function SearchEmptyState({ city }: { city?: string | null }) {
+  return (
+    <div className="rounded-2xl border border-dashed border-border p-8 text-center">
+      <Heading variant="h4">
+        Ainda não encontramos resultados{city ? ` em ${city}` : ''}.
+      </Heading>
+      <p className="mt-2 text-muted-foreground">
+        Tente alterar a busca ou publique o serviço que você precisa.
+      </p>
+      <div className="mt-5 flex flex-wrap justify-center gap-3">
+        <Button asChild variant="outline">
+          <Link to="/buscar">Alterar busca</Link>
+        </Button>
+        {/* Rota de publicação ainda não implementada. */}
+        <Button asChild>
+          <a href="/publicar">Publicar serviço</a>
+        </Button>
+      </div>
+    </div>
+  )
+}
