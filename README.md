@@ -30,6 +30,43 @@ If you prefer not to use Tailwind CSS:
 3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
 4. Remove `@tailwindcss/vite` and `tailwindcss` from `package.json`
 
+## UI Kit (shadcn-style)
+
+`src/components/ui/` holds a shadcn/ui-style component kit ported from the
+`loytrustweb` app in the `trust` monorepo, so both products share one look.
+
+- **Tokens** live in `src/styles/ui.css` (`--primary`, `--background`, `--danger`,
+  `--radius`, shadows, …) and are exposed to Tailwind through `@theme inline`.
+  `src/styles.css` imports it, along with `tw-animate-css` for the
+  `animate-in` / `fade-in-0` utilities the overlay components use.
+- **Dark mode** is class-based: `@custom-variant dark (&:where(.dark, .dark *))`.
+  `src/providers/theme-context.tsx` owns the `light | dark | system` state and
+  writes the `.dark` class onto `<html>`; the blocking script in
+  `src/routes/__root.tsx` applies it before first paint to avoid a flash.
+- **`cn()`** (clsx + tailwind-merge) lives in `src/utils/cn.ts`.
+- `src/routes/ui.tsx` (`/ui`) is a live gallery of the kit.
+
+```tsx
+import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icon'
+
+;<Button variant="danger">
+  <Icon name="trash2" />
+  Excluir
+</Button>
+```
+
+Files under `src/components/ui/` are kept byte-identical to the `trust` originals
+(tab-indented, upstream lint quirks and all) so re-syncing is a plain diff.
+`biome.json` has an `overrides` entry that relaxes the corresponding lint rules
+for that directory only. The two intentional deviations are `link.tsx`
+(TanStack Router's `createLink` instead of `react-router`) and `toaster.tsx`
+(points at this app's theme provider).
+
+Adding more components: copy them over from
+`trust/packages/loytrustweb/src/components/ui/`, or run `npx shadcn@latest add <name>`
+— `components.json` is configured with the `@/components/ui` and `@/utils/cn` aliases.
+
 ## Linting & Formatting
 
 This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:

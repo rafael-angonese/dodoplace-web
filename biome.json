@@ -31,6 +31,42 @@
 		"formatter": {
 			"quoteStyle": "double"
 		}
-	}
+	},
+	"overrides": [
+		{
+			"includes": ["**/src/components/ui/**"],
+			"linter": {
+				"rules": {
+					"a11y": {
+						"noStaticElementInteractions": "off",
+						"useFocusableInteractive": "off",
+						"useKeyWithClickEvents": "off",
+						"useSemanticElements": "off"
+					},
+					"complexity": {
+						"noUselessFragments": "off",
+						"useIndexOf": "off"
+					},
+					"correctness": {
+						"noSwitchDeclarations": "off",
+						"useExhaustiveDependencies": "off"
+					},
+					"security": {
+						"noDangerouslySetInnerHtml": "off"
+					},
+					"style": {
+						"noNonNullAssertion": "off",
+						"useImportType": "off",
+						"useTemplate": "off"
+					},
+					"suspicious": {
+						"noArrayIndexKey": "off",
+						"noExplicitAny": "off",
+						"noGlobalIsNan": "off"
+					}
+				}
+			}
+		}
+	]
 }
 
