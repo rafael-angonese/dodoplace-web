@@ -56,6 +56,54 @@ Links para rotas ainda não implementadas (`/entrar`, `/publicar`, `/conta`,
 `/mensagens`, `/oferecer-servico`) são `<a href>` comuns, não `Link` tipado —
 eles retornam 404 até que as páginas existam.
 
+## Autenticação e integração com a API
+
+O front consome a API AdonisJS em `../api` (`http://localhost:3333/api/v1` por
+padrão, configurável em `VITE_API_URL` — veja `.env.example`).
+
+**Não há senha.** O acesso é por magic link: o usuário informa o e-mail, recebe
+um link de uso único e entra ao abri-lo. A conta só é criada quando o link é
+aberto, então nenhum cadastro não verificado fica no banco.
+
+| Rota | Arquivo | O que faz |
+| --- | --- | --- |
+| `/cadastro` | `src/routes/cadastro.tsx` | nome + e-mail → `POST /auth/magic-link` |
+| `/entrar` | `src/routes/entrar.tsx` | e-mail → `POST /auth/magic-link` |
+| `/entrar/verificar` | `src/routes/entrar_.verificar.tsx` | `POST /auth/verify` → abre a sessão |
+| `/conta` | `src/routes/conta.tsx` | `GET`/`PUT /account/profile`, `POST /account/logout` |
+
+Camadas:
+
+- `src/lib/api.ts` — `fetch` com base URL, bearer token, desembrulho do envelope
+  `{ data }` e `ApiError` (expõe `fieldErrors` e `generalMessage`).
+- `src/lib/auth.ts` — endpoints tipados e o tipo `User`.
+- `src/lib/auth-storage.ts` — token no `localStorage`, tolerante a SSR.
+- `src/providers/auth-context.tsx` — `useAuth()` com `status`, `user`,
+  `requestMagicLink`, `verifyMagicLink`, `signOut`, `updateProfile`.
+
+O `status` começa em `loading` no SSR e no primeiro render do cliente, porque o
+token só existe no `localStorage`; sem isso o HTML do servidor divergiria na
+hidratação. `/conta` redireciona para `/entrar?redirect=/conta` quando não há
+sessão, e `/entrar` e `/cadastro` mandam para `/conta` quando já há.
+
+O nome informado no cadastro só é aproveitado se a conta ainda não existe — não
+dá para sobrescrever o nome de outra pessoa pedindo um link para o e-mail dela.
+
+### Desenvolvimento sem caixa de entrada
+
+Enquanto a API estiver sem `RESEND_API_KEY`, ela devolve o link em `devUrl` e a
+tela "Confira seu e-mail" o exibe num alerta. Assim que a chave é configurada o
+campo some da resposta — ele nunca aparece em produção.
+
+### Validação de formulários
+
+Zod + `zodResolver` do `@hookform/resolvers`, com os schemas em
+`src/lib/validation.ts` espelhando os validators VineJS da API. A API continua
+sendo a fonte de verdade: os erros que só ela conhece voltam no formato
+`{ errors: [{ message, field }] }` e o `src/lib/form-errors.ts` os distribui nos
+campos via `setError` (`applyApiErrors`) ou devolve a mensagem solta para telas
+sem formulário (`apiErrorMessage`).
+
 ## UI Kit (shadcn-style)
 
 `src/components/ui/` holds a shadcn/ui-style component kit ported from the

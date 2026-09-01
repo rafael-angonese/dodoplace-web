@@ -15,7 +15,6 @@ const ROUTES = [
 const PENDING = [
   { href: '/publicar', label: 'Publicar', icon: Plus, primary: true },
   { href: '/mensagens', label: 'Conversas', icon: MessageCircle },
-  { href: '/conta', label: 'Conta', icon: UserRound },
 ] as const
 
 function ItemIcon({
@@ -61,6 +60,15 @@ export function MobileNav() {
         >
           <ItemIcon icon={ROUTES[1].icon} />
           <span>{ROUTES[1].label}</span>
+        </Link>
+
+        <Link
+          to="/conta"
+          className={`${ITEM_CLASS} order-last`}
+          activeProps={{ className: 'text-foreground' }}
+        >
+          <ItemIcon icon={UserRound} />
+          <span>Conta</span>
         </Link>
 
         {PENDING.map((item) => (

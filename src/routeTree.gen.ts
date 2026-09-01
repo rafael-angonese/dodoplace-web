@@ -12,9 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as BuscarRouteImport } from './routes/buscar'
+import { Route as CadastroRouteImport } from './routes/cadastro'
+import { Route as ContaRouteImport } from './routes/conta'
+import { Route as EntrarRouteImport } from './routes/entrar'
 import { Route as ProfissionaisRouteImport } from './routes/profissionais'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as UiRouteImport } from './routes/ui'
+import { Route as EntrarVerificarRouteImport } from './routes/entrar_.verificar'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,6 +33,21 @@ const AboutRoute = AboutRouteImport.update({
 const BuscarRoute = BuscarRouteImport.update({
   id: '/buscar',
   path: '/buscar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CadastroRoute = CadastroRouteImport.update({
+  id: '/cadastro',
+  path: '/cadastro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContaRoute = ContaRouteImport.update({
+  id: '/conta',
+  path: '/conta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EntrarRoute = EntrarRouteImport.update({
+  id: '/entrar',
+  path: '/entrar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfissionaisRoute = ProfissionaisRouteImport.update({
@@ -46,54 +65,99 @@ const UiRoute = UiRouteImport.update({
   path: '/ui',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EntrarVerificarRoute = EntrarVerificarRouteImport.update({
+  id: '/entrar_/verificar',
+  path: '/entrar/verificar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/buscar': typeof BuscarRoute
+  '/cadastro': typeof CadastroRoute
+  '/conta': typeof ContaRoute
+  '/entrar': typeof EntrarRoute
   '/profissionais': typeof ProfissionaisRoute
   '/servicos': typeof ServicosRoute
   '/ui': typeof UiRoute
+  '/entrar/verificar': typeof EntrarVerificarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/buscar': typeof BuscarRoute
+  '/cadastro': typeof CadastroRoute
+  '/conta': typeof ContaRoute
+  '/entrar': typeof EntrarRoute
   '/profissionais': typeof ProfissionaisRoute
   '/servicos': typeof ServicosRoute
   '/ui': typeof UiRoute
+  '/entrar/verificar': typeof EntrarVerificarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/buscar': typeof BuscarRoute
+  '/cadastro': typeof CadastroRoute
+  '/conta': typeof ContaRoute
+  '/entrar': typeof EntrarRoute
   '/profissionais': typeof ProfissionaisRoute
   '/servicos': typeof ServicosRoute
   '/ui': typeof UiRoute
+  '/entrar_/verificar': typeof EntrarVerificarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/buscar' | '/profissionais' | '/servicos' | '/ui'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/buscar'
+    | '/cadastro'
+    | '/conta'
+    | '/entrar'
+    | '/profissionais'
+    | '/servicos'
+    | '/ui'
+    | '/entrar/verificar'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/buscar' | '/profissionais' | '/servicos' | '/ui'
+  to:
+    | '/'
+    | '/about'
+    | '/buscar'
+    | '/cadastro'
+    | '/conta'
+    | '/entrar'
+    | '/profissionais'
+    | '/servicos'
+    | '/ui'
+    | '/entrar/verificar'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/buscar'
+    | '/cadastro'
+    | '/conta'
+    | '/entrar'
     | '/profissionais'
     | '/servicos'
     | '/ui'
+    | '/entrar_/verificar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   BuscarRoute: typeof BuscarRoute
+  CadastroRoute: typeof CadastroRoute
+  ContaRoute: typeof ContaRoute
+  EntrarRoute: typeof EntrarRoute
   ProfissionaisRoute: typeof ProfissionaisRoute
   ServicosRoute: typeof ServicosRoute
   UiRoute: typeof UiRoute
+  EntrarVerificarRoute: typeof EntrarVerificarRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -119,6 +183,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BuscarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cadastro': {
+      id: '/cadastro'
+      path: '/cadastro'
+      fullPath: '/cadastro'
+      preLoaderRoute: typeof CadastroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conta': {
+      id: '/conta'
+      path: '/conta'
+      fullPath: '/conta'
+      preLoaderRoute: typeof ContaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/entrar': {
+      id: '/entrar'
+      path: '/entrar'
+      fullPath: '/entrar'
+      preLoaderRoute: typeof EntrarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profissionais': {
       id: '/profissionais'
       path: '/profissionais'
@@ -140,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/entrar_/verificar': {
+      id: '/entrar_/verificar'
+      path: '/entrar/verificar'
+      fullPath: '/entrar/verificar'
+      preLoaderRoute: typeof EntrarVerificarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -147,9 +239,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   BuscarRoute: BuscarRoute,
+  CadastroRoute: CadastroRoute,
+  ContaRoute: ContaRoute,
+  EntrarRoute: EntrarRoute,
   ProfissionaisRoute: ProfissionaisRoute,
   ServicosRoute: ServicosRoute,
   UiRoute: UiRoute,
+  EntrarVerificarRoute: EntrarVerificarRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

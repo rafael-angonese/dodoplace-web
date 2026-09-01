@@ -6,6 +6,7 @@ import { AppHeader } from '../components/layout/app-header'
 import { MobileNav } from '../components/layout/mobile-nav'
 import { LocationProvider } from '../components/location/location-context'
 import { Toaster } from '../components/ui/toaster'
+import { AuthProvider } from '../providers/auth-context'
 import { ThemeProvider } from '../providers/theme-context'
 
 import appCss from '../styles.css?url'
@@ -45,13 +46,15 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="font-sans antialiased [overflow-wrap:anywhere]">
         <ThemeProvider>
-          <LocationProvider>
-            <AppHeader />
-            <main className="min-h-[70vh] pb-20 md:pb-0">{children}</main>
-            <AppFooter />
-            <MobileNav />
-            <Toaster />
-          </LocationProvider>
+          <AuthProvider>
+            <LocationProvider>
+              <AppHeader />
+              <main className="min-h-[70vh] pb-20 md:pb-0">{children}</main>
+              <AppFooter />
+              <MobileNav />
+              <Toaster />
+            </LocationProvider>
+          </AuthProvider>
         </ThemeProvider>
         <TanStackDevtools
           config={{

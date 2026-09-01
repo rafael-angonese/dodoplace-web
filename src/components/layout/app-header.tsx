@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router'
 
 import { Logo } from '@/components/brand/logo'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { Button } from '@/components/ui/button'
+import { UserMenu } from '@/components/layout/user-menu'
 
 const NAV_ITEMS = [
   { to: '/buscar', label: 'Buscar' },
@@ -34,10 +34,7 @@ export function AppHeader() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          {/* Rota de autenticação ainda não implementada. */}
-          <Button asChild variant="outline" size="sm" className="h-10">
-            <a href="/entrar">Entrar</a>
-          </Button>
+          <UserMenu />
         </div>
       </div>
     </header>

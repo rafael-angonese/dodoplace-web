@@ -1,0 +1,70 @@
+import { Link, useNavigate } from '@tanstack/react-router'
+
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useAuth } from '@/providers/auth-context'
+
+export function UserMenu() {
+  const navigate = useNavigate()
+  const { status, user, signOut } = useAuth()
+
+  // Durante o SSR e a hidratação ainda não sabemos se há sessão.
+  if (status === 'loading') {
+    return <Skeleton className="h-10 w-20 rounded-xl" />
+  }
+
+  if (status === 'unauthenticated' || !user) {
+    return (
+      <Button asChild variant="outline" size="sm" className="h-10">
+        <Link to="/entrar">Entrar</Link>
+      </Button>
+    )
+  }
+
+  async function onSignOut() {
+    await signOut()
+    navigate({ to: '/', replace: true })
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          className="h-10 gap-2 px-2"
+          aria-label="Abrir menu da conta"
+        >
+          <Avatar className="size-8">
+            <AvatarFallback className="bg-brand-yellow text-xs font-extrabold text-[#202124]">
+              {user.initials}
+            </AvatarFallback>
+          </Avatar>
+          <span className="hidden max-w-32 truncate text-sm font-semibold sm:inline">
+            {user.name ?? user.email}
+          </span>
+        </Button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel className="truncate font-normal text-muted-foreground">
+          {user.email}
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/conta">Meu perfil</Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={onSignOut}>Sair da conta</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
