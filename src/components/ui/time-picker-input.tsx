@@ -1,4 +1,3 @@
-// https://time.openstatus.dev/
 import { Input } from '@/components/ui/input'
 
 import { cn } from '@/utils/cn'
@@ -47,10 +46,6 @@ const TimePickerInput = React.forwardRef<
 		const [flag, setFlag] = React.useState<boolean>(false)
 		const [prevIntKey, setPrevIntKey] = React.useState<string>('0')
 
-		/**
-		 * allow the user to enter the second digit within 2 seconds
-		 * otherwise start again with entering first digit
-		 */
 		React.useEffect(() => {
 			if (flag) {
 				const timer = setTimeout(() => {
@@ -66,10 +61,6 @@ const TimePickerInput = React.forwardRef<
 		}, [date, picker])
 
 		const calculateNewValue = (key: string) => {
-			/*
-			 * If picker is '12hours' and the first digit is 0, then the second digit is automatically set to 1.
-			 * The second entered digit will break the condition and the value will be set to 10-12.
-			 */
 			if (picker === '12hours') {
 				if (flag && calculatedValue.slice(1, 2) === '1' && prevIntKey === '0')
 					return '0' + key

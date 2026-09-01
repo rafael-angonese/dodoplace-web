@@ -5,9 +5,6 @@ import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import type { MagicLinkResult } from '@/lib/auth'
 
-/**
- * Estado de "link enviado", compartilhado por `/entrar` e `/cadastro`.
- */
 export function MagicLinkSent({
   email,
   result,

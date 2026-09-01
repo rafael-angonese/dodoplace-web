@@ -1,6 +1,5 @@
 const TOKEN_KEY = 'mkt.auth.token'
 
-/** Acesso ao token no localStorage, tolerante a SSR e a storage bloqueado. */
 export const authStorage = {
   get(): string | null {
     if (typeof window === 'undefined') {
@@ -18,7 +17,6 @@ export const authStorage = {
     try {
       window.localStorage.setItem(TOKEN_KEY, token)
     } catch {
-      // storage indisponível (aba anônima, cookies bloqueados)
     }
   },
 
@@ -26,7 +24,6 @@ export const authStorage = {
     try {
       window.localStorage.removeItem(TOKEN_KEY)
     } catch {
-      // idem
     }
   },
 }

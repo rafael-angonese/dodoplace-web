@@ -36,7 +36,6 @@ export const Route = createFileRoute('/entrar')({
   head: () => ({ meta: [{ title: 'Entrar | FazPerto' }] }),
   validateSearch: (search: Record<string, unknown>): LoginSearch => {
     const redirect = search.redirect
-    // Só caminhos internos, para não virar um open redirect.
     return typeof redirect === 'string' && redirect.startsWith('/')
       ? { redirect }
       : {}

@@ -114,7 +114,6 @@ function Home() {
             <Button asChild variant="outline">
               <Link to="/buscar">Buscar</Link>
             </Button>
-            {/* Rota de publicação ainda não implementada. */}
             <Button asChild>
               <a href="/publicar">Publicar serviço</a>
             </Button>
@@ -129,7 +128,6 @@ function Home() {
             Crie seu perfil e prepare sua presença para aparecer perto de novos
             clientes.
           </p>
-          {/* Rota de cadastro profissional ainda não implementada. */}
           <Button asChild className="mt-5">
             <a href="/oferecer-servico">Começar como profissional</a>
           </Button>

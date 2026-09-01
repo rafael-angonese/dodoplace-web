@@ -64,7 +64,6 @@ function Conta() {
     }
   }, [status, navigate])
 
-  // Sincroniza o formulário assim que o perfil chega (ou muda).
   useEffect(() => {
     if (user) {
       reset({ name: user.name ?? '' })

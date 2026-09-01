@@ -17,7 +17,6 @@ export function UserMenu() {
   const navigate = useNavigate()
   const { status, user, signOut } = useAuth()
 
-  // Durante o SSR e a hidratação ainda não sabemos se há sessão.
   if (status === 'loading') {
     return <Skeleton className="h-10 w-20 rounded-xl" />
   }

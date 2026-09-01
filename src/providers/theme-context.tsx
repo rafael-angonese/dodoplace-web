@@ -60,10 +60,6 @@ function prefersDark() {
 	return window.matchMedia('(prefers-color-scheme: dark)').matches
 }
 
-/**
- * Applies the theme to <html> the same way the blocking script in
- * `src/routes/__root.tsx` does, so hydration never fights the pre-paint value.
- */
 export function applyTheme(theme: Theme, systemIsDark: boolean) {
 	const resolved = theme === 'system' ? (systemIsDark ? 'dark' : 'light') : theme
 	const root = document.documentElement
@@ -85,8 +81,6 @@ export function ThemeProvider({
 	defaultTheme = 'system',
 	storageKey = THEME_STORAGE_KEY,
 }: ThemeProviderProps) {
-	// Server render and first client render must agree, so the stored value is
-	// only picked up after mount. The blocking script prevents the flash.
 	const [theme, setThemeState] = useState<Theme>(defaultTheme)
 	const [systemIsDark, setSystemIsDark] = useState(false)
 
@@ -116,7 +110,6 @@ export function ThemeProvider({
 			try {
 				window.localStorage.setItem(storageKey, nextTheme)
 			} catch {
-				// storage can be unavailable (private mode, blocked cookies)
 			}
 		},
 		[storageKey]

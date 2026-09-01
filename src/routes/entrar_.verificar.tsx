@@ -29,8 +29,6 @@ function Verificar() {
   const [state, setState] = useState<State>('verifying')
   const [message, setMessage] = useState<string | null>(null)
 
-  // O token é de uso único: em StrictMode o efeito roda duas vezes e a segunda
-  // chamada consumiria um token já gasto, mostrando erro numa sessão válida.
   const consumed = useRef(false)
 
   useEffect(() => {

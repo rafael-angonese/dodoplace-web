@@ -3,7 +3,6 @@ const DEFAULT_BASE_URL = 'http://localhost:3333/api/v1'
 export const API_BASE_URL =
   import.meta.env.VITE_API_URL?.replace(/\/$/, '') ?? DEFAULT_BASE_URL
 
-/** Formato de erro devolvido pela API (AdonisJS + VineJS). */
 export type ApiErrorItem = {
   message: string
   rule?: string
@@ -22,7 +21,6 @@ export class ApiError extends Error {
     this.errors = errors
   }
 
-  /** Erros por campo, prontos para alimentar o `setError` do react-hook-form. */
   get fieldErrors(): Record<string, string> {
     const result: Record<string, string> = {}
 
@@ -35,7 +33,6 @@ export class ApiError extends Error {
     return result
   }
 
-  /** Mensagem geral: o primeiro erro que não pertence a um campo específico. */
   get generalMessage(): string | null {
     const general = this.errors.find((error) => !error.field)
     return general?.message ?? null
@@ -62,10 +59,6 @@ export type ApiRequestOptions = {
   signal?: AbortSignal
 }
 
-/**
- * Faz a requisição e desembrulha o envelope `{ data: ... }` da API.
- * Lança `ApiError` em qualquer resposta fora da faixa 2xx.
- */
 export async function apiRequest<T>(
   path: string,
   { method = 'GET', body, token, signal }: ApiRequestOptions = {},

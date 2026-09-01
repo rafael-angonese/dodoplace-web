@@ -1,6 +1,5 @@
 import { apiRequest } from '@/lib/api'
 
-/** Espelha o `UserTransformer` da API. */
 export type User = {
   id: number
   name: string | null
@@ -17,17 +16,12 @@ export type AuthSession = {
 
 export type MagicLinkInput = {
   email: string
-  /** Só é aproveitado quando a conta ainda não existe. */
   name?: string | null
 }
 
 export type MagicLinkResult = {
   message: string
   expiresInMinutes: number
-  /**
-   * Só vem em desenvolvimento e quando a API está sem `RESEND_API_KEY`.
-   * Permite seguir o fluxo sem caixa de entrada.
-   */
   devUrl?: string
 }
 

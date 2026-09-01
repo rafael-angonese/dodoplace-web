@@ -252,7 +252,6 @@ export const InputSelect = <T, Multiple extends boolean = false>({
 			<PopoverContent
 				className={cn('w-auto p-0', className)}
 				align="start"
-				// portal={false}
 				onEscapeKeyDown={() => setIsPopoverOpen(false)}
 				{...restProps}
 			>
@@ -377,11 +376,9 @@ InputSelect.displayName = 'InputSelect'
 
 const InputSelectTrigger = React.forwardRef<
 	HTMLButtonElement,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	InputSelectProvided<any> & {
 		multiple?: boolean
 		className?: string
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		children?: (selectedOption: any) => React.ReactNode
 		style?: React.CSSProperties
 	}
@@ -444,7 +441,6 @@ const InputSelectTrigger = React.forwardRef<
 					Array.isArray(selectedValue) && selectedValue.length > 0 ? (
 						<div className="flex items-center w-full">
 							<div className="flex-1 flex flex-wrap items-center px-2 gap-y-1 min-w-0 overflow-hidden">
-								{/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
 								{selectedOptions.slice(0, limitTags).map((option: any) => (
 									<Badge
 										key={getOptionValue(option)}

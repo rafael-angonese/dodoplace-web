@@ -1,11 +1,3 @@
-/*
- * FazPerto brand layer.
- *
- * Loaded AFTER `ui.css`, so it re-points the shadcn tokens (--primary,
- * --background, --border, …) at the marketplace palette. The components in
- * `src/components/ui` are untouched — they just render in brand colors.
- */
-
 :root {
   --brand-yellow: #f6c945;
   --brand-yellow-strong: #efb900;

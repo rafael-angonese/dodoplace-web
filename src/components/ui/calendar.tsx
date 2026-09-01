@@ -162,7 +162,7 @@ function Calendar({
 	return (
 		<DayPicker
 			showOutsideDays={showOutsideDays}
-			hideNavigation={true} // Ensure navigation is hidden
+			hideNavigation={true}
 			className={cn('p-3', className)}
 			classNames={{
 				caption_label: _captionLabelClassName,
@@ -185,7 +185,7 @@ function Calendar({
 				hidden: _hiddenClassName,
 				outside: _outsideClassName,
 				today: _todayClassName,
-				nav: 'hidden', // This hides the navigation (chevrons)
+				nav: 'hidden',
 				...classNames,
 			}}
 			components={{

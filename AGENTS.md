@@ -1,3 +1,20 @@
+# mkt-web Agent Contract
+
+TanStack Start + React 19 + Tailwind + Biome.
+
+## No comments
+
+Never write comments in `.ts`, `.tsx`, `.css` or config files: no `//`, `/* */`,
+JSDoc, TODO, banners, or commented-out code. Let names, small functions and types
+carry the meaning. Rationale belongs in the commit message or PR, not in the file.
+
+Exceptions, because tools read them:
+
+- `@ts-expect-error`, `@ts-ignore`, `@ts-nocheck`
+- `/// <reference types="..." />`
+- `biome-ignore`, `prettier-ignore`
+- Generated files: `src/routeTree.gen.ts`
+
 <!-- intent-skills:start -->
 # TanStack Intent - before editing files, run the matching guidance command.
 tanstackIntent:

@@ -4,13 +4,6 @@ export type DiscoveryCategory = {
   name: string
 }
 
-/**
- * Layout-only: espelha o seed de categorias do FazPerto. Numa versão
- * integrada isso viraria uma consulta à API.
- *
- * O `name` é exibido no singular; o `slug` segue o do seed (plural) para não
- * quebrar as URLs de `/buscar?categoria=...`.
- */
 export const CATEGORIES: DiscoveryCategory[] = [
   { id: '1', slug: 'pintores', name: 'Pintor' },
   { id: '2', slug: 'eletricistas', name: 'Eletricista' },

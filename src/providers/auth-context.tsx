@@ -16,20 +16,13 @@ import {
 } from '@/lib/auth'
 import { authStorage } from '@/lib/auth-storage'
 
-/**
- * `loading` cobre o SSR e o primeiro render do cliente, antes de sabermos se
- * existe token no localStorage. Sem isso o HTML do servidor divergiria do
- * cliente na hidratação.
- */
 export type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated'
 
 type AuthContextValue = {
   status: AuthStatus
   user: User | null
   token: string | null
-  /** Pede um link de acesso por e-mail. Não abre sessão por si só. */
   requestMagicLink: (input: MagicLinkInput) => Promise<MagicLinkResult>
-  /** Troca o token do link por uma sessão. */
   verifyMagicLink: (token: string) => Promise<User>
   signOut: () => Promise<void>
   updateProfile: (input: { name: string | null }) => Promise<User>
@@ -42,7 +35,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [token, setToken] = useState<string | null>(null)
 
-  // Restaura a sessão a partir do token guardado (client-only).
   useEffect(() => {
     const stored = authStorage.get()
 
@@ -65,7 +57,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return
         }
 
-        // Token expirado ou revogado: descarta e segue como visitante.
         if (error instanceof ApiError && error.status === 401) {
           authStorage.clear()
         }
@@ -97,7 +88,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = useCallback(async () => {
     if (token) {
-      // Revogar o token no servidor é best-effort: a sessão local cai de todo jeito.
       await authApi.signOut(token).catch(() => undefined)
     }
 

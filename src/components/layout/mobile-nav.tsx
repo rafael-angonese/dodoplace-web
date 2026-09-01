@@ -11,7 +11,6 @@ const ROUTES = [
   { to: '/buscar', label: 'Buscar', icon: Search },
 ] as const
 
-// Destinos ainda não implementados: ficam como <a> para não fingir rota tipada.
 const PENDING = [
   { href: '/publicar', label: 'Publicar', icon: Plus, primary: true },
   { href: '/mensagens', label: 'Conversas', icon: MessageCircle },

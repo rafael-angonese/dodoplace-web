@@ -6,10 +6,6 @@ export type CityOption = {
   state: string
 }
 
-/**
- * Layout-only: as cidades vêm de uma lista estática. Numa versão integrada
- * isso viraria uma consulta à API de localidades.
- */
 export const CITY_OPTIONS: CityOption[] = [
   { id: 'chapeco-sc', city: 'Chapecó', state: 'SC' },
   { id: 'florianopolis-sc', city: 'Florianópolis', state: 'SC' },

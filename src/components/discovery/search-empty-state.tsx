@@ -16,7 +16,6 @@ export function SearchEmptyState({ city }: { city?: string | null }) {
         <Button asChild variant="outline">
           <Link to="/buscar">Alterar busca</Link>
         </Button>
-        {/* Rota de publicação ainda não implementada. */}
         <Button asChild>
           <a href="/publicar">Publicar serviço</a>
         </Button>

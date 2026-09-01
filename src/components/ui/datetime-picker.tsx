@@ -1,8 +1,3 @@
-/**
- * Shadcn Datetime Picker with support for timezone, date and time selection, minimum and maximum date limits, and 12-hour format...
- * Check out the live demo at https://shadcn-datetime-picker-pro.vercel.app/
- * Find the latest source code at https://github.com/huybuidac/shadcn-datetime-picker
- */
 import {
 	addMonths,
 	endOfMonth,
@@ -37,40 +32,12 @@ import { ptBR } from 'date-fns/locale'
 export type CalendarProps = Omit<React.ComponentProps<typeof DayPicker>, 'mode'>
 
 export type DateTimePickerProps = {
-	/**
-	 * The modality of the popover. When set to true, interaction with outside elements will be disabled and only popover content will be visible to screen readers.
-	 * If you want to use the datetime picker inside a dialog, you should set this to true.
-	 * @default false
-	 */
 	modal?: boolean
-	/**
-	 * The datetime value to display and control.
-	 */
 	value: Date | undefined | null
-	/**
-	 * Callback function to handle datetime changes.
-	 */
 	onChange: (date: Date | undefined | null) => void
-	/**
-	 * The minimum datetime value allowed.
-	 * @default undefined
-	 */
 	min?: Date
-	/**
-	 * The maximum datetime value allowed.
-	 */
 	max?: Date
-	/**
-	 * The timezone to display the datetime in, based on the date-fns.
-	 * For a complete list of valid time zone identifiers, refer to:
-	 * https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-	 * @default undefined
-	 */
 	timezone?: string
-	/**
-	 * Whether the datetime picker is disabled.
-	 * @default false
-	 */
 	disabled?: boolean
 
 	placeholder?: string
@@ -241,7 +208,6 @@ export function DateTimePicker({
 						timeZone={timezone}
 						mode="single"
 						selected={date}
-						// onSelect={(d) => d && onDayChanged(d)}
 						onDayClick={(d) => d && onDayChanged(d)}
 						month={month}
 						locale={dayPickerPtBR}
