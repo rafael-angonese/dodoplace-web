@@ -66,7 +66,7 @@ export function ServiceCard({
       <div className="mt-3 space-y-1">
         <h3 className="line-clamp-2 leading-snug font-semibold">
           <Link
-            to="/servicos/$serviceId"
+            to="/services/$serviceId"
             params={{ serviceId: String(service.id) }}
             className="after:absolute after:inset-0"
           >

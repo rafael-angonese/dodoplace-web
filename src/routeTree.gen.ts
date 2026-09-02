@@ -11,21 +11,21 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as CadastroRouteImport } from './routes/cadastro'
-import { Route as ContaRouteImport } from './routes/conta'
-import { Route as ConversasRouteImport } from './routes/conversas'
-import { Route as EntrarRouteImport } from './routes/entrar'
-import { Route as FavoritosRouteImport } from './routes/favoritos'
-import { Route as PublicarRouteImport } from './routes/publicar'
-import { Route as ServicosRouteImport } from './routes/servicos'
+import { Route as AccountRouteImport } from './routes/account'
+import { Route as ChatsRouteImport } from './routes/chats'
+import { Route as FavoritesRouteImport } from './routes/favorites'
+import { Route as PublishRouteImport } from './routes/publish'
+import { Route as ServicesRouteImport } from './routes/services'
+import { Route as SigninRouteImport } from './routes/signin'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as UiRouteImport } from './routes/ui'
-import { Route as ContaServicosRouteImport } from './routes/conta_.servicos'
-import { Route as ConversasIndexRouteImport } from './routes/conversas.index'
-import { Route as ConversasConversationIdRouteImport } from './routes/conversas.$conversationId'
-import { Route as EntrarVerificarRouteImport } from './routes/entrar_.verificar'
-import { Route as PerfilUserIdRouteImport } from './routes/perfil.$userId'
-import { Route as ServicosServiceIdRouteImport } from './routes/servicos_.$serviceId'
-import { Route as ContaServicosServiceIdRouteImport } from './routes/conta_.servicos_.$serviceId'
+import { Route as AccountServicesRouteImport } from './routes/account_.services'
+import { Route as ChatsIndexRouteImport } from './routes/chats.index'
+import { Route as ChatsConversationIdRouteImport } from './routes/chats.$conversationId'
+import { Route as ProfileUserIdRouteImport } from './routes/profile.$userId'
+import { Route as ServicesServiceIdRouteImport } from './routes/services_.$serviceId'
+import { Route as SigninVerifyRouteImport } from './routes/signin_.verify'
+import { Route as AccountServicesServiceIdRouteImport } from './routes/account_.services_.$serviceId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -37,39 +37,39 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CadastroRoute = CadastroRouteImport.update({
-  id: '/cadastro',
-  path: '/cadastro',
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ContaRoute = ContaRouteImport.update({
-  id: '/conta',
-  path: '/conta',
+const ChatsRoute = ChatsRouteImport.update({
+  id: '/chats',
+  path: '/chats',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConversasRoute = ConversasRouteImport.update({
-  id: '/conversas',
-  path: '/conversas',
+const FavoritesRoute = FavoritesRouteImport.update({
+  id: '/favorites',
+  path: '/favorites',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EntrarRoute = EntrarRouteImport.update({
-  id: '/entrar',
-  path: '/entrar',
+const PublishRoute = PublishRouteImport.update({
+  id: '/publish',
+  path: '/publish',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FavoritosRoute = FavoritosRouteImport.update({
-  id: '/favoritos',
-  path: '/favoritos',
+const ServicesRoute = ServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PublicarRoute = PublicarRouteImport.update({
-  id: '/publicar',
-  path: '/publicar',
+const SigninRoute = SigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ServicosRoute = ServicosRouteImport.update({
-  id: '/servicos',
-  path: '/servicos',
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UiRoute = UiRouteImport.update({
@@ -77,174 +77,175 @@ const UiRoute = UiRouteImport.update({
   path: '/ui',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ContaServicosRoute = ContaServicosRouteImport.update({
-  id: '/conta_/servicos',
-  path: '/conta/servicos',
+const AccountServicesRoute = AccountServicesRouteImport.update({
+  id: '/account_/services',
+  path: '/account/services',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConversasIndexRoute = ConversasIndexRouteImport.update({
+const ChatsIndexRoute = ChatsIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => ConversasRoute,
+  getParentRoute: () => ChatsRoute,
 } as any)
-const ConversasConversationIdRoute = ConversasConversationIdRouteImport.update({
+const ChatsConversationIdRoute = ChatsConversationIdRouteImport.update({
   id: '/$conversationId',
   path: '/$conversationId',
-  getParentRoute: () => ConversasRoute,
+  getParentRoute: () => ChatsRoute,
 } as any)
-const EntrarVerificarRoute = EntrarVerificarRouteImport.update({
-  id: '/entrar_/verificar',
-  path: '/entrar/verificar',
+const ProfileUserIdRoute = ProfileUserIdRouteImport.update({
+  id: '/profile/$userId',
+  path: '/profile/$userId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PerfilUserIdRoute = PerfilUserIdRouteImport.update({
-  id: '/perfil/$userId',
-  path: '/perfil/$userId',
+const ServicesServiceIdRoute = ServicesServiceIdRouteImport.update({
+  id: '/services_/$serviceId',
+  path: '/services/$serviceId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ServicosServiceIdRoute = ServicosServiceIdRouteImport.update({
-  id: '/servicos_/$serviceId',
-  path: '/servicos/$serviceId',
+const SigninVerifyRoute = SigninVerifyRouteImport.update({
+  id: '/signin_/verify',
+  path: '/signin/verify',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ContaServicosServiceIdRoute = ContaServicosServiceIdRouteImport.update({
-  id: '/conta_/servicos_/$serviceId',
-  path: '/conta/servicos/$serviceId',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const AccountServicesServiceIdRoute =
+  AccountServicesServiceIdRouteImport.update({
+    id: '/account_/services_/$serviceId',
+    path: '/account/services/$serviceId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/cadastro': typeof CadastroRoute
-  '/conta': typeof ContaRoute
-  '/conversas': typeof ConversasRouteWithChildren
-  '/entrar': typeof EntrarRoute
-  '/favoritos': typeof FavoritosRoute
-  '/publicar': typeof PublicarRoute
-  '/servicos': typeof ServicosRoute
+  '/account': typeof AccountRoute
+  '/chats': typeof ChatsRouteWithChildren
+  '/favorites': typeof FavoritesRoute
+  '/publish': typeof PublishRoute
+  '/services': typeof ServicesRoute
+  '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
   '/ui': typeof UiRoute
-  '/conta/servicos': typeof ContaServicosRoute
-  '/conversas/$conversationId': typeof ConversasConversationIdRoute
-  '/entrar/verificar': typeof EntrarVerificarRoute
-  '/perfil/$userId': typeof PerfilUserIdRoute
-  '/servicos/$serviceId': typeof ServicosServiceIdRoute
-  '/conversas/': typeof ConversasIndexRoute
-  '/conta/servicos/$serviceId': typeof ContaServicosServiceIdRoute
+  '/account/services': typeof AccountServicesRoute
+  '/chats/$conversationId': typeof ChatsConversationIdRoute
+  '/profile/$userId': typeof ProfileUserIdRoute
+  '/services/$serviceId': typeof ServicesServiceIdRoute
+  '/signin/verify': typeof SigninVerifyRoute
+  '/chats/': typeof ChatsIndexRoute
+  '/account/services/$serviceId': typeof AccountServicesServiceIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/cadastro': typeof CadastroRoute
-  '/conta': typeof ContaRoute
-  '/entrar': typeof EntrarRoute
-  '/favoritos': typeof FavoritosRoute
-  '/publicar': typeof PublicarRoute
-  '/servicos': typeof ServicosRoute
+  '/account': typeof AccountRoute
+  '/favorites': typeof FavoritesRoute
+  '/publish': typeof PublishRoute
+  '/services': typeof ServicesRoute
+  '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
   '/ui': typeof UiRoute
-  '/conta/servicos': typeof ContaServicosRoute
-  '/conversas/$conversationId': typeof ConversasConversationIdRoute
-  '/entrar/verificar': typeof EntrarVerificarRoute
-  '/perfil/$userId': typeof PerfilUserIdRoute
-  '/servicos/$serviceId': typeof ServicosServiceIdRoute
-  '/conversas': typeof ConversasIndexRoute
-  '/conta/servicos/$serviceId': typeof ContaServicosServiceIdRoute
+  '/account/services': typeof AccountServicesRoute
+  '/chats/$conversationId': typeof ChatsConversationIdRoute
+  '/profile/$userId': typeof ProfileUserIdRoute
+  '/services/$serviceId': typeof ServicesServiceIdRoute
+  '/signin/verify': typeof SigninVerifyRoute
+  '/chats': typeof ChatsIndexRoute
+  '/account/services/$serviceId': typeof AccountServicesServiceIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/cadastro': typeof CadastroRoute
-  '/conta': typeof ContaRoute
-  '/conversas': typeof ConversasRouteWithChildren
-  '/entrar': typeof EntrarRoute
-  '/favoritos': typeof FavoritosRoute
-  '/publicar': typeof PublicarRoute
-  '/servicos': typeof ServicosRoute
+  '/account': typeof AccountRoute
+  '/chats': typeof ChatsRouteWithChildren
+  '/favorites': typeof FavoritesRoute
+  '/publish': typeof PublishRoute
+  '/services': typeof ServicesRoute
+  '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
   '/ui': typeof UiRoute
-  '/conta_/servicos': typeof ContaServicosRoute
-  '/conversas/$conversationId': typeof ConversasConversationIdRoute
-  '/entrar_/verificar': typeof EntrarVerificarRoute
-  '/perfil/$userId': typeof PerfilUserIdRoute
-  '/servicos_/$serviceId': typeof ServicosServiceIdRoute
-  '/conversas/': typeof ConversasIndexRoute
-  '/conta_/servicos_/$serviceId': typeof ContaServicosServiceIdRoute
+  '/account_/services': typeof AccountServicesRoute
+  '/chats/$conversationId': typeof ChatsConversationIdRoute
+  '/profile/$userId': typeof ProfileUserIdRoute
+  '/services_/$serviceId': typeof ServicesServiceIdRoute
+  '/signin_/verify': typeof SigninVerifyRoute
+  '/chats/': typeof ChatsIndexRoute
+  '/account_/services_/$serviceId': typeof AccountServicesServiceIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
-    | '/cadastro'
-    | '/conta'
-    | '/conversas'
-    | '/entrar'
-    | '/favoritos'
-    | '/publicar'
-    | '/servicos'
+    | '/account'
+    | '/chats'
+    | '/favorites'
+    | '/publish'
+    | '/services'
+    | '/signin'
+    | '/signup'
     | '/ui'
-    | '/conta/servicos'
-    | '/conversas/$conversationId'
-    | '/entrar/verificar'
-    | '/perfil/$userId'
-    | '/servicos/$serviceId'
-    | '/conversas/'
-    | '/conta/servicos/$serviceId'
+    | '/account/services'
+    | '/chats/$conversationId'
+    | '/profile/$userId'
+    | '/services/$serviceId'
+    | '/signin/verify'
+    | '/chats/'
+    | '/account/services/$serviceId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/cadastro'
-    | '/conta'
-    | '/entrar'
-    | '/favoritos'
-    | '/publicar'
-    | '/servicos'
+    | '/account'
+    | '/favorites'
+    | '/publish'
+    | '/services'
+    | '/signin'
+    | '/signup'
     | '/ui'
-    | '/conta/servicos'
-    | '/conversas/$conversationId'
-    | '/entrar/verificar'
-    | '/perfil/$userId'
-    | '/servicos/$serviceId'
-    | '/conversas'
-    | '/conta/servicos/$serviceId'
+    | '/account/services'
+    | '/chats/$conversationId'
+    | '/profile/$userId'
+    | '/services/$serviceId'
+    | '/signin/verify'
+    | '/chats'
+    | '/account/services/$serviceId'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/cadastro'
-    | '/conta'
-    | '/conversas'
-    | '/entrar'
-    | '/favoritos'
-    | '/publicar'
-    | '/servicos'
+    | '/account'
+    | '/chats'
+    | '/favorites'
+    | '/publish'
+    | '/services'
+    | '/signin'
+    | '/signup'
     | '/ui'
-    | '/conta_/servicos'
-    | '/conversas/$conversationId'
-    | '/entrar_/verificar'
-    | '/perfil/$userId'
-    | '/servicos_/$serviceId'
-    | '/conversas/'
-    | '/conta_/servicos_/$serviceId'
+    | '/account_/services'
+    | '/chats/$conversationId'
+    | '/profile/$userId'
+    | '/services_/$serviceId'
+    | '/signin_/verify'
+    | '/chats/'
+    | '/account_/services_/$serviceId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  CadastroRoute: typeof CadastroRoute
-  ContaRoute: typeof ContaRoute
-  ConversasRoute: typeof ConversasRouteWithChildren
-  EntrarRoute: typeof EntrarRoute
-  FavoritosRoute: typeof FavoritosRoute
-  PublicarRoute: typeof PublicarRoute
-  ServicosRoute: typeof ServicosRoute
+  AccountRoute: typeof AccountRoute
+  ChatsRoute: typeof ChatsRouteWithChildren
+  FavoritesRoute: typeof FavoritesRoute
+  PublishRoute: typeof PublishRoute
+  ServicesRoute: typeof ServicesRoute
+  SigninRoute: typeof SigninRoute
+  SignupRoute: typeof SignupRoute
   UiRoute: typeof UiRoute
-  ContaServicosRoute: typeof ContaServicosRoute
-  EntrarVerificarRoute: typeof EntrarVerificarRoute
-  PerfilUserIdRoute: typeof PerfilUserIdRoute
-  ServicosServiceIdRoute: typeof ServicosServiceIdRoute
-  ContaServicosServiceIdRoute: typeof ContaServicosServiceIdRoute
+  AccountServicesRoute: typeof AccountServicesRoute
+  ProfileUserIdRoute: typeof ProfileUserIdRoute
+  ServicesServiceIdRoute: typeof ServicesServiceIdRoute
+  SigninVerifyRoute: typeof SigninVerifyRoute
+  AccountServicesServiceIdRoute: typeof AccountServicesServiceIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -263,53 +264,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/cadastro': {
-      id: '/cadastro'
-      path: '/cadastro'
-      fullPath: '/cadastro'
-      preLoaderRoute: typeof CadastroRouteImport
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/conta': {
-      id: '/conta'
-      path: '/conta'
-      fullPath: '/conta'
-      preLoaderRoute: typeof ContaRouteImport
+    '/chats': {
+      id: '/chats'
+      path: '/chats'
+      fullPath: '/chats'
+      preLoaderRoute: typeof ChatsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/conversas': {
-      id: '/conversas'
-      path: '/conversas'
-      fullPath: '/conversas'
-      preLoaderRoute: typeof ConversasRouteImport
+    '/favorites': {
+      id: '/favorites'
+      path: '/favorites'
+      fullPath: '/favorites'
+      preLoaderRoute: typeof FavoritesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/entrar': {
-      id: '/entrar'
-      path: '/entrar'
-      fullPath: '/entrar'
-      preLoaderRoute: typeof EntrarRouteImport
+    '/publish': {
+      id: '/publish'
+      path: '/publish'
+      fullPath: '/publish'
+      preLoaderRoute: typeof PublishRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/favoritos': {
-      id: '/favoritos'
-      path: '/favoritos'
-      fullPath: '/favoritos'
-      preLoaderRoute: typeof FavoritosRouteImport
+    '/services': {
+      id: '/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof ServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publicar': {
-      id: '/publicar'
-      path: '/publicar'
-      fullPath: '/publicar'
-      preLoaderRoute: typeof PublicarRouteImport
+    '/signin': {
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/servicos': {
-      id: '/servicos'
-      path: '/servicos'
-      fullPath: '/servicos'
-      preLoaderRoute: typeof ServicosRouteImport
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ui': {
@@ -319,88 +320,86 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UiRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/conta_/servicos': {
-      id: '/conta_/servicos'
-      path: '/conta/servicos'
-      fullPath: '/conta/servicos'
-      preLoaderRoute: typeof ContaServicosRouteImport
+    '/account_/services': {
+      id: '/account_/services'
+      path: '/account/services'
+      fullPath: '/account/services'
+      preLoaderRoute: typeof AccountServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/conversas/': {
-      id: '/conversas/'
+    '/chats/': {
+      id: '/chats/'
       path: '/'
-      fullPath: '/conversas/'
-      preLoaderRoute: typeof ConversasIndexRouteImport
-      parentRoute: typeof ConversasRoute
+      fullPath: '/chats/'
+      preLoaderRoute: typeof ChatsIndexRouteImport
+      parentRoute: typeof ChatsRoute
     }
-    '/conversas/$conversationId': {
-      id: '/conversas/$conversationId'
+    '/chats/$conversationId': {
+      id: '/chats/$conversationId'
       path: '/$conversationId'
-      fullPath: '/conversas/$conversationId'
-      preLoaderRoute: typeof ConversasConversationIdRouteImport
-      parentRoute: typeof ConversasRoute
+      fullPath: '/chats/$conversationId'
+      preLoaderRoute: typeof ChatsConversationIdRouteImport
+      parentRoute: typeof ChatsRoute
     }
-    '/entrar_/verificar': {
-      id: '/entrar_/verificar'
-      path: '/entrar/verificar'
-      fullPath: '/entrar/verificar'
-      preLoaderRoute: typeof EntrarVerificarRouteImport
+    '/profile/$userId': {
+      id: '/profile/$userId'
+      path: '/profile/$userId'
+      fullPath: '/profile/$userId'
+      preLoaderRoute: typeof ProfileUserIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/perfil/$userId': {
-      id: '/perfil/$userId'
-      path: '/perfil/$userId'
-      fullPath: '/perfil/$userId'
-      preLoaderRoute: typeof PerfilUserIdRouteImport
+    '/services_/$serviceId': {
+      id: '/services_/$serviceId'
+      path: '/services/$serviceId'
+      fullPath: '/services/$serviceId'
+      preLoaderRoute: typeof ServicesServiceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/servicos_/$serviceId': {
-      id: '/servicos_/$serviceId'
-      path: '/servicos/$serviceId'
-      fullPath: '/servicos/$serviceId'
-      preLoaderRoute: typeof ServicosServiceIdRouteImport
+    '/signin_/verify': {
+      id: '/signin_/verify'
+      path: '/signin/verify'
+      fullPath: '/signin/verify'
+      preLoaderRoute: typeof SigninVerifyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/conta_/servicos_/$serviceId': {
-      id: '/conta_/servicos_/$serviceId'
-      path: '/conta/servicos/$serviceId'
-      fullPath: '/conta/servicos/$serviceId'
-      preLoaderRoute: typeof ContaServicosServiceIdRouteImport
+    '/account_/services_/$serviceId': {
+      id: '/account_/services_/$serviceId'
+      path: '/account/services/$serviceId'
+      fullPath: '/account/services/$serviceId'
+      preLoaderRoute: typeof AccountServicesServiceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface ConversasRouteChildren {
-  ConversasConversationIdRoute: typeof ConversasConversationIdRoute
-  ConversasIndexRoute: typeof ConversasIndexRoute
+interface ChatsRouteChildren {
+  ChatsConversationIdRoute: typeof ChatsConversationIdRoute
+  ChatsIndexRoute: typeof ChatsIndexRoute
 }
 
-const ConversasRouteChildren: ConversasRouteChildren = {
-  ConversasConversationIdRoute: ConversasConversationIdRoute,
-  ConversasIndexRoute: ConversasIndexRoute,
+const ChatsRouteChildren: ChatsRouteChildren = {
+  ChatsConversationIdRoute: ChatsConversationIdRoute,
+  ChatsIndexRoute: ChatsIndexRoute,
 }
 
-const ConversasRouteWithChildren = ConversasRoute._addFileChildren(
-  ConversasRouteChildren,
-)
+const ChatsRouteWithChildren = ChatsRoute._addFileChildren(ChatsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  CadastroRoute: CadastroRoute,
-  ContaRoute: ContaRoute,
-  ConversasRoute: ConversasRouteWithChildren,
-  EntrarRoute: EntrarRoute,
-  FavoritosRoute: FavoritosRoute,
-  PublicarRoute: PublicarRoute,
-  ServicosRoute: ServicosRoute,
+  AccountRoute: AccountRoute,
+  ChatsRoute: ChatsRouteWithChildren,
+  FavoritesRoute: FavoritesRoute,
+  PublishRoute: PublishRoute,
+  ServicesRoute: ServicesRoute,
+  SigninRoute: SigninRoute,
+  SignupRoute: SignupRoute,
   UiRoute: UiRoute,
-  ContaServicosRoute: ContaServicosRoute,
-  EntrarVerificarRoute: EntrarVerificarRoute,
-  PerfilUserIdRoute: PerfilUserIdRoute,
-  ServicosServiceIdRoute: ServicosServiceIdRoute,
-  ContaServicosServiceIdRoute: ContaServicosServiceIdRoute,
+  AccountServicesRoute: AccountServicesRoute,
+  ProfileUserIdRoute: ProfileUserIdRoute,
+  ServicesServiceIdRoute: ServicesServiceIdRoute,
+  SigninVerifyRoute: SigninVerifyRoute,
+  AccountServicesServiceIdRoute: AccountServicesServiceIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

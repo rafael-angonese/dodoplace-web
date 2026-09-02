@@ -22,7 +22,7 @@ export function CategoryCarousel({
             to="/"
             search={(current) => ({
               ...current,
-              categoria: isActive ? undefined : category.slug,
+              category: isActive ? undefined : category.slug,
             })}
             className={cn(
               'group flex w-20 shrink-0 flex-col items-center gap-2 border-b-2 pb-2.5 text-center transition-colors',

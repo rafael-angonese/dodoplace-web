@@ -10,7 +10,7 @@ import { useChat } from '@/providers/chat-context'
 
 const NAV_ITEMS = [
   { to: '/', label: 'Buscar', exact: true },
-  { to: '/servicos', label: 'Categorias', exact: false },
+  { to: '/services', label: 'Categorias', exact: false },
 ] as const
 
 function ChatButton() {
@@ -23,7 +23,7 @@ function ChatButton() {
 
   return (
     <Button asChild variant="ghost" size="icon" className="relative rounded-full">
-      <Link to="/conversas" aria-label="Conversas">
+      <Link to="/chats" aria-label="Conversas">
         <MessagesSquare aria-hidden="true" />
         {unreadTotal > 0 ? (
           <span className="absolute top-1 right-1 grid min-w-4 place-items-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
@@ -65,7 +65,7 @@ export function AppHeader() {
             size="sm"
             className="hidden h-10 rounded-full font-semibold md:inline-flex"
           >
-            <Link to="/publicar">Publicar serviço</Link>
+            <Link to="/publish">Publicar serviço</Link>
           </Button>
 
           <Button
@@ -74,7 +74,7 @@ export function AppHeader() {
             size="icon"
             className="hidden rounded-full md:inline-flex"
           >
-            <Link to="/favoritos" aria-label="Favoritos">
+            <Link to="/favorites" aria-label="Favoritos">
               <Heart aria-hidden="true" />
             </Link>
           </Button>

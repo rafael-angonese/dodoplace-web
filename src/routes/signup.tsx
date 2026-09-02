@@ -26,25 +26,16 @@ import { Heading } from '@/components/ui/heading'
 import { Input } from '@/components/ui/input'
 import type { MagicLinkResult } from '@/lib/auth'
 import { applyApiErrors } from '@/lib/form-errors'
-import { type SignInValues, signInSchema } from '@/lib/validation'
+import { type SignUpValues, signUpSchema } from '@/lib/validation'
 import { useAuth } from '@/providers/auth-context'
 
-type LoginSearch = { redirect?: string }
-
-export const Route = createFileRoute('/entrar')({
-  component: Entrar,
-  head: () => ({ meta: [{ title: 'Entrar | FazPerto' }] }),
-  validateSearch: (search: Record<string, unknown>): LoginSearch => {
-    const redirect = search.redirect
-    return typeof redirect === 'string' && redirect.startsWith('/')
-      ? { redirect }
-      : {}
-  },
+export const Route = createFileRoute('/signup')({
+  component: Cadastro,
+  head: () => ({ meta: [{ title: 'Criar conta | FazPerto' }] }),
 })
 
-function Entrar() {
+function Cadastro() {
   const navigate = useNavigate()
-  const { redirect } = Route.useSearch()
   const { requestMagicLink, status } = useAuth()
   const [formError, setFormError] = useState<string | null>(null)
   const [sent, setSent] = useState<{
@@ -52,35 +43,36 @@ function Entrar() {
     result: MagicLinkResult
   } | null>(null)
 
-  const form = useForm<SignInValues>({
-    resolver: zodResolver(signInSchema),
-    defaultValues: { email: '' },
+  const form = useForm<SignUpValues>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: { name: '', email: '' },
   })
 
   useEffect(() => {
     if (status === 'authenticated') {
-      navigate({ to: redirect ?? '/conta', replace: true })
+      navigate({ to: '/account', replace: true })
     }
-  }, [status, redirect, navigate])
+  }, [status, navigate])
 
-  async function onSubmit(values: SignInValues) {
+  async function onSubmit(values: SignUpValues) {
     setFormError(null)
 
     try {
-      const result = await requestMagicLink({ email: values.email })
+      const result = await requestMagicLink(values)
       setSent({ email: values.email, result })
     } catch (error) {
-      setFormError(applyApiErrors(error, form.setError, ['email']))
+      setFormError(applyApiErrors(error, form.setError, ['name', 'email']))
     }
   }
 
   return (
     <section className="mx-auto w-full max-w-md px-4 py-12 md:px-6 md:py-16">
       <Heading variant="h1" className="text-3xl font-extrabold">
-        Entrar
+        Criar conta
       </Heading>
       <p className="mt-2 text-muted-foreground">
-        Sem senha: enviamos um link de acesso para o seu e-mail.
+        Sem senha para criar nem para lembrar: confirmamos seu e-mail por um
+        link.
       </p>
 
       <Card className="mt-6">
@@ -95,9 +87,9 @@ function Entrar() {
         ) : (
           <>
             <CardHeader>
-              <CardTitle className="text-xl">Bem-vindo de volta</CardTitle>
+              <CardTitle className="text-xl">Seus dados</CardTitle>
               <CardDescription>
-                Informe o e-mail da sua conta.
+                Sua conta é criada quando você abre o link.
               </CardDescription>
             </CardHeader>
 
@@ -116,6 +108,24 @@ function Entrar() {
 
                   <FormField
                     control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel required>Nome</FormLabel>
+                        <FormControl>
+                          <Input
+                            autoComplete="name"
+                            placeholder="Como devemos te chamar"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
                     name="email"
                     render={({ field }) => (
                       <FormItem>
@@ -129,7 +139,7 @@ function Entrar() {
                           />
                         </FormControl>
                         <FormDescription>
-                          Você recebe um link e entra com um clique.
+                          Enviamos um link para confirmar que é você.
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -144,15 +154,15 @@ function Entrar() {
                   >
                     {form.formState.isSubmitting
                       ? 'Enviando...'
-                      : 'Enviar link de acesso'}
+                      : 'Criar conta'}
                   </Button>
                 </form>
               </Form>
 
               <p className="mt-6 text-center text-sm text-muted-foreground">
-                Ainda não tem conta?{' '}
-                <Link to="/cadastro" className="font-bold underline">
-                  Criar conta
+                Já tem conta?{' '}
+                <Link to="/signin" className="font-bold underline">
+                  Entrar
                 </Link>
               </p>
             </CardContent>

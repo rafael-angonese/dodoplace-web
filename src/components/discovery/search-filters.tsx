@@ -21,13 +21,13 @@ import type { City } from '@/lib/locations'
 import type { PriceType, ServiceMode } from '@/lib/services'
 
 export type SearchFiltersValue = {
-  cidadeId?: number
-  precoMin?: number
-  precoMax?: number
-  notaMin?: number
-  modo?: ServiceMode
-  tipoPreco?: PriceType
-  raioKm?: number
+  cityId?: number
+  minPriceCents?: number
+  maxPriceCents?: number
+  minRating?: number
+  mode?: ServiceMode
+  priceType?: PriceType
+  radiusKm?: number
 }
 
 const RATINGS = [
@@ -99,7 +99,7 @@ export function SearchFilters({
 
   function onCitySelect(next: City | null) {
     setDraftCity(next)
-    setDraft((current) => ({ ...current, cidadeId: next?.id }))
+    setDraft((current) => ({ ...current, cityId: next?.id }))
   }
 
   return (
@@ -146,11 +146,11 @@ export function SearchFilters({
                   id="filter-price-min"
                   inputMode="decimal"
                   placeholder="0"
-                  defaultValue={toReais(draft.precoMin)}
+                  defaultValue={toReais(draft.minPriceCents)}
                   onChange={(event) =>
                     setDraft((current) => ({
                       ...current,
-                      precoMin: toCents(event.target.value),
+                      minPriceCents: toCents(event.target.value),
                     }))
                   }
                 />
@@ -161,11 +161,11 @@ export function SearchFilters({
                   id="filter-price-max"
                   inputMode="decimal"
                   placeholder="Sem limite"
-                  defaultValue={toReais(draft.precoMax)}
+                  defaultValue={toReais(draft.maxPriceCents)}
                   onChange={(event) =>
                     setDraft((current) => ({
                       ...current,
-                      precoMax: toCents(event.target.value),
+                      maxPriceCents: toCents(event.target.value),
                     }))
                   }
                 />
@@ -178,11 +178,11 @@ export function SearchFilters({
           <fieldset className="grid gap-3">
             <legend className="mb-1 text-sm font-bold">Avaliação</legend>
             <RadioGroup
-              value={draft.notaMin ? String(draft.notaMin) : ''}
+              value={draft.minRating ? String(draft.minRating) : ''}
               onValueChange={(next) =>
                 setDraft((current) => ({
                   ...current,
-                  notaMin: next ? Number(next) : undefined,
+                  minRating: next ? Number(next) : undefined,
                 }))
               }
             >
@@ -205,11 +205,11 @@ export function SearchFilters({
           <fieldset className="grid gap-3">
             <legend className="mb-1 text-sm font-bold">Atendimento</legend>
             <RadioGroup
-              value={draft.modo ?? ''}
+              value={draft.mode ?? ''}
               onValueChange={(next) =>
                 setDraft((current) => ({
                   ...current,
-                  modo: next ? (next as ServiceMode) : undefined,
+                  mode: next ? (next as ServiceMode) : undefined,
                 }))
               }
             >
@@ -235,11 +235,11 @@ export function SearchFilters({
           <fieldset className="grid gap-3">
             <legend className="mb-1 text-sm font-bold">Tipo de cobrança</legend>
             <RadioGroup
-              value={draft.tipoPreco ?? ''}
+              value={draft.priceType ?? ''}
               onValueChange={(next) =>
                 setDraft((current) => ({
                   ...current,
-                  tipoPreco: next ? (next as PriceType) : undefined,
+                  priceType: next ? (next as PriceType) : undefined,
                 }))
               }
             >
@@ -264,11 +264,11 @@ export function SearchFilters({
               <fieldset className="grid gap-3">
                 <legend className="mb-1 text-sm font-bold">Distância</legend>
                 <RadioGroup
-                  value={draft.raioKm ? String(draft.raioKm) : ''}
+                  value={draft.radiusKm ? String(draft.radiusKm) : ''}
                   onValueChange={(next) =>
                     setDraft((current) => ({
                       ...current,
-                      raioKm: next ? Number(next) : undefined,
+                      radiusKm: next ? Number(next) : undefined,
                     }))
                   }
                 >

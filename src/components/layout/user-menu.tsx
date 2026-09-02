@@ -24,7 +24,7 @@ export function UserMenu() {
   if (status === 'unauthenticated' || !user) {
     return (
       <Button asChild variant="outline" size="sm" className="h-10">
-        <Link to="/entrar">Entrar</Link>
+        <Link to="/signin">Entrar</Link>
       </Button>
     )
   }
@@ -66,19 +66,19 @@ export function UserMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link to="/conta">Meu perfil</Link>
+          <Link to="/account">Meu perfil</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link to="/conta/servicos">Meus serviços</Link>
+          <Link to="/account/services">Meus serviços</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link to="/conversas">Conversas</Link>
+          <Link to="/chats">Conversas</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link to="/favoritos">Favoritos</Link>
+          <Link to="/favorites">Favoritos</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link to="/publicar">Publicar serviço</Link>
+          <Link to="/publish">Publicar serviço</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={onSignOut}>Sair da conta</DropdownMenuItem>

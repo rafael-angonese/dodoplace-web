@@ -10,7 +10,7 @@ import { useAuth } from '@/providers/auth-context'
 
 type VerifySearch = { token?: string }
 
-export const Route = createFileRoute('/entrar_/verificar')({
+export const Route = createFileRoute('/signin_/verify')({
   component: Verificar,
   head: () => ({ meta: [{ title: 'Confirmando acesso | FazPerto' }] }),
   validateSearch: (search: Record<string, unknown>): VerifySearch => {
@@ -44,7 +44,7 @@ function Verificar() {
     }
 
     verifyMagicLink(token)
-      .then(() => navigate({ to: '/conta', replace: true }))
+      .then(() => navigate({ to: '/account', replace: true }))
       .catch((error: unknown) => {
         setState('error')
         setMessage(apiErrorMessage(error))
@@ -76,7 +76,7 @@ function Verificar() {
               <p className="text-sm text-muted-foreground">{message}</p>
               <div className="mt-2 flex flex-wrap justify-center gap-3">
                 <Button asChild>
-                  <Link to="/entrar">Pedir novo link</Link>
+                  <Link to="/signin">Pedir novo link</Link>
                 </Button>
                 <Button asChild variant="outline">
                   <Link to="/">Ir para o início</Link>

@@ -17,18 +17,18 @@ const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
 export type ServiceSearch = {
   q?: string
-  categoria?: string
-  cidadeId?: number
-  uf?: string
+  category?: string
+  cityId?: number
+  state?: string
   latitude?: number
   longitude?: number
-  raioKm?: number
-  precoMin?: number
-  precoMax?: number
-  notaMin?: number
-  modo?: ServiceMode
-  tipoPreco?: PriceType
-  ordenar?: ServiceSort
+  radiusKm?: number
+  minPriceCents?: number
+  maxPriceCents?: number
+  minRating?: number
+  mode?: ServiceMode
+  priceType?: PriceType
+  sort?: ServiceSort
 }
 
 function text(value: unknown) {
@@ -64,24 +64,24 @@ function oneOf<T extends string>(value: unknown, options: T[]) {
 export function validateServiceSearch(
   search: Record<string, unknown>,
 ): ServiceSearch {
-  const categoria = text(search.categoria)
-  const uf = text(search.uf)?.toUpperCase()
-  const notaMin = positive(search.notaMin)
+  const category = text(search.category)
+  const state = text(search.state)?.toUpperCase()
+  const minRating = positive(search.minRating)
 
   return {
     q: text(search.q),
-    categoria: categoria && SLUG_PATTERN.test(categoria) ? categoria : undefined,
-    cidadeId: positive(search.cidadeId),
-    uf: uf && /^[A-Z]{2}$/.test(uf) ? uf : undefined,
+    category: category && SLUG_PATTERN.test(category) ? category : undefined,
+    cityId: positive(search.cityId),
+    state: state && /^[A-Z]{2}$/.test(state) ? state : undefined,
     latitude: coordinate(search.latitude, 90),
     longitude: coordinate(search.longitude, 180),
-    raioKm: positive(search.raioKm),
-    precoMin: positive(search.precoMin),
-    precoMax: positive(search.precoMax),
-    notaMin: notaMin && notaMin <= 5 ? notaMin : undefined,
-    modo: oneOf(search.modo, MODES),
-    tipoPreco: oneOf(search.tipoPreco, PRICE_TYPES),
-    ordenar: oneOf(search.ordenar, SORTS),
+    radiusKm: positive(search.radiusKm),
+    minPriceCents: positive(search.minPriceCents),
+    maxPriceCents: positive(search.maxPriceCents),
+    minRating: minRating && minRating <= 5 ? minRating : undefined,
+    mode: oneOf(search.mode, MODES),
+    priceType: oneOf(search.priceType, PRICE_TYPES),
+    sort: oneOf(search.sort, SORTS),
   }
 }
 

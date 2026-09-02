@@ -43,7 +43,7 @@ export function MobileNav() {
         </Link>
 
         <Link
-          to="/servicos"
+          to="/services"
           className={ITEM_CLASS}
           activeProps={{ className: 'text-foreground' }}
         >
@@ -52,7 +52,7 @@ export function MobileNav() {
         </Link>
 
         <Link
-          to="/publicar"
+          to="/publish"
           className={ITEM_CLASS}
           activeProps={{ className: 'text-foreground' }}
         >
@@ -61,7 +61,7 @@ export function MobileNav() {
         </Link>
 
         <Link
-          to="/favoritos"
+          to="/favorites"
           className={ITEM_CLASS}
           activeProps={{ className: 'text-foreground' }}
         >
@@ -70,7 +70,7 @@ export function MobileNav() {
         </Link>
 
         <Link
-          to="/conta"
+          to="/account"
           className={ITEM_CLASS}
           activeProps={{ className: 'text-foreground' }}
         >

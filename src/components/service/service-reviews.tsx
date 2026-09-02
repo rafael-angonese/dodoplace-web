@@ -80,7 +80,7 @@ export function ServiceReviews({
     setIsLoading(true)
 
     servicesApi
-      .reviews(serviceId, { pagina: page, porPagina: PAGE_SIZE }, controller.signal)
+      .reviews(serviceId, { page, perPage: PAGE_SIZE }, controller.signal)
       .then((result) => {
         setReviews((current) =>
           page === 1 ? result.data : [...current, ...result.data],
@@ -170,7 +170,7 @@ export function ServiceReviews({
       ) : (
         <div className="rounded-2xl border border-dashed border-border p-5">
           <p className="text-muted-foreground">
-            <Link to="/entrar" className="font-semibold underline">
+            <Link to="/signin" className="font-semibold underline">
               Entre na sua conta
             </Link>{' '}
             para avaliar este serviço.

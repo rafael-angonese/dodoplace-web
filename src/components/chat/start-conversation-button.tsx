@@ -31,7 +31,7 @@ export function StartConversationButton({
 
   async function start() {
     if (!token) {
-      await navigate({ to: '/entrar', search: { redirect: '/conversas' } })
+      await navigate({ to: '/signin', search: { redirect: '/chats' } })
       return
     }
 
@@ -45,7 +45,7 @@ export function StartConversationButton({
 
       await queryClient.invalidateQueries({ queryKey: chatKeys.conversationsRoot })
       await navigate({
-        to: '/conversas/$conversationId',
+        to: '/chats/$conversationId',
         params: { conversationId: String(conversation.id) },
       })
     } catch (error) {

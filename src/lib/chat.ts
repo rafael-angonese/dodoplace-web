@@ -132,7 +132,7 @@ export function participantOf(
 export const chatApi = {
   conversations(
     token: string,
-    params: { q?: string; pagina?: number; porPagina?: number } = {},
+    params: { q?: string; page?: number; perPage?: number } = {},
     signal?: AbortSignal,
   ): Promise<Paginated<Conversation>> {
     return apiPaginated<Conversation>(
@@ -159,7 +159,7 @@ export const chatApi = {
   messages(
     token: string,
     conversationId: number,
-    params: { antesDe?: number; porPagina?: number } = {},
+    params: { before?: number; perPage?: number } = {},
     signal?: AbortSignal,
   ): Promise<CursorPage<ChatMessage>> {
     return apiCursorPage<ChatMessage>(

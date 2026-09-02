@@ -4,9 +4,9 @@ import { Logo } from '@/components/brand/logo'
 
 const FOOTER_LINKS = [
   { to: '/', label: 'Buscar serviços' },
-  { to: '/servicos', label: 'Categorias' },
-  { to: '/publicar', label: 'Publicar serviço' },
-  { to: '/favoritos', label: 'Favoritos' },
+  { to: '/services', label: 'Categorias' },
+  { to: '/publish', label: 'Publicar serviço' },
+  { to: '/favorites', label: 'Favoritos' },
 ] as const
 
 export function AppFooter() {

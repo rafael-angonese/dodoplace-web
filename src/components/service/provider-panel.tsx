@@ -102,7 +102,7 @@ export function ProviderPanel({
 
         {showProfileLink ? (
           <Button asChild variant="ghost">
-            <Link to="/perfil/$userId" params={{ userId: String(provider.id) }}>
+            <Link to="/profile/$userId" params={{ userId: String(provider.id) }}>
               Ver perfil completo
             </Link>
           </Button>

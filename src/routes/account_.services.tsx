@@ -27,7 +27,7 @@ import { apiErrorMessage } from '@/lib/form-errors'
 import { type Service, type ServiceStatus, servicesApi } from '@/lib/services'
 import { useAuth } from '@/providers/auth-context'
 
-export const Route = createFileRoute('/conta_/servicos')({
+export const Route = createFileRoute('/account_/services')({
   component: MeusServicos,
   head: () => ({ meta: [{ title: 'Meus serviços | FazPerto' }] }),
 })
@@ -51,8 +51,8 @@ function MeusServicos() {
   useEffect(() => {
     if (status === 'unauthenticated') {
       navigate({
-        to: '/entrar',
-        search: { redirect: '/conta/servicos' },
+        to: '/signin',
+        search: { redirect: '/account/services' },
         replace: true,
       })
     }
@@ -67,7 +67,7 @@ function MeusServicos() {
     setIsLoading(true)
 
     servicesApi
-      .mine(token, { porPagina: 60 }, controller.signal)
+      .mine(token, { perPage: 60 }, controller.signal)
       .then((result) => setServices(result.data))
       .catch(() => undefined)
       .finally(() => setIsLoading(false))
@@ -134,7 +134,7 @@ function MeusServicos() {
         </div>
 
         <Button asChild>
-          <Link to="/publicar">
+          <Link to="/publish">
             <Plus aria-hidden="true" />
             Novo serviço
           </Link>
@@ -154,7 +154,7 @@ function MeusServicos() {
             Publique o primeiro e comece a receber contatos na sua região.
           </p>
           <Button asChild className="mt-5">
-            <Link to="/publicar">Publicar serviço</Link>
+            <Link to="/publish">Publicar serviço</Link>
           </Button>
         </div>
       ) : (
@@ -216,7 +216,7 @@ function MeusServicos() {
                   <div className="mt-3 flex flex-wrap gap-2">
                     <Button asChild variant="outline" size="sm">
                       <Link
-                        to="/conta/servicos/$serviceId"
+                        to="/account/services/$serviceId"
                         params={{ serviceId: String(service.id) }}
                       >
                         <Pencil aria-hidden="true" />
@@ -226,7 +226,7 @@ function MeusServicos() {
 
                     <Button asChild variant="ghost" size="sm">
                       <Link
-                        to="/servicos/$serviceId"
+                        to="/services/$serviceId"
                         params={{ serviceId: String(service.id) }}
                       >
                         <Eye aria-hidden="true" />

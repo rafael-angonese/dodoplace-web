@@ -93,20 +93,20 @@ export type PublicProfile = {
 
 export type SearchServicesParams = {
   q?: string
-  categoria?: string
-  cidadeId?: number
-  uf?: string
+  category?: string
+  cityId?: number
+  state?: string
   latitude?: number
   longitude?: number
-  raioKm?: number
-  precoMin?: number
-  precoMax?: number
-  notaMin?: number
-  modo?: ServiceMode
-  tipoPreco?: PriceType
-  ordenar?: ServiceSort
+  radiusKm?: number
+  minPriceCents?: number
+  maxPriceCents?: number
+  minRating?: number
+  mode?: ServiceMode
+  priceType?: PriceType
+  sort?: ServiceSort
   cursor?: string
-  porPagina?: number
+  perPage?: number
 }
 
 export type ServiceInput = {
@@ -142,7 +142,7 @@ export const servicesApi = {
 
   reviews(
     id: number,
-    params: { pagina?: number; porPagina?: number } = {},
+    params: { page?: number; perPage?: number } = {},
     signal?: AbortSignal,
   ): Promise<Paginated<ServiceReview>> {
     return apiPaginated<ServiceReview>(
@@ -232,7 +232,7 @@ export const servicesApi = {
 
   mine(
     token: string,
-    params: { status?: ServiceStatus; pagina?: number; porPagina?: number } = {},
+    params: { status?: ServiceStatus; page?: number; perPage?: number } = {},
     signal?: AbortSignal,
   ): Promise<Paginated<Service>> {
     return apiPaginated<Service>(`/account/services${toQueryString(params)}`, {
@@ -243,7 +243,7 @@ export const servicesApi = {
 
   favorites(
     token: string,
-    params: { pagina?: number; porPagina?: number } = {},
+    params: { page?: number; perPage?: number } = {},
     signal?: AbortSignal,
   ): Promise<Paginated<Service>> {
     return apiPaginated<Service>(`/account/favorites${toQueryString(params)}`, {

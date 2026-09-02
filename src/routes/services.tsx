@@ -6,7 +6,7 @@ import { Card } from '@/components/ui/card'
 import { Heading } from '@/components/ui/heading'
 import { categoriesApi } from '@/lib/categories'
 
-export const Route = createFileRoute('/servicos')({
+export const Route = createFileRoute('/services')({
   component: Servicos,
   head: () => ({ meta: [{ title: 'Categorias de serviços | FazPerto' }] }),
   loader: async () => ({ categories: await categoriesApi.list() }),
@@ -21,7 +21,7 @@ function Servicos() {
         O que você precisa resolver?
       </Heading>
       <p className="mt-2 text-muted-foreground">
-        Escolha uma categoria e veja quem atende na sua região.
+        Escolha uma category e veja quem atende na sua região.
       </p>
 
       <div className="mt-6 max-w-3xl">
@@ -33,7 +33,7 @@ function Servicos() {
           <Link
             key={category.id}
             to="/"
-            search={{ categoria: category.slug }}
+            search={{ category: category.slug }}
             className="rounded-2xl"
           >
             <Card className="h-full rounded-2xl p-5 transition hover:-translate-y-0.5 hover:shadow-md">

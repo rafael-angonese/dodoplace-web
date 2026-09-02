@@ -38,7 +38,7 @@ import type { City } from '@/lib/locations'
 import { type ProfileValues, profileSchema } from '@/lib/validation'
 import { useAuth } from '@/providers/auth-context'
 
-export const Route = createFileRoute('/conta')({
+export const Route = createFileRoute('/account')({
   component: Conta,
   head: () => ({ meta: [{ title: 'Meu perfil | FazPerto' }] }),
 })
@@ -82,7 +82,7 @@ function Conta() {
 
   useEffect(() => {
     if (status === 'unauthenticated') {
-      navigate({ to: '/entrar', search: { redirect: '/conta' }, replace: true })
+      navigate({ to: '/signin', search: { redirect: '/account' }, replace: true })
     }
   }, [status, navigate])
 
@@ -143,13 +143,13 @@ function Conta() {
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
         <Button asChild variant="outline" className="justify-start">
-          <Link to="/conta/servicos">
+          <Link to="/account/services">
             <Briefcase aria-hidden="true" />
             Meus serviços
           </Link>
         </Button>
         <Button asChild variant="outline" className="justify-start">
-          <Link to="/favoritos">
+          <Link to="/favorites">
             <Heart aria-hidden="true" />
             Favoritos
           </Link>
@@ -172,7 +172,7 @@ function Conta() {
           <p className="text-sm text-muted-foreground">
             Membro desde {formatDate(user.createdAt)} ·{' '}
             <Link
-              to="/perfil/$userId"
+              to="/profile/$userId"
               params={{ userId: String(user.id) }}
               className="font-semibold underline"
             >

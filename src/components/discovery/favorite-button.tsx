@@ -28,7 +28,7 @@ export function FavoriteButton({
     event.stopPropagation()
 
     if (status !== 'authenticated') {
-      navigate({ to: '/entrar', search: { redirect: '/favoritos' } })
+      navigate({ to: '/signin', search: { redirect: '/favorites' } })
       return
     }
 

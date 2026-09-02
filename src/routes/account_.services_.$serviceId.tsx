@@ -14,7 +14,7 @@ import { apiErrorMessage, isAbortError } from '@/lib/form-errors'
 import { type Service, servicesApi } from '@/lib/services'
 import { useAuth } from '@/providers/auth-context'
 
-export const Route = createFileRoute('/conta_/servicos_/$serviceId')({
+export const Route = createFileRoute('/account_/services_/$serviceId')({
   component: EditarServico,
   head: () => ({ meta: [{ title: 'Editar serviço | FazPerto' }] }),
   loader: async () => ({ categories: await categoriesApi.list() }),
@@ -33,8 +33,8 @@ function EditarServico() {
   useEffect(() => {
     if (status === 'unauthenticated') {
       navigate({
-        to: '/entrar',
-        search: { redirect: `/conta/servicos/${serviceId}` },
+        to: '/signin',
+        search: { redirect: `/account/services/${serviceId}` },
         replace: true,
       })
     }
@@ -72,7 +72,7 @@ function EditarServico() {
         </Heading>
         <p className="mt-2 text-muted-foreground">{error}</p>
         <Button asChild variant="outline" className="mt-6">
-          <Link to="/conta/servicos">Voltar para meus serviços</Link>
+          <Link to="/account/services">Voltar para meus serviços</Link>
         </Button>
       </section>
     )
@@ -97,7 +97,7 @@ function EditarServico() {
           Você só pode editar serviços que publicou.
         </p>
         <Button asChild variant="outline" className="mt-6">
-          <Link to="/conta/servicos">Voltar para meus serviços</Link>
+          <Link to="/account/services">Voltar para meus serviços</Link>
         </Button>
       </section>
     )
@@ -106,7 +106,7 @@ function EditarServico() {
   return (
     <section className="mx-auto w-full max-w-3xl px-4 py-10 md:px-6">
       <Button asChild variant="ghost" size="sm" className="-ml-2">
-        <Link to="/conta/servicos">
+        <Link to="/account/services">
           <ArrowLeft aria-hidden="true" />
           Meus serviços
         </Link>

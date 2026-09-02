@@ -13,7 +13,7 @@ import { useFavorites } from '@/providers/favorites-context'
 
 const SKELETON_KEYS = ['s1', 's2', 's3', 's4', 's5']
 
-export const Route = createFileRoute('/favoritos')({
+export const Route = createFileRoute('/favorites')({
   component: Favoritos,
   head: () => ({ meta: [{ title: 'Favoritos | FazPerto' }] }),
 })
@@ -28,8 +28,8 @@ function Favoritos() {
   useEffect(() => {
     if (status === 'unauthenticated') {
       navigate({
-        to: '/entrar',
-        search: { redirect: '/favoritos' },
+        to: '/signin',
+        search: { redirect: '/favorites' },
         replace: true,
       })
     }
@@ -44,7 +44,7 @@ function Favoritos() {
     setIsLoading(true)
 
     servicesApi
-      .favorites(token, { porPagina: 60 }, controller.signal)
+      .favorites(token, { perPage: 60 }, controller.signal)
       .then((result) => setServices(result.data))
       .catch(() => undefined)
       .finally(() => setIsLoading(false))

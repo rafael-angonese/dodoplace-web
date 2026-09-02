@@ -200,7 +200,7 @@ export function MessageThread({ conversationId }: { conversationId: number }) {
           size="icon"
           className="rounded-full md:hidden"
         >
-          <Link to="/conversas" aria-label="Voltar para conversas">
+          <Link to="/chats" aria-label="Voltar para conversas">
             <ArrowLeft aria-hidden="true" />
           </Link>
         </Button>
@@ -213,7 +213,7 @@ export function MessageThread({ conversationId }: { conversationId: number }) {
 
         <div className="min-w-0 flex-1">
           <Link
-            to="/perfil/$userId"
+            to="/profile/$userId"
             params={{ userId: String(partner?.userId ?? 0) }}
             className="block truncate font-semibold hover:underline"
           >
@@ -230,7 +230,7 @@ export function MessageThread({ conversationId }: { conversationId: number }) {
 
         {conversation.service ? (
           <Link
-            to="/servicos/$serviceId"
+            to="/services/$serviceId"
             params={{ serviceId: String(conversation.service.id) }}
             className="hidden max-w-56 truncate rounded-full border border-border px-3 py-1 text-xs text-muted-foreground hover:bg-accent sm:block"
           >

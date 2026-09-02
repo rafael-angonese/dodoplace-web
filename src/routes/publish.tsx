@@ -11,7 +11,7 @@ import { categoriesApi } from '@/lib/categories'
 import { servicesApi } from '@/lib/services'
 import { useAuth } from '@/providers/auth-context'
 
-export const Route = createFileRoute('/publicar')({
+export const Route = createFileRoute('/publish')({
   component: Publicar,
   head: () => ({ meta: [{ title: 'Publicar serviço | FazPerto' }] }),
   loader: async () => ({ categories: await categoriesApi.list() }),
@@ -26,8 +26,8 @@ function Publicar() {
   useEffect(() => {
     if (status === 'unauthenticated') {
       navigate({
-        to: '/entrar',
-        search: { redirect: '/publicar' },
+        to: '/signin',
+        search: { redirect: '/publish' },
         replace: true,
       })
     }
@@ -57,7 +57,7 @@ function Publicar() {
         <Alert className="mt-6">
           <AlertDescription>
             Adicione seu WhatsApp em{' '}
-            <Link to="/conta" className="font-semibold underline">
+            <Link to="/account" className="font-semibold underline">
               Meu perfil
             </Link>{' '}
             para que os clientes consigam falar com você.
@@ -80,7 +80,7 @@ function Publicar() {
             )
 
             navigate({
-              to: '/conta/servicos/$serviceId',
+              to: '/account/services/$serviceId',
               params: { serviceId: String(service.id) },
             })
           }}

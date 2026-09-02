@@ -26,16 +26,25 @@ import { Heading } from '@/components/ui/heading'
 import { Input } from '@/components/ui/input'
 import type { MagicLinkResult } from '@/lib/auth'
 import { applyApiErrors } from '@/lib/form-errors'
-import { type SignUpValues, signUpSchema } from '@/lib/validation'
+import { type SignInValues, signInSchema } from '@/lib/validation'
 import { useAuth } from '@/providers/auth-context'
 
-export const Route = createFileRoute('/cadastro')({
-  component: Cadastro,
-  head: () => ({ meta: [{ title: 'Criar conta | FazPerto' }] }),
+type LoginSearch = { redirect?: string }
+
+export const Route = createFileRoute('/signin')({
+  component: Entrar,
+  head: () => ({ meta: [{ title: 'Entrar | FazPerto' }] }),
+  validateSearch: (search: Record<string, unknown>): LoginSearch => {
+    const redirect = search.redirect
+    return typeof redirect === 'string' && redirect.startsWith('/')
+      ? { redirect }
+      : {}
+  },
 })
 
-function Cadastro() {
+function Entrar() {
   const navigate = useNavigate()
+  const { redirect } = Route.useSearch()
   const { requestMagicLink, status } = useAuth()
   const [formError, setFormError] = useState<string | null>(null)
   const [sent, setSent] = useState<{
@@ -43,36 +52,35 @@ function Cadastro() {
     result: MagicLinkResult
   } | null>(null)
 
-  const form = useForm<SignUpValues>({
-    resolver: zodResolver(signUpSchema),
-    defaultValues: { name: '', email: '' },
+  const form = useForm<SignInValues>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: { email: '' },
   })
 
   useEffect(() => {
     if (status === 'authenticated') {
-      navigate({ to: '/conta', replace: true })
+      navigate({ to: redirect ?? '/account', replace: true })
     }
-  }, [status, navigate])
+  }, [status, redirect, navigate])
 
-  async function onSubmit(values: SignUpValues) {
+  async function onSubmit(values: SignInValues) {
     setFormError(null)
 
     try {
-      const result = await requestMagicLink(values)
+      const result = await requestMagicLink({ email: values.email })
       setSent({ email: values.email, result })
     } catch (error) {
-      setFormError(applyApiErrors(error, form.setError, ['name', 'email']))
+      setFormError(applyApiErrors(error, form.setError, ['email']))
     }
   }
 
   return (
     <section className="mx-auto w-full max-w-md px-4 py-12 md:px-6 md:py-16">
       <Heading variant="h1" className="text-3xl font-extrabold">
-        Criar conta
+        Entrar
       </Heading>
       <p className="mt-2 text-muted-foreground">
-        Sem senha para criar nem para lembrar: confirmamos seu e-mail por um
-        link.
+        Sem senha: enviamos um link de acesso para o seu e-mail.
       </p>
 
       <Card className="mt-6">
@@ -87,9 +95,9 @@ function Cadastro() {
         ) : (
           <>
             <CardHeader>
-              <CardTitle className="text-xl">Seus dados</CardTitle>
+              <CardTitle className="text-xl">Bem-vindo de volta</CardTitle>
               <CardDescription>
-                Sua conta é criada quando você abre o link.
+                Informe o e-mail da sua conta.
               </CardDescription>
             </CardHeader>
 
@@ -108,24 +116,6 @@ function Cadastro() {
 
                   <FormField
                     control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel required>Nome</FormLabel>
-                        <FormControl>
-                          <Input
-                            autoComplete="name"
-                            placeholder="Como devemos te chamar"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
                     name="email"
                     render={({ field }) => (
                       <FormItem>
@@ -139,7 +129,7 @@ function Cadastro() {
                           />
                         </FormControl>
                         <FormDescription>
-                          Enviamos um link para confirmar que é você.
+                          Você recebe um link e entra com um clique.
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -154,15 +144,15 @@ function Cadastro() {
                   >
                     {form.formState.isSubmitting
                       ? 'Enviando...'
-                      : 'Criar conta'}
+                      : 'Enviar link de acesso'}
                   </Button>
                 </form>
               </Form>
 
               <p className="mt-6 text-center text-sm text-muted-foreground">
-                Já tem conta?{' '}
-                <Link to="/entrar" className="font-bold underline">
-                  Entrar
+                Ainda não tem conta?{' '}
+                <Link to="/signup" className="font-bold underline">
+                  Criar conta
                 </Link>
               </p>
             </CardContent>

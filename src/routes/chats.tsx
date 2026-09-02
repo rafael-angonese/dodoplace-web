@@ -13,7 +13,7 @@ import { useAuth } from '@/providers/auth-context'
 import { useChat } from '@/providers/chat-context'
 import { cn } from '@/utils/cn'
 
-export const Route = createFileRoute('/conversas')({
+export const Route = createFileRoute('/chats')({
   component: Conversas,
   head: () => ({ meta: [{ title: 'Conversas | FazPerto' }] }),
 })
@@ -30,8 +30,8 @@ function Conversas() {
   useEffect(() => {
     if (status === 'unauthenticated') {
       navigate({
-        to: '/entrar',
-        search: { redirect: '/conversas' },
+        to: '/signin',
+        search: { redirect: '/chats' },
         replace: true,
       })
     }

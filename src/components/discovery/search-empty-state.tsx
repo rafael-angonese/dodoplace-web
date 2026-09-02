@@ -17,7 +17,7 @@ export function SearchEmptyState({ city }: { city?: string | null }) {
           <Link to="/">Alterar busca</Link>
         </Button>
         <Button asChild>
-          <a href="/publicar">Publicar serviço</a>
+          <a href="/publish">Publicar serviço</a>
         </Button>
       </div>
     </div>

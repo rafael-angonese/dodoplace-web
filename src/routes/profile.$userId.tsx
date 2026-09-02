@@ -8,7 +8,7 @@ import { Heading } from '@/components/ui/heading'
 import { ApiError } from '@/lib/api'
 import { servicesApi } from '@/lib/services'
 
-export const Route = createFileRoute('/perfil/$userId')({
+export const Route = createFileRoute('/profile/$userId')({
   component: Perfil,
   loader: async ({ params }) => {
     const id = Number(params.userId)

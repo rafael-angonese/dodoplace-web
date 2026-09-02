@@ -31,7 +31,7 @@ export function SearchBar({
         search: (current) => ({
           ...current,
           q: next || undefined,
-          categoria: categorySlug,
+          category: categorySlug,
         }),
         replace: pathname === '/',
       })

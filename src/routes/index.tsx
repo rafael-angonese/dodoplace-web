@@ -76,9 +76,9 @@ export const Route = createFileRoute('/')({
     await Promise.all([
       context.queryClient.ensureQueryData(categoriesQueryOptions),
       context.queryClient.ensureInfiniteQueryData(serviceListQueryOptions(deps)),
-      deps.cidadeId
+      deps.cityId
         ? context.queryClient
-            .ensureQueryData(cityQueryOptions(deps.cidadeId))
+            .ensureQueryData(cityQueryOptions(deps.cityId))
             .catch(() => null)
         : null,
     ])
@@ -121,8 +121,8 @@ function Home() {
 
   const { data: categories = [] } = useQuery(categoriesQueryOptions)
   const { data: city } = useQuery({
-    ...cityQueryOptions(search.cidadeId ?? 0),
-    enabled: search.cidadeId !== undefined,
+    ...cityQueryOptions(search.cityId ?? 0),
+    enabled: search.cityId !== undefined,
   })
 
   const {
@@ -136,7 +136,7 @@ function Home() {
   } = useInfiniteServices(search)
 
   const services = data?.pages.flatMap((page) => page.data) ?? []
-  const category = categories.find((entry) => entry.slug === search.categoria)
+  const category = categories.find((entry) => entry.slug === search.category)
   const cityLabel = city?.label ?? null
   const hasCoordinates =
     search.latitude !== undefined && search.longitude !== undefined
@@ -154,13 +154,13 @@ function Home() {
 
   function onApplyFilters(filters: SearchFiltersValue) {
     update({
-      cidadeId: filters.cidadeId,
-      precoMin: filters.precoMin,
-      precoMax: filters.precoMax,
-      notaMin: filters.notaMin,
-      modo: filters.modo,
-      tipoPreco: filters.tipoPreco,
-      raioKm: filters.raioKm,
+      cityId: filters.cityId,
+      minPriceCents: filters.minPriceCents,
+      maxPriceCents: filters.maxPriceCents,
+      minRating: filters.minRating,
+      mode: filters.mode,
+      priceType: filters.priceType,
+      radiusKm: filters.radiusKm,
     })
   }
 
@@ -184,7 +184,7 @@ function Home() {
         <div className="mt-8 max-w-3xl">
           <SearchBar
             defaultQuery={search.q ?? ''}
-            categorySlug={search.categoria}
+            categorySlug={search.category}
           />
         </div>
       </section>
@@ -192,7 +192,7 @@ function Home() {
       <section className="mx-auto max-w-7xl border-b border-border px-4 md:px-6">
         <CategoryCarousel
           categories={categories}
-          activeSlug={search.categoria}
+          activeSlug={search.category}
         />
       </section>
 
@@ -215,22 +215,22 @@ function Home() {
             <SearchFilters
               city={city ?? null}
               value={{
-                cidadeId: search.cidadeId,
-                precoMin: search.precoMin,
-                precoMax: search.precoMax,
-                notaMin: search.notaMin,
-                modo: search.modo,
-                tipoPreco: search.tipoPreco,
-                raioKm: search.raioKm,
+                cityId: search.cityId,
+                minPriceCents: search.minPriceCents,
+                maxPriceCents: search.maxPriceCents,
+                minRating: search.minRating,
+                mode: search.mode,
+                priceType: search.priceType,
+                radiusKm: search.radiusKm,
               }}
               onApply={onApplyFilters}
               hasCoordinates={hasCoordinates}
             />
             <SortSelect
               value={
-                search.ordenar ?? (hasCoordinates ? 'distance' : 'relevance')
+                search.sort ?? (hasCoordinates ? 'distance' : 'relevance')
               }
-              onChange={(ordenar) => update({ ordenar })}
+              onChange={(sort) => update({ sort })}
             />
           </div>
         </div>
@@ -245,7 +245,7 @@ function Home() {
             {category ? (
               <Link
                 to="/"
-                search={(current) => ({ ...current, categoria: undefined })}
+                search={(current) => ({ ...current, category: undefined })}
               >
                 <Badge variant="secondary">{category.name} ✕</Badge>
               </Link>
@@ -253,7 +253,7 @@ function Home() {
             {cityLabel ? (
               <Link
                 to="/"
-                search={(current) => ({ ...current, cidadeId: undefined })}
+                search={(current) => ({ ...current, cityId: undefined })}
               >
                 <Badge variant="secondary">
                   <MapPin aria-hidden="true" className="mr-1 size-3" />
@@ -283,7 +283,7 @@ function Home() {
                   Seja o primeiro a anunciar na sua cidade.
                 </p>
                 <Button asChild className="mt-5">
-                  <Link to="/publicar">Publicar meu serviço</Link>
+                  <Link to="/publish">Publicar meu serviço</Link>
                 </Button>
               </Card>
             )}
@@ -348,11 +348,11 @@ function Home() {
                 Precisa de um serviço?
               </Heading>
               <p className="mt-2 text-muted-foreground">
-                Pesquise por categoria e cidade e fale direto com o profissional.
+                Pesquise por category e cidade e fale direto com o profissional.
               </p>
               <div className="mt-5 flex flex-wrap gap-3">
                 <Button asChild variant="ghost">
-                  <Link to="/servicos">Ver categorias</Link>
+                  <Link to="/services">Ver categorias</Link>
                 </Button>
               </div>
             </div>
@@ -369,7 +369,7 @@ function Home() {
                 contatos de clientes da sua região.
               </p>
               <Button asChild className="mt-5">
-                <Link to="/publicar">Publicar serviço</Link>
+                <Link to="/publish">Publicar serviço</Link>
               </Button>
             </div>
           </section>

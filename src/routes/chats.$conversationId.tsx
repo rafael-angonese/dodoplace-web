@@ -2,7 +2,7 @@ import { createFileRoute, notFound } from '@tanstack/react-router'
 
 import { MessageThread } from '@/components/chat/message-thread'
 
-export const Route = createFileRoute('/conversas/$conversationId')({
+export const Route = createFileRoute('/chats/$conversationId')({
   component: ConversationRoute,
   loader: ({ params }) => {
     const id = Number(params.conversationId)

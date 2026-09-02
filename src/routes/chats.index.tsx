@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { MessagesSquare } from 'lucide-react'
 
-export const Route = createFileRoute('/conversas/')({
+export const Route = createFileRoute('/chats/')({
   component: ConversasIndex,
 })
 

@@ -24,7 +24,7 @@ export const locationsApi = {
   },
 
   cities(
-    params: { q?: string; uf?: string; limit?: number },
+    params: { q?: string; state?: string; limit?: number },
     signal?: AbortSignal,
   ) {
     return apiRequest<City[]>(`/locations/cities${toQueryString(params)}`, {

@@ -23,7 +23,7 @@ import {
 import { servicesApi } from '@/lib/services'
 import { useAuth } from '@/providers/auth-context'
 
-export const Route = createFileRoute('/servicos_/$serviceId')({
+export const Route = createFileRoute('/services_/$serviceId')({
   component: ServiceDetail,
   loader: async ({ params }) => {
     const id = Number(params.serviceId)
@@ -86,7 +86,7 @@ function ServiceDetail() {
             <span aria-hidden="true">·</span>
             <Link
               to="/"
-              search={{ categoria: service.category.slug }}
+              search={{ category: service.category.slug }}
               className="hover:underline"
             >
               {service.category.name}
@@ -98,7 +98,7 @@ function ServiceDetail() {
             <span aria-hidden="true">·</span>
             <Link
               to="/"
-              search={{ cidadeId: service.city.id }}
+              search={{ cityId: service.city.id }}
               className="hover:underline"
             >
               {service.city.label}
@@ -170,7 +170,7 @@ function ServiceDetail() {
               {isOwner ? (
                 <Button asChild variant="outline" size="sm">
                   <Link
-                    to="/conta/servicos/$serviceId"
+                    to="/account/services/$serviceId"
                     params={{ serviceId: String(service.id) }}
                   >
                     <Pencil aria-hidden="true" />
@@ -293,7 +293,7 @@ function ProviderContact({
   if (!link) {
     return (
       <Button asChild fullWidth variant="outline">
-        <Link to="/perfil/$userId" params={{ userId: String(provider.id) }}>
+        <Link to="/profile/$userId" params={{ userId: String(provider.id) }}>
           Ver contatos do profissional
         </Link>
       </Button>

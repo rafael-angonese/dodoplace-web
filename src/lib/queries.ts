@@ -28,7 +28,7 @@ export function conversationsQueryOptions(token: string, search?: string) {
     queryFn: ({ signal }) =>
       chatApi.conversations(
         token,
-        { q: search || undefined, porPagina: CONVERSATIONS_PAGE_SIZE },
+        { q: search || undefined, perPage: CONVERSATIONS_PAGE_SIZE },
         signal,
       ),
     placeholderData: keepPreviousData,
@@ -51,7 +51,7 @@ export function messagesQueryOptions(token: string, conversationId: number) {
       chatApi.messages(
         token,
         conversationId,
-        { antesDe: pageParam ? Number(pageParam) : undefined },
+        { before: pageParam ? Number(pageParam) : undefined },
         signal,
       ),
     initialPageParam: null as string | null,
@@ -90,7 +90,7 @@ export function serviceListQueryOptions(params: SearchServicesParams) {
         {
           ...params,
           cursor: pageParam ?? undefined,
-          porPagina: SERVICES_PAGE_SIZE,
+          perPage: SERVICES_PAGE_SIZE,
         },
         { signal },
       ),
