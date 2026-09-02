@@ -1,6 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -43,6 +43,13 @@ export function UserMenu() {
           aria-label="Abrir menu da conta"
         >
           <Avatar className="size-8">
+            {user.avatarUrl ? (
+              <AvatarImage
+                src={user.avatarUrl}
+                alt={user.name ?? user.email}
+                className="object-cover"
+              />
+            ) : null}
             <AvatarFallback className="bg-brand-yellow text-xs font-extrabold text-[#202124]">
               {user.initials}
             </AvatarFallback>

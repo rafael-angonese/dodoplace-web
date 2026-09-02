@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
+import { AvatarUploader } from '@/components/account/avatar-uploader'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -100,21 +100,18 @@ function Conta() {
       </p>
 
       <Card className="mt-6">
-        <CardHeader className="flex-row items-center gap-4 space-y-0">
-          <Avatar className="size-14">
-            <AvatarFallback className="bg-brand-yellow text-lg font-extrabold text-[#202124]">
-              {user.initials}
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <CardTitle className="text-xl">
-              {user.name ?? 'Sem nome definido'}
-            </CardTitle>
-            <CardDescription>{user.email}</CardDescription>
-          </div>
+        <CardHeader>
+          <CardTitle className="text-xl">
+            {user.name ?? 'Sem nome definido'}
+          </CardTitle>
+          <CardDescription>{user.email}</CardDescription>
         </CardHeader>
 
         <CardContent className="flex flex-col gap-6">
+          <AvatarUploader user={user} />
+
+          <Separator />
+
           <div className="grid gap-4 sm:grid-cols-2">
             <InfoItem>
               <div>

@@ -59,13 +59,21 @@ export type ApiRequestOptions = {
   signal?: AbortSignal
 }
 
+function encodeBody(body: unknown) {
+  if (body === undefined) {
+    return undefined
+  }
+
+  return body instanceof FormData ? body : JSON.stringify(body)
+}
+
 export async function apiRequest<T>(
   path: string,
   { method = 'GET', body, token, signal }: ApiRequestOptions = {},
 ): Promise<T> {
   const headers: Record<string, string> = { Accept: 'application/json' }
 
-  if (body !== undefined) {
+  if (body !== undefined && !(body instanceof FormData)) {
     headers['Content-Type'] = 'application/json'
   }
 
@@ -80,7 +88,7 @@ export async function apiRequest<T>(
       method,
       headers,
       signal,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body: encodeBody(body),
     })
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') {

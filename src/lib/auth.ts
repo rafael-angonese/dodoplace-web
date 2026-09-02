@@ -4,6 +4,7 @@ export type User = {
   id: number
   name: string | null
   email: string
+  avatarUrl: string | null
   initials: string
   createdAt: string
   updatedAt: string | null
@@ -57,6 +58,24 @@ export const authApi = {
     return apiRequest<User>('/account/profile', {
       method: 'PUT',
       body: input,
+      token,
+    })
+  },
+
+  updateAvatar(token: string, file: File) {
+    const body = new FormData()
+    body.append('avatar', file)
+
+    return apiRequest<User>('/account/profile/avatar', {
+      method: 'POST',
+      body,
+      token,
+    })
+  },
+
+  removeAvatar(token: string) {
+    return apiRequest<User>('/account/profile/avatar', {
+      method: 'DELETE',
       token,
     })
   },

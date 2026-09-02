@@ -26,6 +26,8 @@ type AuthContextValue = {
   verifyMagicLink: (token: string) => Promise<User>
   signOut: () => Promise<void>
   updateProfile: (input: { name: string | null }) => Promise<User>
+  updateAvatar: (file: File) => Promise<User>
+  removeAvatar: () => Promise<User>
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
@@ -110,6 +112,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [token],
   )
 
+  const updateAvatar = useCallback(
+    async (file: File) => {
+      if (!token) {
+        throw new Error('updateAvatar requires an authenticated session')
+      }
+
+      const updated = await authApi.updateAvatar(token, file)
+      setUser(updated)
+      return updated
+    },
+    [token],
+  )
+
+  const removeAvatar = useCallback(async () => {
+    if (!token) {
+      throw new Error('removeAvatar requires an authenticated session')
+    }
+
+    const updated = await authApi.removeAvatar(token)
+    setUser(updated)
+    return updated
+  }, [token])
+
   const value = useMemo<AuthContextValue>(
     () => ({
       status,
@@ -119,6 +144,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       verifyMagicLink,
       signOut,
       updateProfile,
+      updateAvatar,
+      removeAvatar,
     }),
     [
       status,
@@ -128,6 +155,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       verifyMagicLink,
       signOut,
       updateProfile,
+      updateAvatar,
+      removeAvatar,
     ],
   )
 
