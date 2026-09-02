@@ -32,29 +32,48 @@ If you prefer not to use Tailwind CSS:
 
 ## Páginas
 
-O layout público foi portado do protótipo Next.js em `../FazPerto`, reconstruído
-sobre o kit de UI e o TanStack Router.
+O layout segue a estrutura do Airbnb: barra de busca em pílula (o quê + onde),
+carrossel de categorias com ícone, cartões quadrados com foto, coração de
+favorito, nota e preço, e uma página de detalhe em duas colunas com galeria,
+avaliações e cartão de contato fixo.
 
 | Rota | Arquivo | Conteúdo |
 | --- | --- | --- |
-| `/` | `src/routes/index.tsx` | Hero + busca, categorias, "como funciona", CTAs |
-| `/buscar` | `src/routes/buscar.tsx` | Busca com filtros (desabilitados) e estado vazio |
-| `/servicos` | `src/routes/servicos.tsx` | Grade de categorias |
-| `/profissionais` | `src/routes/profissionais.tsx` | Busca + estado vazio |
+| `/` | `src/routes/index.tsx` | Hero + busca, categorias, carrosséis por categoria, "como funciona", CTAs |
+| `/buscar` | `src/routes/buscar.tsx` | Resultados em grade, filtros, ordenação, paginação |
+| `/servicos` | `src/routes/servicos.tsx` | Grade com todas as categorias |
+| `/servicos/$serviceId` | `src/routes/servicos_.$serviceId.tsx` | Detalhe do serviço: galeria, descrição, profissional, avaliações |
+| `/perfil/$userId` | `src/routes/perfil.$userId.tsx` | Perfil público com contatos e todos os serviços da pessoa |
+| `/publicar` | `src/routes/publicar.tsx` | Formulário de criação de serviço |
+| `/favoritos` | `src/routes/favoritos.tsx` | Serviços salvos |
+| `/conta` | `src/routes/conta.tsx` | Perfil: nome, chamada, bio, cidade, WhatsApp, Instagram, site, avatar |
+| `/conta/servicos` | `src/routes/conta_.servicos.tsx` | Meus anúncios: publicar/despublicar, editar, excluir |
+| `/conta/servicos/$serviceId` | `src/routes/conta_.servicos_.$serviceId.tsx` | Edição do serviço + gerenciador de fotos |
 
 O chrome (`AppHeader`, `AppFooter`, `MobileNav`) vive em `src/components/layout/`
 e é montado no `__root.tsx`. As peças de descoberta estão em
-`src/components/discovery/` e o seletor de cidade em `src/components/location/`.
+`src/components/discovery/`, as do serviço em `src/components/service/` e o
+seletor de cidade em `src/components/location/`.
 
-**É layout apenas — sem integração.** Categorias (`categories.ts`) e cidades
-(`location-context.tsx`) são listas estáticas que espelham o seed do FazPerto;
-a geolocalização do navegador só exibe a mensagem de fallback. `/buscar` lê
-`q`, `categoria`, `cidade` e `uf` da URL via `validateSearch` e usa isso no `<h1>`,
-mas não consulta nada.
+### Localização e geolocalização
 
-Links para rotas ainda não implementadas (`/entrar`, `/publicar`, `/conta`,
-`/mensagens`, `/oferecer-servico`) são `<a href>` comuns, não `Link` tipado —
-eles retornam 404 até que as páginas existam.
+`location-context.tsx` guarda a cidade escolhida em `localStorage` e expõe
+`detectCity()`, que usa `navigator.geolocation` e envia as coordenadas para
+`GET /locations/cities/nearby` — a API devolve a cidade mais próxima do banco de
+municípios do IBGE (5.571 cidades com centroide). O `LocationPicker` mostra
+"Perto de você" no topo da lista, como o Airbnb, e cai para a escolha manual
+quando a permissão é negada.
+
+Em `/buscar` a URL é a fonte da verdade: o `cidadeId` do endereço define o que
+aparece e o que o seletor exibe. Ao chegar na rota sem `cidadeId`, a cidade
+salva é aplicada uma vez; remover o chip da cidade volta para "Qualquer lugar".
+
+### Favoritos
+
+`providers/favorites-context.tsx` carrega os ids favoritados uma vez
+(`GET /account/favorites/ids`) e faz o toggle otimista, então o coração responde
+na hora em qualquer lugar da interface. Sem sessão, o coração manda para
+`/entrar`.
 
 ## Autenticação e integração com a API
 
@@ -71,6 +90,12 @@ aberto, então nenhum cadastro não verificado fica no banco.
 | `/entrar` | `src/routes/entrar.tsx` | e-mail → `POST /auth/magic-link` |
 | `/entrar/verificar` | `src/routes/entrar_.verificar.tsx` | `POST /auth/verify` → abre a sessão |
 | `/conta` | `src/routes/conta.tsx` | `GET`/`PUT /account/profile`, `POST /account/logout` |
+
+As camadas de dados do marketplace ficam em `src/lib/`: `services.ts` (busca,
+CRUD, fotos, favoritos, avaliações, feed da home), `categories.ts`,
+`locations.ts` e `format.ts` (preço, nota, distância, link de WhatsApp).
+`api.ts` expõe `apiRequest` (desembrulha `{ data }`), `apiPaginated`
+(`{ data, metadata }`) e `toQueryString`.
 
 Camadas:
 

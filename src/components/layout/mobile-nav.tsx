@@ -1,20 +1,10 @@
 import { Link } from '@tanstack/react-router'
-import { Home, MessageCircle, Plus, Search, UserRound } from 'lucide-react'
+import { Heart, Home, Plus, Search, UserRound } from 'lucide-react'
 
 import { cn } from '@/utils/cn'
 
 const ITEM_CLASS =
   'flex min-h-14 flex-col items-center justify-center gap-1 text-[11px] font-medium text-muted-foreground'
-
-const ROUTES = [
-  { to: '/', label: 'Início', icon: Home },
-  { to: '/buscar', label: 'Buscar', icon: Search },
-] as const
-
-const PENDING = [
-  { href: '/publicar', label: 'Publicar', icon: Plus, primary: true },
-  { href: '/mensagens', label: 'Conversas', icon: MessageCircle },
-] as const
 
 function ItemIcon({
   icon: LucideIcon,
@@ -48,8 +38,8 @@ export function MobileNav() {
           activeOptions={{ exact: true }}
           activeProps={{ className: 'text-foreground' }}
         >
-          <ItemIcon icon={ROUTES[0].icon} />
-          <span>{ROUTES[0].label}</span>
+          <ItemIcon icon={Home} />
+          <span>Início</span>
         </Link>
 
         <Link
@@ -57,25 +47,36 @@ export function MobileNav() {
           className={ITEM_CLASS}
           activeProps={{ className: 'text-foreground' }}
         >
-          <ItemIcon icon={ROUTES[1].icon} />
-          <span>{ROUTES[1].label}</span>
+          <ItemIcon icon={Search} />
+          <span>Buscar</span>
+        </Link>
+
+        <Link
+          to="/publicar"
+          className={ITEM_CLASS}
+          activeProps={{ className: 'text-foreground' }}
+        >
+          <ItemIcon icon={Plus} primary />
+          <span>Publicar</span>
+        </Link>
+
+        <Link
+          to="/favoritos"
+          className={ITEM_CLASS}
+          activeProps={{ className: 'text-foreground' }}
+        >
+          <ItemIcon icon={Heart} />
+          <span>Favoritos</span>
         </Link>
 
         <Link
           to="/conta"
-          className={`${ITEM_CLASS} order-last`}
+          className={ITEM_CLASS}
           activeProps={{ className: 'text-foreground' }}
         >
           <ItemIcon icon={UserRound} />
           <span>Conta</span>
         </Link>
-
-        {PENDING.map((item) => (
-          <a key={item.label} href={item.href} className={ITEM_CLASS}>
-            <ItemIcon icon={item.icon} primary={'primary' in item} />
-            <span>{item.label}</span>
-          </a>
-        ))}
       </div>
     </nav>
   )

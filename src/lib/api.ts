@@ -52,6 +52,19 @@ function parseErrors(payload: unknown, status: number): ApiErrorItem[] {
   return [{ message: `Erro inesperado da API (HTTP ${status}).` }]
 }
 
+export type PaginationMetadata = {
+  total: number
+  perPage: number
+  currentPage: number
+  lastPage: number
+  firstPage: number
+}
+
+export type Paginated<T> = {
+  data: T[]
+  metadata: PaginationMetadata
+}
+
 export type ApiRequestOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   body?: unknown
@@ -67,7 +80,7 @@ function encodeBody(body: unknown) {
   return body instanceof FormData ? body : JSON.stringify(body)
 }
 
-export async function apiRequest<T>(
+async function apiRequestRaw<T>(
   path: string,
   { method = 'GET', body, token, signal }: ApiRequestOptions = {},
 ): Promise<T> {
@@ -107,9 +120,48 @@ export async function apiRequest<T>(
     throw new ApiError(response.status, parseErrors(payload, response.status))
   }
 
+  return payload as T
+}
+
+export async function apiRequest<T>(
+  path: string,
+  options: ApiRequestOptions = {},
+): Promise<T> {
+  const payload = await apiRequestRaw<unknown>(path, options)
+
   if (payload && typeof payload === 'object' && 'data' in payload) {
     return (payload as { data: T }).data
   }
 
   return payload as T
+}
+
+export async function apiPaginated<T>(
+  path: string,
+  options: ApiRequestOptions = {},
+): Promise<Paginated<T>> {
+  const payload = await apiRequestRaw<Paginated<T>>(path, options)
+
+  return {
+    data: payload?.data ?? [],
+    metadata:
+      payload?.metadata ??
+      { total: 0, perPage: 0, currentPage: 1, lastPage: 1, firstPage: 1 },
+  }
+}
+
+export function toQueryString(params: Record<string, unknown>) {
+  const search = new URLSearchParams()
+
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined || value === null || value === '') {
+      continue
+    }
+
+    search.set(key, String(value))
+  }
+
+  const query = search.toString()
+
+  return query ? `?${query}` : ''
 }

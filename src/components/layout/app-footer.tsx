@@ -3,9 +3,10 @@ import { Link } from '@tanstack/react-router'
 import { Logo } from '@/components/brand/logo'
 
 const FOOTER_LINKS = [
-  { to: '/buscar', label: 'Buscar' },
-  { to: '/servicos', label: 'Serviços' },
-  { to: '/profissionais', label: 'Profissionais' },
+  { to: '/buscar', label: 'Buscar serviços' },
+  { to: '/servicos', label: 'Categorias' },
+  { to: '/publicar', label: 'Publicar serviço' },
+  { to: '/favoritos', label: 'Favoritos' },
 ] as const
 
 export function AppFooter() {

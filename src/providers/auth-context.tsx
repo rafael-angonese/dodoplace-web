@@ -11,6 +11,7 @@ import { ApiError } from '@/lib/api'
 import {
   type MagicLinkInput,
   type MagicLinkResult,
+  type UpdateProfileInput,
   type User,
   authApi,
 } from '@/lib/auth'
@@ -25,7 +26,7 @@ type AuthContextValue = {
   requestMagicLink: (input: MagicLinkInput) => Promise<MagicLinkResult>
   verifyMagicLink: (token: string) => Promise<User>
   signOut: () => Promise<void>
-  updateProfile: (input: { name: string | null }) => Promise<User>
+  updateProfile: (input: UpdateProfileInput) => Promise<User>
   updateAvatar: (file: File) => Promise<User>
   removeAvatar: () => Promise<User>
 }
@@ -100,7 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [token])
 
   const updateProfile = useCallback(
-    async (input: { name: string | null }) => {
+    async (input: UpdateProfileInput) => {
       if (!token) {
         throw new Error('updateProfile requires an authenticated session')
       }

@@ -1,0 +1,82 @@
+import {
+  Briefcase,
+  Bug,
+  Camera,
+  Car,
+  ChefHat,
+  CircleEllipsis,
+  Droplets,
+  Dumbbell,
+  Fence,
+  GraduationCap,
+  HandHeart,
+  Hammer,
+  HeartHandshake,
+  KeyRound,
+  Laptop,
+  Layers,
+  Leaf,
+  type LucideIcon,
+  Paintbrush,
+  Palette,
+  PartyPopper,
+  PawPrint,
+  PlugZap,
+  Ruler,
+  Scissors,
+  ScissorsLineDashed,
+  Sparkles,
+  Square,
+  Truck,
+  Waves,
+  Wind,
+  Wrench,
+  Zap,
+} from 'lucide-react'
+
+const ICONS: Record<string, LucideIcon> = {
+  sparkles: Sparkles,
+  zap: Zap,
+  droplets: Droplets,
+  paintbrush: Paintbrush,
+  hammer: Hammer,
+  wrench: Wrench,
+  wind: Wind,
+  leaf: Leaf,
+  truck: Truck,
+  ruler: Ruler,
+  fence: Fence,
+  'key-round': KeyRound,
+  laptop: Laptop,
+  'plug-zap': PlugZap,
+  scissors: Scissors,
+  'heart-handshake': HeartHandshake,
+  dumbbell: Dumbbell,
+  'graduation-cap': GraduationCap,
+  'hand-heart': HandHeart,
+  'paw-print': PawPrint,
+  camera: Camera,
+  'chef-hat': ChefHat,
+  'party-popper': PartyPopper,
+  'scissors-line-dashed': ScissorsLineDashed,
+  bug: Bug,
+  waves: Waves,
+  square: Square,
+  layers: Layers,
+  car: Car,
+  briefcase: Briefcase,
+  palette: Palette,
+  'circle-ellipsis': CircleEllipsis,
+}
+
+export function CategoryIcon({
+  name,
+  className,
+}: {
+  name: string
+  className?: string
+}) {
+  const Component = ICONS[name] ?? Wrench
+
+  return <Component aria-hidden="true" className={className} />
+}

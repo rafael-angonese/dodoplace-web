@@ -1,4 +1,15 @@
 import { apiRequest } from '@/lib/api'
+import type { City } from '@/lib/locations'
+
+export type UpdateProfileInput = {
+  name: string | null
+  headline?: string | null
+  bio?: string | null
+  whatsapp?: string | null
+  instagram?: string | null
+  website?: string | null
+  cityId?: number | null
+}
 
 export type User = {
   id: number
@@ -6,6 +17,13 @@ export type User = {
   email: string
   avatarUrl: string | null
   initials: string
+  headline: string | null
+  bio: string | null
+  whatsapp: string | null
+  instagram: string | null
+  website: string | null
+  cityId: number | null
+  city?: City
   createdAt: string
   updatedAt: string | null
 }
@@ -54,7 +72,7 @@ export const authApi = {
     return apiRequest<User>('/account/profile', { token, signal })
   },
 
-  updateProfile(token: string, input: { name: string | null }) {
+  updateProfile(token: string, input: UpdateProfileInput) {
     return apiRequest<User>('/account/profile', {
       method: 'PUT',
       body: input,

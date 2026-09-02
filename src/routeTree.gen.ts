@@ -15,10 +15,15 @@ import { Route as BuscarRouteImport } from './routes/buscar'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as ContaRouteImport } from './routes/conta'
 import { Route as EntrarRouteImport } from './routes/entrar'
-import { Route as ProfissionaisRouteImport } from './routes/profissionais'
+import { Route as FavoritosRouteImport } from './routes/favoritos'
+import { Route as PublicarRouteImport } from './routes/publicar'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as UiRouteImport } from './routes/ui'
+import { Route as ContaServicosRouteImport } from './routes/conta_.servicos'
 import { Route as EntrarVerificarRouteImport } from './routes/entrar_.verificar'
+import { Route as PerfilUserIdRouteImport } from './routes/perfil.$userId'
+import { Route as ServicosServiceIdRouteImport } from './routes/servicos_.$serviceId'
+import { Route as ContaServicosServiceIdRouteImport } from './routes/conta_.servicos_.$serviceId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -50,9 +55,14 @@ const EntrarRoute = EntrarRouteImport.update({
   path: '/entrar',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProfissionaisRoute = ProfissionaisRouteImport.update({
-  id: '/profissionais',
-  path: '/profissionais',
+const FavoritosRoute = FavoritosRouteImport.update({
+  id: '/favoritos',
+  path: '/favoritos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublicarRoute = PublicarRouteImport.update({
+  id: '/publicar',
+  path: '/publicar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosRoute = ServicosRouteImport.update({
@@ -65,9 +75,29 @@ const UiRoute = UiRouteImport.update({
   path: '/ui',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContaServicosRoute = ContaServicosRouteImport.update({
+  id: '/conta_/servicos',
+  path: '/conta/servicos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EntrarVerificarRoute = EntrarVerificarRouteImport.update({
   id: '/entrar_/verificar',
   path: '/entrar/verificar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PerfilUserIdRoute = PerfilUserIdRouteImport.update({
+  id: '/perfil/$userId',
+  path: '/perfil/$userId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicosServiceIdRoute = ServicosServiceIdRouteImport.update({
+  id: '/servicos_/$serviceId',
+  path: '/servicos/$serviceId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContaServicosServiceIdRoute = ContaServicosServiceIdRouteImport.update({
+  id: '/conta_/servicos_/$serviceId',
+  path: '/conta/servicos/$serviceId',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -78,10 +108,15 @@ export interface FileRoutesByFullPath {
   '/cadastro': typeof CadastroRoute
   '/conta': typeof ContaRoute
   '/entrar': typeof EntrarRoute
-  '/profissionais': typeof ProfissionaisRoute
+  '/favoritos': typeof FavoritosRoute
+  '/publicar': typeof PublicarRoute
   '/servicos': typeof ServicosRoute
   '/ui': typeof UiRoute
+  '/conta/servicos': typeof ContaServicosRoute
   '/entrar/verificar': typeof EntrarVerificarRoute
+  '/perfil/$userId': typeof PerfilUserIdRoute
+  '/servicos/$serviceId': typeof ServicosServiceIdRoute
+  '/conta/servicos/$serviceId': typeof ContaServicosServiceIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -90,10 +125,15 @@ export interface FileRoutesByTo {
   '/cadastro': typeof CadastroRoute
   '/conta': typeof ContaRoute
   '/entrar': typeof EntrarRoute
-  '/profissionais': typeof ProfissionaisRoute
+  '/favoritos': typeof FavoritosRoute
+  '/publicar': typeof PublicarRoute
   '/servicos': typeof ServicosRoute
   '/ui': typeof UiRoute
+  '/conta/servicos': typeof ContaServicosRoute
   '/entrar/verificar': typeof EntrarVerificarRoute
+  '/perfil/$userId': typeof PerfilUserIdRoute
+  '/servicos/$serviceId': typeof ServicosServiceIdRoute
+  '/conta/servicos/$serviceId': typeof ContaServicosServiceIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -103,10 +143,15 @@ export interface FileRoutesById {
   '/cadastro': typeof CadastroRoute
   '/conta': typeof ContaRoute
   '/entrar': typeof EntrarRoute
-  '/profissionais': typeof ProfissionaisRoute
+  '/favoritos': typeof FavoritosRoute
+  '/publicar': typeof PublicarRoute
   '/servicos': typeof ServicosRoute
   '/ui': typeof UiRoute
+  '/conta_/servicos': typeof ContaServicosRoute
   '/entrar_/verificar': typeof EntrarVerificarRoute
+  '/perfil/$userId': typeof PerfilUserIdRoute
+  '/servicos_/$serviceId': typeof ServicosServiceIdRoute
+  '/conta_/servicos_/$serviceId': typeof ContaServicosServiceIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -117,10 +162,15 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/conta'
     | '/entrar'
-    | '/profissionais'
+    | '/favoritos'
+    | '/publicar'
     | '/servicos'
     | '/ui'
+    | '/conta/servicos'
     | '/entrar/verificar'
+    | '/perfil/$userId'
+    | '/servicos/$serviceId'
+    | '/conta/servicos/$serviceId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -129,10 +179,15 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/conta'
     | '/entrar'
-    | '/profissionais'
+    | '/favoritos'
+    | '/publicar'
     | '/servicos'
     | '/ui'
+    | '/conta/servicos'
     | '/entrar/verificar'
+    | '/perfil/$userId'
+    | '/servicos/$serviceId'
+    | '/conta/servicos/$serviceId'
   id:
     | '__root__'
     | '/'
@@ -141,10 +196,15 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/conta'
     | '/entrar'
-    | '/profissionais'
+    | '/favoritos'
+    | '/publicar'
     | '/servicos'
     | '/ui'
+    | '/conta_/servicos'
     | '/entrar_/verificar'
+    | '/perfil/$userId'
+    | '/servicos_/$serviceId'
+    | '/conta_/servicos_/$serviceId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -154,10 +214,15 @@ export interface RootRouteChildren {
   CadastroRoute: typeof CadastroRoute
   ContaRoute: typeof ContaRoute
   EntrarRoute: typeof EntrarRoute
-  ProfissionaisRoute: typeof ProfissionaisRoute
+  FavoritosRoute: typeof FavoritosRoute
+  PublicarRoute: typeof PublicarRoute
   ServicosRoute: typeof ServicosRoute
   UiRoute: typeof UiRoute
+  ContaServicosRoute: typeof ContaServicosRoute
   EntrarVerificarRoute: typeof EntrarVerificarRoute
+  PerfilUserIdRoute: typeof PerfilUserIdRoute
+  ServicosServiceIdRoute: typeof ServicosServiceIdRoute
+  ContaServicosServiceIdRoute: typeof ContaServicosServiceIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -204,11 +269,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EntrarRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/profissionais': {
-      id: '/profissionais'
-      path: '/profissionais'
-      fullPath: '/profissionais'
-      preLoaderRoute: typeof ProfissionaisRouteImport
+    '/favoritos': {
+      id: '/favoritos'
+      path: '/favoritos'
+      fullPath: '/favoritos'
+      preLoaderRoute: typeof FavoritosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publicar': {
+      id: '/publicar'
+      path: '/publicar'
+      fullPath: '/publicar'
+      preLoaderRoute: typeof PublicarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/servicos': {
@@ -225,11 +297,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/conta_/servicos': {
+      id: '/conta_/servicos'
+      path: '/conta/servicos'
+      fullPath: '/conta/servicos'
+      preLoaderRoute: typeof ContaServicosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/entrar_/verificar': {
       id: '/entrar_/verificar'
       path: '/entrar/verificar'
       fullPath: '/entrar/verificar'
       preLoaderRoute: typeof EntrarVerificarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/perfil/$userId': {
+      id: '/perfil/$userId'
+      path: '/perfil/$userId'
+      fullPath: '/perfil/$userId'
+      preLoaderRoute: typeof PerfilUserIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/servicos_/$serviceId': {
+      id: '/servicos_/$serviceId'
+      path: '/servicos/$serviceId'
+      fullPath: '/servicos/$serviceId'
+      preLoaderRoute: typeof ServicosServiceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conta_/servicos_/$serviceId': {
+      id: '/conta_/servicos_/$serviceId'
+      path: '/conta/servicos/$serviceId'
+      fullPath: '/conta/servicos/$serviceId'
+      preLoaderRoute: typeof ContaServicosServiceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -242,10 +342,15 @@ const rootRouteChildren: RootRouteChildren = {
   CadastroRoute: CadastroRoute,
   ContaRoute: ContaRoute,
   EntrarRoute: EntrarRoute,
-  ProfissionaisRoute: ProfissionaisRoute,
+  FavoritosRoute: FavoritosRoute,
+  PublicarRoute: PublicarRoute,
   ServicosRoute: ServicosRoute,
   UiRoute: UiRoute,
+  ContaServicosRoute: ContaServicosRoute,
   EntrarVerificarRoute: EntrarVerificarRoute,
+  PerfilUserIdRoute: PerfilUserIdRoute,
+  ServicosServiceIdRoute: ServicosServiceIdRoute,
+  ContaServicosServiceIdRoute: ContaServicosServiceIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

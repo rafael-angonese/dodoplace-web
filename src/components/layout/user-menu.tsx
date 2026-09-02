@@ -68,6 +68,15 @@ export function UserMenu() {
         <DropdownMenuItem asChild>
           <Link to="/conta">Meu perfil</Link>
         </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/conta/servicos">Meus serviços</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/favoritos">Favoritos</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/publicar">Publicar serviço</Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={onSignOut}>Sair da conta</DropdownMenuItem>
       </DropdownMenuContent>

@@ -1,13 +1,14 @@
 import { Link } from '@tanstack/react-router'
+import { Heart } from 'lucide-react'
 
 import { Logo } from '@/components/brand/logo'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { UserMenu } from '@/components/layout/user-menu'
+import { Button } from '@/components/ui/button'
 
 const NAV_ITEMS = [
   { to: '/buscar', label: 'Buscar' },
-  { to: '/servicos', label: 'Serviços' },
-  { to: '/profissionais', label: 'Profissionais' },
+  { to: '/servicos', label: 'Categorias' },
 ] as const
 
 export function AppHeader() {
@@ -32,7 +33,27 @@ export function AppHeader() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 md:gap-2">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="hidden h-10 rounded-full font-semibold md:inline-flex"
+          >
+            <Link to="/publicar">Publicar serviço</Link>
+          </Button>
+
+          <Button
+            asChild
+            variant="ghost"
+            size="icon"
+            className="hidden rounded-full md:inline-flex"
+          >
+            <Link to="/favoritos" aria-label="Favoritos">
+              <Heart aria-hidden="true" />
+            </Link>
+          </Button>
+
           <ThemeToggle />
           <UserMenu />
         </div>

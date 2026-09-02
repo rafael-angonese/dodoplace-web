@@ -2,6 +2,10 @@ import type { FieldValues, Path, UseFormSetError } from 'react-hook-form'
 
 import { ApiError } from '@/lib/api'
 
+export function isAbortError(error: unknown) {
+  return error instanceof DOMException && error.name === 'AbortError'
+}
+
 export function apiErrorMessage(error: unknown): string {
   if (error instanceof ApiError) {
     return error.generalMessage ?? error.message
