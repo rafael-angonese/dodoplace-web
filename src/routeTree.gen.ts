@@ -13,12 +13,15 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as ContaRouteImport } from './routes/conta'
+import { Route as ConversasRouteImport } from './routes/conversas'
 import { Route as EntrarRouteImport } from './routes/entrar'
 import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as PublicarRouteImport } from './routes/publicar'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as UiRouteImport } from './routes/ui'
 import { Route as ContaServicosRouteImport } from './routes/conta_.servicos'
+import { Route as ConversasIndexRouteImport } from './routes/conversas.index'
+import { Route as ConversasConversationIdRouteImport } from './routes/conversas.$conversationId'
 import { Route as EntrarVerificarRouteImport } from './routes/entrar_.verificar'
 import { Route as PerfilUserIdRouteImport } from './routes/perfil.$userId'
 import { Route as ServicosServiceIdRouteImport } from './routes/servicos_.$serviceId'
@@ -42,6 +45,11 @@ const CadastroRoute = CadastroRouteImport.update({
 const ContaRoute = ContaRouteImport.update({
   id: '/conta',
   path: '/conta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConversasRoute = ConversasRouteImport.update({
+  id: '/conversas',
+  path: '/conversas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EntrarRoute = EntrarRouteImport.update({
@@ -74,6 +82,16 @@ const ContaServicosRoute = ContaServicosRouteImport.update({
   path: '/conta/servicos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConversasIndexRoute = ConversasIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ConversasRoute,
+} as any)
+const ConversasConversationIdRoute = ConversasConversationIdRouteImport.update({
+  id: '/$conversationId',
+  path: '/$conversationId',
+  getParentRoute: () => ConversasRoute,
+} as any)
 const EntrarVerificarRoute = EntrarVerificarRouteImport.update({
   id: '/entrar_/verificar',
   path: '/entrar/verificar',
@@ -100,15 +118,18 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/cadastro': typeof CadastroRoute
   '/conta': typeof ContaRoute
+  '/conversas': typeof ConversasRouteWithChildren
   '/entrar': typeof EntrarRoute
   '/favoritos': typeof FavoritosRoute
   '/publicar': typeof PublicarRoute
   '/servicos': typeof ServicosRoute
   '/ui': typeof UiRoute
   '/conta/servicos': typeof ContaServicosRoute
+  '/conversas/$conversationId': typeof ConversasConversationIdRoute
   '/entrar/verificar': typeof EntrarVerificarRoute
   '/perfil/$userId': typeof PerfilUserIdRoute
   '/servicos/$serviceId': typeof ServicosServiceIdRoute
+  '/conversas/': typeof ConversasIndexRoute
   '/conta/servicos/$serviceId': typeof ContaServicosServiceIdRoute
 }
 export interface FileRoutesByTo {
@@ -122,9 +143,11 @@ export interface FileRoutesByTo {
   '/servicos': typeof ServicosRoute
   '/ui': typeof UiRoute
   '/conta/servicos': typeof ContaServicosRoute
+  '/conversas/$conversationId': typeof ConversasConversationIdRoute
   '/entrar/verificar': typeof EntrarVerificarRoute
   '/perfil/$userId': typeof PerfilUserIdRoute
   '/servicos/$serviceId': typeof ServicosServiceIdRoute
+  '/conversas': typeof ConversasIndexRoute
   '/conta/servicos/$serviceId': typeof ContaServicosServiceIdRoute
 }
 export interface FileRoutesById {
@@ -133,15 +156,18 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/cadastro': typeof CadastroRoute
   '/conta': typeof ContaRoute
+  '/conversas': typeof ConversasRouteWithChildren
   '/entrar': typeof EntrarRoute
   '/favoritos': typeof FavoritosRoute
   '/publicar': typeof PublicarRoute
   '/servicos': typeof ServicosRoute
   '/ui': typeof UiRoute
   '/conta_/servicos': typeof ContaServicosRoute
+  '/conversas/$conversationId': typeof ConversasConversationIdRoute
   '/entrar_/verificar': typeof EntrarVerificarRoute
   '/perfil/$userId': typeof PerfilUserIdRoute
   '/servicos_/$serviceId': typeof ServicosServiceIdRoute
+  '/conversas/': typeof ConversasIndexRoute
   '/conta_/servicos_/$serviceId': typeof ContaServicosServiceIdRoute
 }
 export interface FileRouteTypes {
@@ -151,15 +177,18 @@ export interface FileRouteTypes {
     | '/about'
     | '/cadastro'
     | '/conta'
+    | '/conversas'
     | '/entrar'
     | '/favoritos'
     | '/publicar'
     | '/servicos'
     | '/ui'
     | '/conta/servicos'
+    | '/conversas/$conversationId'
     | '/entrar/verificar'
     | '/perfil/$userId'
     | '/servicos/$serviceId'
+    | '/conversas/'
     | '/conta/servicos/$serviceId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -173,9 +202,11 @@ export interface FileRouteTypes {
     | '/servicos'
     | '/ui'
     | '/conta/servicos'
+    | '/conversas/$conversationId'
     | '/entrar/verificar'
     | '/perfil/$userId'
     | '/servicos/$serviceId'
+    | '/conversas'
     | '/conta/servicos/$serviceId'
   id:
     | '__root__'
@@ -183,15 +214,18 @@ export interface FileRouteTypes {
     | '/about'
     | '/cadastro'
     | '/conta'
+    | '/conversas'
     | '/entrar'
     | '/favoritos'
     | '/publicar'
     | '/servicos'
     | '/ui'
     | '/conta_/servicos'
+    | '/conversas/$conversationId'
     | '/entrar_/verificar'
     | '/perfil/$userId'
     | '/servicos_/$serviceId'
+    | '/conversas/'
     | '/conta_/servicos_/$serviceId'
   fileRoutesById: FileRoutesById
 }
@@ -200,6 +234,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   CadastroRoute: typeof CadastroRoute
   ContaRoute: typeof ContaRoute
+  ConversasRoute: typeof ConversasRouteWithChildren
   EntrarRoute: typeof EntrarRoute
   FavoritosRoute: typeof FavoritosRoute
   PublicarRoute: typeof PublicarRoute
@@ -240,6 +275,13 @@ declare module '@tanstack/react-router' {
       path: '/conta'
       fullPath: '/conta'
       preLoaderRoute: typeof ContaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conversas': {
+      id: '/conversas'
+      path: '/conversas'
+      fullPath: '/conversas'
+      preLoaderRoute: typeof ConversasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/entrar': {
@@ -284,6 +326,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContaServicosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/conversas/': {
+      id: '/conversas/'
+      path: '/'
+      fullPath: '/conversas/'
+      preLoaderRoute: typeof ConversasIndexRouteImport
+      parentRoute: typeof ConversasRoute
+    }
+    '/conversas/$conversationId': {
+      id: '/conversas/$conversationId'
+      path: '/$conversationId'
+      fullPath: '/conversas/$conversationId'
+      preLoaderRoute: typeof ConversasConversationIdRouteImport
+      parentRoute: typeof ConversasRoute
+    }
     '/entrar_/verificar': {
       id: '/entrar_/verificar'
       path: '/entrar/verificar'
@@ -315,11 +371,26 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ConversasRouteChildren {
+  ConversasConversationIdRoute: typeof ConversasConversationIdRoute
+  ConversasIndexRoute: typeof ConversasIndexRoute
+}
+
+const ConversasRouteChildren: ConversasRouteChildren = {
+  ConversasConversationIdRoute: ConversasConversationIdRoute,
+  ConversasIndexRoute: ConversasIndexRoute,
+}
+
+const ConversasRouteWithChildren = ConversasRoute._addFileChildren(
+  ConversasRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   CadastroRoute: CadastroRoute,
   ContaRoute: ContaRoute,
+  ConversasRoute: ConversasRouteWithChildren,
   EntrarRoute: EntrarRoute,
   FavoritosRoute: FavoritosRoute,
   PublicarRoute: PublicarRoute,

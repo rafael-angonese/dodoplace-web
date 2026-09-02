@@ -1,15 +1,39 @@
 import { Link } from '@tanstack/react-router'
-import { Heart } from 'lucide-react'
+import { Heart, MessagesSquare } from 'lucide-react'
 
 import { Logo } from '@/components/brand/logo'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { UserMenu } from '@/components/layout/user-menu'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/providers/auth-context'
+import { useChat } from '@/providers/chat-context'
 
 const NAV_ITEMS = [
   { to: '/', label: 'Buscar', exact: true },
   { to: '/servicos', label: 'Categorias', exact: false },
 ] as const
+
+function ChatButton() {
+  const { status } = useAuth()
+  const { unreadTotal } = useChat()
+
+  if (status !== 'authenticated') {
+    return null
+  }
+
+  return (
+    <Button asChild variant="ghost" size="icon" className="relative rounded-full">
+      <Link to="/conversas" aria-label="Conversas">
+        <MessagesSquare aria-hidden="true" />
+        {unreadTotal > 0 ? (
+          <span className="absolute top-1 right-1 grid min-w-4 place-items-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+            {unreadTotal > 99 ? '99+' : unreadTotal}
+          </span>
+        ) : null}
+      </Link>
+    </Button>
+  )
+}
 
 export function AppHeader() {
   return (
@@ -55,6 +79,7 @@ export function AppHeader() {
             </Link>
           </Button>
 
+          <ChatButton />
           <ThemeToggle />
           <UserMenu />
         </div>

@@ -1,3 +1,6 @@
+import { format, formatDistanceToNowStrict, isToday, isYesterday } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
+
 import type { PriceType, ServiceMode } from '@/lib/services'
 
 const currency = new Intl.NumberFormat('pt-BR', {
@@ -97,4 +100,65 @@ export function instagramLink(handle: string | null) {
   }
 
   return `https://instagram.com/${handle.replace(/^@/, '')}`
+}
+
+export function formatMessageTime(value: string) {
+  return format(new Date(value), 'HH:mm')
+}
+
+export function formatConversationTime(value: string | null) {
+  if (!value) {
+    return ''
+  }
+
+  const date = new Date(value)
+
+  if (isToday(date)) {
+    return format(date, 'HH:mm')
+  }
+
+  if (isYesterday(date)) {
+    return 'ontem'
+  }
+
+  return format(date, 'dd/MM/yy')
+}
+
+export function formatDayLabel(value: string) {
+  const date = new Date(value)
+
+  if (isToday(date)) {
+    return 'Hoje'
+  }
+
+  if (isYesterday(date)) {
+    return 'Ontem'
+  }
+
+  return format(date, "d 'de' MMMM 'de' yyyy", { locale: ptBR })
+}
+
+export function formatLastSeen(value: string | null) {
+  if (!value) {
+    return 'offline'
+  }
+
+  return `visto ${formatDistanceToNowStrict(new Date(value), {
+    locale: ptBR,
+    addSuffix: true,
+  })}`
+}
+
+export function formatFileSize(bytes: number | null) {
+  if (!bytes) {
+    return ''
+  }
+
+  const megabytes = bytes / (1024 * 1024)
+
+  if (megabytes >= 1) {
+    return `${megabytes.toFixed(1).replace('.', ',')} MB`
+  }
+
+  return `${Math.max(1, Math.round(bytes / 1024))} KB`
 }

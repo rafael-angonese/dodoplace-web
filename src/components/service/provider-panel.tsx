@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { Globe, MessageCircle } from 'lucide-react'
 
+import { StartConversationButton } from '@/components/chat/start-conversation-button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
@@ -9,10 +10,12 @@ import type { PublicProfile } from '@/lib/services'
 
 export function ProviderPanel({
   provider,
+  serviceId,
   serviceTitle,
   showProfileLink = true,
 }: {
   provider: PublicProfile
+  serviceId?: number
   serviceTitle?: string
   showProfileLink?: boolean
 }) {
@@ -62,8 +65,13 @@ export function ProviderPanel({
       ) : null}
 
       <div className="mt-5 flex flex-wrap gap-2">
+        <StartConversationButton
+          recipientId={provider.id}
+          serviceId={serviceId}
+        />
+
         {whatsapp ? (
-          <Button asChild>
+          <Button asChild variant="outline">
             <a href={whatsapp} target="_blank" rel="noreferrer noopener">
               <MessageCircle aria-hidden="true" />
               Chamar no WhatsApp

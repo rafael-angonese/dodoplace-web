@@ -5,10 +5,68 @@ import {
 } from '@tanstack/react-query'
 
 import { categoriesApi } from '@/lib/categories'
+import { chatApi } from '@/lib/chat'
 import { locationsApi } from '@/lib/locations'
 import { type SearchServicesParams, servicesApi } from '@/lib/services'
 
 export const SERVICES_PAGE_SIZE = 24
+
+export const CONVERSATIONS_PAGE_SIZE = 40
+
+export const chatKeys = {
+  conversationsRoot: ['chat', 'conversations'] as const,
+  conversations: (search?: string) =>
+    ['chat', 'conversations', search ?? ''] as const,
+  conversation: (id: number) => ['chat', 'conversation', id] as const,
+  messages: (id: number) => ['chat', 'messages', id] as const,
+  unread: ['chat', 'unread'] as const,
+}
+
+export function conversationsQueryOptions(token: string, search?: string) {
+  return queryOptions({
+    queryKey: chatKeys.conversations(search),
+    queryFn: ({ signal }) =>
+      chatApi.conversations(
+        token,
+        { q: search || undefined, porPagina: CONVERSATIONS_PAGE_SIZE },
+        signal,
+      ),
+    placeholderData: keepPreviousData,
+    staleTime: 15_000,
+  })
+}
+
+export function conversationQueryOptions(token: string, conversationId: number) {
+  return queryOptions({
+    queryKey: chatKeys.conversation(conversationId),
+    queryFn: ({ signal }) => chatApi.conversation(token, conversationId, signal),
+    staleTime: 15_000,
+  })
+}
+
+export function messagesQueryOptions(token: string, conversationId: number) {
+  return infiniteQueryOptions({
+    queryKey: chatKeys.messages(conversationId),
+    queryFn: ({ pageParam, signal }) =>
+      chatApi.messages(
+        token,
+        conversationId,
+        { antesDe: pageParam ? Number(pageParam) : undefined },
+        signal,
+      ),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    staleTime: 15_000,
+  })
+}
+
+export function unreadMessagesQueryOptions(token: string) {
+  return queryOptions({
+    queryKey: chatKeys.unread,
+    queryFn: ({ signal }) => chatApi.unread(token, signal),
+    staleTime: 15_000,
+  })
+}
 
 export const categoriesQueryOptions = queryOptions({
   queryKey: ['categories'],

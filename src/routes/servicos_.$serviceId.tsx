@@ -194,7 +194,11 @@ function ServiceDetail() {
 
           <Separator />
 
-          <ProviderPanel provider={provider} serviceTitle={service.title} />
+          <ProviderPanel
+            provider={provider}
+            serviceId={service.id}
+            serviceTitle={service.title}
+          />
 
           <Separator />
 

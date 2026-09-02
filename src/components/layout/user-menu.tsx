@@ -72,6 +72,9 @@ export function UserMenu() {
           <Link to="/conta/servicos">Meus serviços</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
+          <Link to="/conversas">Conversas</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <Link to="/favoritos">Favoritos</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
