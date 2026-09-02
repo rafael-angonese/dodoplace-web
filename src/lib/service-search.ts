@@ -15,6 +15,8 @@ const PRICE_TYPES: PriceType[] = ['hourly', 'daily', 'fixed', 'quote']
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
+export const MAX_CATEGORY_FILTERS = 10
+
 export type ServiceSearch = {
   q?: string
   category?: string
@@ -61,16 +63,44 @@ function oneOf<T extends string>(value: unknown, options: T[]) {
     : undefined
 }
 
+function parseCategories(value: unknown) {
+  const entries = typeof value === 'string' ? value.split(',') : []
+  const slugs: string[] = []
+
+  for (const entry of entries) {
+    const slug = entry.trim()
+
+    if (SLUG_PATTERN.test(slug) && !slugs.includes(slug)) {
+      slugs.push(slug)
+    }
+  }
+
+  return slugs.slice(0, MAX_CATEGORY_FILTERS)
+}
+
+export function selectedCategories(search: ServiceSearch) {
+  return parseCategories(search.category)
+}
+
+export function toggleCategory(current: string | undefined, slug: string) {
+  const slugs = parseCategories(current)
+  const next = slugs.includes(slug)
+    ? slugs.filter((entry) => entry !== slug)
+    : [...slugs, slug]
+
+  return next.length > 0 ? next.slice(0, MAX_CATEGORY_FILTERS).join(',') : undefined
+}
+
 export function validateServiceSearch(
   search: Record<string, unknown>,
 ): ServiceSearch {
-  const category = text(search.category)
+  const categories = parseCategories(search.category)
   const state = text(search.state)?.toUpperCase()
   const minRating = positive(search.minRating)
 
   return {
     q: text(search.q),
-    category: category && SLUG_PATTERN.test(category) ? category : undefined,
+    category: categories.length > 0 ? categories.join(',') : undefined,
     cityId: positive(search.cityId),
     state: state && /^[A-Z]{2}$/.test(state) ? state : undefined,
     latitude: coordinate(search.latitude, 90),

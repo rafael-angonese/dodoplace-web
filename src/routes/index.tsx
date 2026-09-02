@@ -27,6 +27,8 @@ import {
 import {
   type ServiceSearch,
   hasActiveFilters,
+  selectedCategories,
+  toggleCategory,
   validateServiceSearch,
 } from '@/lib/service-search'
 import { cn } from '@/utils/cn'
@@ -136,14 +138,24 @@ function Home() {
   } = useInfiniteServices(search)
 
   const services = data?.pages.flatMap((page) => page.data) ?? []
-  const category = categories.find((entry) => entry.slug === search.category)
+  const activeSlugs = selectedCategories(search)
+  const activeCategories = categories.filter((entry) =>
+    activeSlugs.includes(entry.slug),
+  )
   const cityLabel = city?.label ?? null
   const hasCoordinates =
     search.latitude !== undefined && search.longitude !== undefined
   const isInitialLoading = status === 'pending'
 
-  const title = category
-    ? `${category.name}${cityLabel ? ` em ${cityLabel}` : ''}`
+  const categoryLabel =
+    activeCategories.length === 1
+      ? activeCategories[0].name
+      : activeCategories.length > 1
+        ? `${activeCategories.length} categorias`
+        : null
+
+  const title = categoryLabel
+    ? `${categoryLabel}${cityLabel ? ` em ${cityLabel}` : ''}`
     : cityLabel
       ? `Serviços em ${cityLabel}`
       : 'Serviços perto de você'
@@ -182,18 +194,12 @@ function Home() {
         </p>
 
         <div className="mt-8 max-w-3xl">
-          <SearchBar
-            defaultQuery={search.q ?? ''}
-            categorySlug={search.category}
-          />
+          <SearchBar defaultQuery={search.q ?? ''} category={search.category} />
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl border-b border-border px-4 md:px-6">
-        <CategoryCarousel
-          categories={categories}
-          activeSlug={search.category}
-        />
+        <CategoryCarousel categories={categories} activeSlugs={activeSlugs} />
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-8 md:px-6">
@@ -235,21 +241,25 @@ function Home() {
           </div>
         </div>
 
-        {search.q || category || cityLabel ? (
+        {search.q || activeCategories.length > 0 || cityLabel ? (
           <div className="mt-4 flex flex-wrap gap-2">
             {search.q ? (
               <Link to="/" search={(current) => ({ ...current, q: undefined })}>
                 <Badge variant="secondary">“{search.q}” ✕</Badge>
               </Link>
             ) : null}
-            {category ? (
+            {activeCategories.map((entry) => (
               <Link
+                key={entry.id}
                 to="/"
-                search={(current) => ({ ...current, category: undefined })}
+                search={(current) => ({
+                  ...current,
+                  category: toggleCategory(current.category, entry.slug),
+                })}
               >
-                <Badge variant="secondary">{category.name} ✕</Badge>
+                <Badge variant="secondary">{entry.name} ✕</Badge>
               </Link>
-            ) : null}
+            ))}
             {cityLabel ? (
               <Link
                 to="/"

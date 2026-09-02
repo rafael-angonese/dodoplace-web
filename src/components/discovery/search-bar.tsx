@@ -8,11 +8,11 @@ const DEBOUNCE_MS = 350
 
 export function SearchBar({
   defaultQuery = '',
-  categorySlug,
+  category,
   variant = 'hero',
 }: {
   defaultQuery?: string
-  categorySlug?: string
+  category?: string
   variant?: 'hero' | 'compact'
 }) {
   const navigate = useNavigate()
@@ -31,12 +31,12 @@ export function SearchBar({
         search: (current) => ({
           ...current,
           q: next || undefined,
-          category: categorySlug,
+          category,
         }),
         replace: pathname === '/',
       })
     },
-    [navigate, categorySlug, pathname],
+    [navigate, category, pathname],
   )
 
   useEffect(() => {
