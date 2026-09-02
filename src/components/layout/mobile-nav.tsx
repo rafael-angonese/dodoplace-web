@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { Heart, Home, Plus, Search, UserRound } from 'lucide-react'
+import { Heart, Home, LayoutGrid, Plus, UserRound } from 'lucide-react'
 
 import { cn } from '@/utils/cn'
 
@@ -43,12 +43,12 @@ export function MobileNav() {
         </Link>
 
         <Link
-          to="/buscar"
+          to="/servicos"
           className={ITEM_CLASS}
           activeProps={{ className: 'text-foreground' }}
         >
-          <ItemIcon icon={Search} />
-          <span>Buscar</span>
+          <ItemIcon icon={LayoutGrid} />
+          <span>Categorias</span>
         </Link>
 
         <Link

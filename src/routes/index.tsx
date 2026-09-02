@@ -1,43 +1,37 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
+import { MapPin } from 'lucide-react'
+import { useEffect, useRef } from 'react'
 
-import { CarouselRow } from '@/components/discovery/carousel-row'
 import { CategoryCarousel } from '@/components/discovery/category-carousel'
 import { SearchBar } from '@/components/discovery/search-bar'
+import { SearchEmptyState } from '@/components/discovery/search-empty-state'
+import {
+  type SearchFiltersValue,
+  SearchFilters,
+} from '@/components/discovery/search-filters'
 import {
   ServiceCard,
   ServiceCardSkeleton,
 } from '@/components/discovery/service-card'
-import { useLocation } from '@/components/location/location-context'
+import { SortSelect } from '@/components/discovery/sort-select'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Heading } from '@/components/ui/heading'
-import { categoriesApi } from '@/lib/categories'
-import { type HomeSection, servicesApi } from '@/lib/services'
+import {
+  categoriesQueryOptions,
+  cityQueryOptions,
+  serviceListQueryOptions,
+} from '@/lib/queries'
+import {
+  type ServiceSearch,
+  hasActiveFilters,
+  validateServiceSearch,
+} from '@/lib/service-search'
+import { cn } from '@/utils/cn'
 
-export const Route = createFileRoute('/')({
-  component: Home,
-  head: () => ({
-    meta: [
-      { title: 'FazPerto | Serviços perto de você' },
-      {
-        name: 'description',
-        content:
-          'Encontre quem faz perto de você. Descubra profissionais e serviços na sua região.',
-      },
-    ],
-  }),
-  loader: async () => {
-    const [categories, sections] = await Promise.all([
-      categoriesApi.list(),
-      servicesApi.homeFeed({}),
-    ])
-
-    return { categories, sections }
-  },
-})
-
-const SKELETON_KEYS = ['s1', 's2', 's3', 's4', 's5', 's6']
+const SKELETON_KEYS = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8']
 
 const STEPS = [
   {
@@ -60,45 +54,119 @@ const STEPS = [
   },
 ]
 
-function useCityFeed(initial: HomeSection[]) {
-  const { city } = useLocation()
-  const [sections, setSections] = useState(initial)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isFiltered, setIsFiltered] = useState(false)
-
-  useEffect(() => {
-    if (!city) {
-      setSections(initial)
-      setIsFiltered(false)
+export const Route = createFileRoute('/')({
+  component: Home,
+  head: () => ({
+    meta: [
+      { title: 'FazPerto | Serviços perto de você' },
+      {
+        name: 'description',
+        content:
+          'Encontre quem faz perto de você. Descubra profissionais e serviços na sua região.',
+      },
+    ],
+  }),
+  validateSearch: validateServiceSearch,
+  loaderDeps: ({ search }) => search,
+  loader: async ({ context, deps }) => {
+    if (typeof document !== 'undefined') {
       return
     }
 
-    const controller = new AbortController()
-    setIsLoading(true)
+    await Promise.all([
+      context.queryClient.ensureQueryData(categoriesQueryOptions),
+      context.queryClient.ensureInfiniteQueryData(serviceListQueryOptions(deps)),
+      deps.cidadeId
+        ? context.queryClient
+            .ensureQueryData(cityQueryOptions(deps.cidadeId))
+            .catch(() => null)
+        : null,
+    ])
+  },
+})
 
-    servicesApi
-      .homeFeed({ cidadeId: city.id }, { signal: controller.signal })
-      .then((next) => {
-        setSections(next.length > 0 ? next : initial)
-        setIsFiltered(next.length > 0)
-      })
-      .catch(() => undefined)
-      .finally(() => setIsLoading(false))
+function useInfiniteServices(search: ServiceSearch) {
+  const query = useInfiniteQuery(serviceListQueryOptions(search))
+  const sentinel = useRef<HTMLDivElement>(null)
 
-    return () => controller.abort()
-  }, [city, initial])
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = query
 
-  return { sections, isLoading, isFiltered }
+  useEffect(() => {
+    const node = sentinel.current
+
+    if (!node || typeof IntersectionObserver === 'undefined') {
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage()
+        }
+      },
+      { rootMargin: '800px 0px' },
+    )
+
+    observer.observe(node)
+
+    return () => observer.disconnect()
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
+
+  return { ...query, sentinel }
 }
 
 function Home() {
-  const { categories, sections: initialSections } = Route.useLoaderData()
-  const { city } = useLocation()
-  const { sections, isLoading, isFiltered } = useCityFeed(initialSections)
+  const navigate = useNavigate()
+  const search = Route.useSearch()
+
+  const { data: categories = [] } = useQuery(categoriesQueryOptions)
+  const { data: city } = useQuery({
+    ...cityQueryOptions(search.cidadeId ?? 0),
+    enabled: search.cidadeId !== undefined,
+  })
+
+  const {
+    data,
+    status,
+    isFetching,
+    isFetchingNextPage,
+    isPlaceholderData,
+    hasNextPage,
+    sentinel,
+  } = useInfiniteServices(search)
+
+  const services = data?.pages.flatMap((page) => page.data) ?? []
+  const category = categories.find((entry) => entry.slug === search.categoria)
+  const cityLabel = city?.label ?? null
+  const hasCoordinates =
+    search.latitude !== undefined && search.longitude !== undefined
+  const isInitialLoading = status === 'pending'
+
+  const title = category
+    ? `${category.name}${cityLabel ? ` em ${cityLabel}` : ''}`
+    : cityLabel
+      ? `Serviços em ${cityLabel}`
+      : 'Serviços perto de você'
+
+  function update(next: Partial<ServiceSearch>) {
+    navigate({ to: '/', search: (current) => ({ ...current, ...next }) })
+  }
+
+  function onApplyFilters(filters: SearchFiltersValue) {
+    update({
+      cidadeId: filters.cidadeId,
+      precoMin: filters.precoMin,
+      precoMax: filters.precoMax,
+      notaMin: filters.notaMin,
+      modo: filters.modo,
+      tipoPreco: filters.tipoPreco,
+      raioKm: filters.raioKm,
+    })
+  }
 
   return (
     <>
-      <section className="mx-auto max-w-7xl px-4 pt-10 pb-8 md:px-6 md:pt-16">
+      <section className="mx-auto max-w-7xl px-4 pt-10 pb-8 md:px-6 md:pt-14">
         <p className="mb-3 text-sm font-bold tracking-[0.18em] text-brand-coral uppercase">
           Marketplace de serviços
         </p>
@@ -114,140 +182,199 @@ function Home() {
         </p>
 
         <div className="mt-8 max-w-3xl">
-          <SearchBar />
+          <SearchBar
+            defaultQuery={search.q ?? ''}
+            categorySlug={search.categoria}
+          />
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl border-b border-border px-4 md:px-6">
-        <CategoryCarousel categories={categories} />
+        <CategoryCarousel
+          categories={categories}
+          activeSlug={search.categoria}
+        />
       </section>
 
-      <div className="mx-auto max-w-7xl space-y-12 px-4 py-12 md:px-6">
-        {isLoading ? (
-          <CarouselRow
-            header={
-              <Heading variant="h3" className="font-extrabold">
-                Carregando serviços...
-              </Heading>
-            }
-          >
-            {SKELETON_KEYS.map((key) => (
-              <div
-                key={key}
-                className="w-[46%] shrink-0 sm:w-[30%] lg:w-[15.5%]"
-              >
-                <ServiceCardSkeleton />
-              </div>
-            ))}
-          </CarouselRow>
-        ) : null}
-
-        {!isLoading && sections.length === 0 ? (
-          <Card className="rounded-2xl p-8 text-center">
-            <Heading variant="h4">
-              Ainda não há serviços publicados por aqui.
+      <section className="mx-auto max-w-7xl px-4 py-8 md:px-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <Heading variant="h2" className="text-2xl font-extrabold md:text-3xl">
+              {title}
             </Heading>
-            <p className="mt-2 text-muted-foreground">
-              Seja o primeiro a anunciar na sua cidade.
+            <p className="mt-1 text-sm text-muted-foreground">
+              {isInitialLoading
+                ? 'Carregando serviços...'
+                : services.length === 0
+                  ? 'Nenhum resultado'
+                  : `${services.length}${hasNextPage ? '+' : ''} ${services.length === 1 ? 'serviço encontrado' : 'serviços encontrados'}`}
             </p>
-            <Button asChild className="mt-5">
-              <Link to="/publicar">Publicar meu serviço</Link>
-            </Button>
-          </Card>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <SearchFilters
+              city={city ?? null}
+              value={{
+                cidadeId: search.cidadeId,
+                precoMin: search.precoMin,
+                precoMax: search.precoMax,
+                notaMin: search.notaMin,
+                modo: search.modo,
+                tipoPreco: search.tipoPreco,
+                raioKm: search.raioKm,
+              }}
+              onApply={onApplyFilters}
+              hasCoordinates={hasCoordinates}
+            />
+            <SortSelect
+              value={
+                search.ordenar ?? (hasCoordinates ? 'distance' : 'relevance')
+              }
+              onChange={(ordenar) => update({ ordenar })}
+            />
+          </div>
+        </div>
+
+        {search.q || category || cityLabel ? (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {search.q ? (
+              <Link to="/" search={(current) => ({ ...current, q: undefined })}>
+                <Badge variant="secondary">“{search.q}” ✕</Badge>
+              </Link>
+            ) : null}
+            {category ? (
+              <Link
+                to="/"
+                search={(current) => ({ ...current, categoria: undefined })}
+              >
+                <Badge variant="secondary">{category.name} ✕</Badge>
+              </Link>
+            ) : null}
+            {cityLabel ? (
+              <Link
+                to="/"
+                search={(current) => ({ ...current, cidadeId: undefined })}
+              >
+                <Badge variant="secondary">
+                  <MapPin aria-hidden="true" className="mr-1 size-3" />
+                  {cityLabel} ✕
+                </Badge>
+              </Link>
+            ) : null}
+          </div>
         ) : null}
 
-        {!isLoading &&
-          sections.map((section) => (
-            <CarouselRow
-              key={section.category.id}
-              header={
-                <div>
-                  <Heading variant="h3" className="font-extrabold">
-                    {section.category.name}
-                    {isFiltered && city ? ` em ${city.name}` : ''}
-                  </Heading>
-                  <Link
-                    to="/buscar"
-                    search={{
-                      categoria: section.category.slug,
-                      cidadeId: isFiltered ? city?.id : undefined,
-                    }}
-                    className="text-sm font-semibold text-muted-foreground underline"
-                  >
-                    Ver todos
-                  </Link>
-                </div>
-              }
-            >
-              {section.services.map((service) => (
-                <div
-                  key={service.id}
-                  className="w-[46%] shrink-0 snap-start sm:w-[30%] lg:w-[15.5%]"
-                >
-                  <ServiceCard service={service} />
-                </div>
-              ))}
-            </CarouselRow>
-          ))}
-      </div>
-
-      <section className="bg-surface-muted">
-        <div className="mx-auto max-w-7xl px-4 py-14 md:px-6">
-          <Heading variant="h2" className="font-extrabold">
-            Resolver um serviço deve ser simples.
-          </Heading>
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
-            {STEPS.map((step) => (
-              <Card key={step.number} className="rounded-2xl p-6">
-                <span className="grid size-9 place-items-center rounded-full bg-brand-yellow font-extrabold text-[#202124]">
-                  {step.number}
-                </span>
-                <Heading variant="h4" className="mt-4">
-                  {step.title}
-                </Heading>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  {step.description}
-                </p>
-              </Card>
+        {isInitialLoading ? (
+          <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {SKELETON_KEYS.map((key) => (
+              <ServiceCardSkeleton key={key} />
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="mx-auto grid max-w-7xl gap-4 px-4 py-14 md:grid-cols-2 md:px-6">
-        <div className="rounded-3xl border border-border p-7">
-          <Heading variant="h2" className="font-extrabold">
-            Precisa de um serviço?
-          </Heading>
-          <p className="mt-2 text-muted-foreground">
-            Pesquise por categoria e cidade e fale direto com o profissional.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-3">
-            <Button asChild variant="outline">
-              <Link to="/buscar">Buscar serviços</Link>
-            </Button>
-            <Button asChild variant="ghost">
-              <Link to="/servicos">Ver categorias</Link>
-            </Button>
+        ) : services.length === 0 ? (
+          <div className="mt-8">
+            {hasActiveFilters(search) ? (
+              <SearchEmptyState city={cityLabel} />
+            ) : (
+              <Card className="rounded-2xl p-8 text-center">
+                <Heading variant="h4">
+                  Ainda não há serviços publicados por aqui.
+                </Heading>
+                <p className="mt-2 text-muted-foreground">
+                  Seja o primeiro a anunciar na sua cidade.
+                </p>
+                <Button asChild className="mt-5">
+                  <Link to="/publicar">Publicar meu serviço</Link>
+                </Button>
+              </Card>
+            )}
           </div>
-        </div>
-
-        <div className="rounded-3xl bg-[#202124] p-7 text-white dark:bg-card dark:text-card-foreground">
-          <Heading
-            variant="h2"
-            className="font-extrabold text-white dark:text-card-foreground"
+        ) : (
+          <div
+            aria-busy={isFetching}
+            className={cn(
+              'mt-6 grid grid-cols-2 gap-x-4 gap-y-8 transition-opacity sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5',
+              isPlaceholderData && 'opacity-60',
+            )}
           >
-            Você presta serviços?
-          </Heading>
-          <p className="mt-2 text-white/70 dark:text-muted-foreground">
-            Publique quantos serviços quiser, com fotos e preço, e receba
-            contatos de clientes da sua região.
+            {services.map((service) => (
+              <ServiceCard key={service.id} service={service} />
+            ))}
+
+            {isFetchingNextPage
+              ? SKELETON_KEYS.slice(0, 5).map((key) => (
+                  <ServiceCardSkeleton key={key} />
+                ))
+              : null}
+          </div>
+        )}
+
+        <div ref={sentinel} aria-hidden="true" className="h-px" />
+
+        {!hasNextPage && services.length > 0 ? (
+          <p className="mt-10 text-center text-sm text-muted-foreground">
+            Você chegou ao fim da lista.
           </p>
-          <Button asChild className="mt-5">
-            <Link to="/publicar">Publicar serviço</Link>
-          </Button>
-        </div>
+        ) : null}
       </section>
+
+      {!hasNextPage && !isInitialLoading ? (
+        <>
+          <section className="bg-surface-muted">
+            <div className="mx-auto max-w-7xl px-4 py-14 md:px-6">
+              <Heading variant="h2" className="font-extrabold">
+                Resolver um serviço deve ser simples.
+              </Heading>
+              <div className="mt-6 grid gap-4 md:grid-cols-3">
+                {STEPS.map((step) => (
+                  <Card key={step.number} className="rounded-2xl p-6">
+                    <span className="grid size-9 place-items-center rounded-full bg-brand-yellow font-extrabold text-[#202124]">
+                      {step.number}
+                    </span>
+                    <Heading variant="h4" className="mt-4">
+                      {step.title}
+                    </Heading>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      {step.description}
+                    </p>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="mx-auto grid max-w-7xl gap-4 px-4 py-14 md:grid-cols-2 md:px-6">
+            <div className="rounded-3xl border border-border p-7">
+              <Heading variant="h2" className="font-extrabold">
+                Precisa de um serviço?
+              </Heading>
+              <p className="mt-2 text-muted-foreground">
+                Pesquise por categoria e cidade e fale direto com o profissional.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <Button asChild variant="ghost">
+                  <Link to="/servicos">Ver categorias</Link>
+                </Button>
+              </div>
+            </div>
+
+            <div className="rounded-3xl bg-[#202124] p-7 text-white dark:bg-card dark:text-card-foreground">
+              <Heading
+                variant="h2"
+                className="font-extrabold text-white dark:text-card-foreground"
+              >
+                Você presta serviços?
+              </Heading>
+              <p className="mt-2 text-white/70 dark:text-muted-foreground">
+                Publique quantos serviços quiser, com fotos e preço, e receba
+                contatos de clientes da sua região.
+              </p>
+              <Button asChild className="mt-5">
+                <Link to="/publicar">Publicar serviço</Link>
+              </Button>
+            </div>
+          </section>
+        </>
+      ) : null}
     </>
   )
 }

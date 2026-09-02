@@ -65,6 +65,11 @@ export type Paginated<T> = {
   metadata: PaginationMetadata
 }
 
+export type CursorPage<T> = {
+  data: T[]
+  nextCursor: string | null
+}
+
 export type ApiRequestOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   body?: unknown
@@ -147,6 +152,21 @@ export async function apiPaginated<T>(
     metadata:
       payload?.metadata ??
       { total: 0, perPage: 0, currentPage: 1, lastPage: 1, firstPage: 1 },
+  }
+}
+
+export async function apiCursorPage<T>(
+  path: string,
+  options: ApiRequestOptions = {},
+): Promise<CursorPage<T>> {
+  const payload = await apiRequestRaw<{
+    data: T[]
+    meta?: { nextCursor?: string | null }
+  }>(path, options)
+
+  return {
+    data: payload?.data ?? [],
+    nextCursor: payload?.meta?.nextCursor ?? null,
   }
 }
 

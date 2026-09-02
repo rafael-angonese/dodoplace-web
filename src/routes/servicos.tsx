@@ -32,7 +32,7 @@ function Servicos() {
         {categories.map((category) => (
           <Link
             key={category.id}
-            to="/buscar"
+            to="/"
             search={{ categoria: category.slug }}
             className="rounded-2xl"
           >

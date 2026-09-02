@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as BuscarRouteImport } from './routes/buscar'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as ContaRouteImport } from './routes/conta'
 import { Route as EntrarRouteImport } from './routes/entrar'
@@ -33,11 +32,6 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BuscarRoute = BuscarRouteImport.update({
-  id: '/buscar',
-  path: '/buscar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CadastroRoute = CadastroRouteImport.update({
@@ -104,7 +98,6 @@ const ContaServicosServiceIdRoute = ContaServicosServiceIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/buscar': typeof BuscarRoute
   '/cadastro': typeof CadastroRoute
   '/conta': typeof ContaRoute
   '/entrar': typeof EntrarRoute
@@ -121,7 +114,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/buscar': typeof BuscarRoute
   '/cadastro': typeof CadastroRoute
   '/conta': typeof ContaRoute
   '/entrar': typeof EntrarRoute
@@ -139,7 +131,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/buscar': typeof BuscarRoute
   '/cadastro': typeof CadastroRoute
   '/conta': typeof ContaRoute
   '/entrar': typeof EntrarRoute
@@ -158,7 +149,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/buscar'
     | '/cadastro'
     | '/conta'
     | '/entrar'
@@ -175,7 +165,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/buscar'
     | '/cadastro'
     | '/conta'
     | '/entrar'
@@ -192,7 +181,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
-    | '/buscar'
     | '/cadastro'
     | '/conta'
     | '/entrar'
@@ -210,7 +198,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  BuscarRoute: typeof BuscarRoute
   CadastroRoute: typeof CadastroRoute
   ContaRoute: typeof ContaRoute
   EntrarRoute: typeof EntrarRoute
@@ -239,13 +226,6 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/buscar': {
-      id: '/buscar'
-      path: '/buscar'
-      fullPath: '/buscar'
-      preLoaderRoute: typeof BuscarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cadastro': {
@@ -338,7 +318,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  BuscarRoute: BuscarRoute,
   CadastroRoute: CadastroRoute,
   ContaRoute: ContaRoute,
   EntrarRoute: EntrarRoute,

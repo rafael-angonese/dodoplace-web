@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router'
 import { Logo } from '@/components/brand/logo'
 
 const FOOTER_LINKS = [
-  { to: '/buscar', label: 'Buscar serviços' },
+  { to: '/', label: 'Buscar serviços' },
   { to: '/servicos', label: 'Categorias' },
   { to: '/publicar', label: 'Publicar serviço' },
   { to: '/favoritos', label: 'Favoritos' },

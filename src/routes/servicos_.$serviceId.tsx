@@ -78,14 +78,14 @@ function ServiceDetail() {
   return (
     <article className="mx-auto max-w-7xl px-4 py-8 md:px-6">
       <nav className="mb-4 flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
-        <Link to="/buscar" className="hover:underline">
+        <Link to="/" className="hover:underline">
           Serviços
         </Link>
         {service.category ? (
           <>
             <span aria-hidden="true">·</span>
             <Link
-              to="/buscar"
+              to="/"
               search={{ categoria: service.category.slug }}
               className="hover:underline"
             >
@@ -97,7 +97,7 @@ function ServiceDetail() {
           <>
             <span aria-hidden="true">·</span>
             <Link
-              to="/buscar"
+              to="/"
               search={{ cidadeId: service.city.id }}
               className="hover:underline"
             >

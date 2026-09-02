@@ -14,7 +14,7 @@ export function SearchEmptyState({ city }: { city?: string | null }) {
       </p>
       <div className="mt-5 flex flex-wrap justify-center gap-3">
         <Button asChild variant="outline">
-          <Link to="/buscar">Alterar busca</Link>
+          <Link to="/">Alterar busca</Link>
         </Button>
         <Button asChild>
           <a href="/publicar">Publicar serviço</a>

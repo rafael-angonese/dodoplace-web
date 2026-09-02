@@ -1,5 +1,7 @@
 import {
+  type CursorPage,
   type Paginated,
+  apiCursorPage,
   apiPaginated,
   apiRequest,
   toQueryString,
@@ -74,11 +76,6 @@ export type ServiceReview = {
   updatedAt: string | null
 }
 
-export type HomeSection = {
-  category: ServiceCategory
-  services: Service[]
-}
-
 export type PublicProfile = {
   id: number
   name: string | null
@@ -108,7 +105,7 @@ export type SearchServicesParams = {
   modo?: ServiceMode
   tipoPreco?: PriceType
   ordenar?: ServiceSort
-  pagina?: number
+  cursor?: string
   porPagina?: number
 }
 
@@ -128,8 +125,8 @@ export const servicesApi = {
   search(
     params: SearchServicesParams,
     options: { token?: string | null; signal?: AbortSignal } = {},
-  ): Promise<Paginated<Service>> {
-    return apiPaginated<Service>(`/services${toQueryString(params)}`, options)
+  ): Promise<CursorPage<Service>> {
+    return apiCursorPage<Service>(`/services${toQueryString(params)}`, options)
   },
 
   show(
@@ -137,16 +134,6 @@ export const servicesApi = {
     options: { token?: string | null; signal?: AbortSignal } = {},
   ) {
     return apiRequest<Service>(`/services/${id}`, options)
-  },
-
-  homeFeed(
-    params: { cidadeId?: number; uf?: string },
-    options: { token?: string | null; signal?: AbortSignal } = {},
-  ) {
-    return apiRequest<HomeSection[]>(
-      `/home-feed${toQueryString(params)}`,
-      options,
-    )
   },
 
   profile(id: number, signal?: AbortSignal) {

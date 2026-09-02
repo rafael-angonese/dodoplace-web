@@ -1,6 +1,7 @@
 import { SlidersHorizontal } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
+import { LocationPicker } from '@/components/location/location-picker'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -16,9 +17,11 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { PRICE_TYPE_LABEL, SERVICE_MODE_LABEL } from '@/lib/format'
+import type { City } from '@/lib/locations'
 import type { PriceType, ServiceMode } from '@/lib/services'
 
 export type SearchFiltersValue = {
+  cidadeId?: number
   precoMin?: number
   precoMax?: number
   notaMin?: number
@@ -60,21 +63,25 @@ function countActive(value: SearchFiltersValue) {
 
 export function SearchFilters({
   value,
+  city,
   onApply,
   hasCoordinates,
 }: {
   value: SearchFiltersValue
+  city?: City | null
   onApply: (next: SearchFiltersValue) => void
   hasCoordinates: boolean
 }) {
   const [open, setOpen] = useState(false)
   const [draft, setDraft] = useState(value)
+  const [draftCity, setDraftCity] = useState<City | null>(city ?? null)
 
   useEffect(() => {
     if (open) {
       setDraft(value)
+      setDraftCity(city ?? null)
     }
-  }, [open, value])
+  }, [open, value, city])
 
   const activeCount = countActive(value)
 
@@ -85,8 +92,14 @@ export function SearchFilters({
 
   function clear() {
     setDraft({})
+    setDraftCity(null)
     onApply({})
     setOpen(false)
+  }
+
+  function onCitySelect(next: City | null) {
+    setDraftCity(next)
+    setDraft((current) => ({ ...current, cidadeId: next?.id }))
   }
 
   return (
@@ -107,11 +120,23 @@ export function SearchFilters({
         <SheetHeader>
           <SheetTitle>Filtros</SheetTitle>
           <SheetDescription>
-            Refine os resultados por preço, avaliação e forma de atendimento.
+            Refine os resultados por localização, preço, avaliação e forma de
+            atendimento.
           </SheetDescription>
         </SheetHeader>
 
         <div className="flex flex-1 flex-col gap-6 py-6">
+          <fieldset className="grid gap-3">
+            <legend className="mb-1 text-sm font-bold">Onde</legend>
+            <LocationPicker
+              displayCity={draftCity}
+              onSelect={onCitySelect}
+              triggerClassName="rounded-lg border border-input bg-transparent"
+            />
+          </fieldset>
+
+          <Separator />
+
           <fieldset className="grid gap-3">
             <legend className="mb-1 text-sm font-bold">Faixa de preço</legend>
             <div className="grid grid-cols-2 gap-3">

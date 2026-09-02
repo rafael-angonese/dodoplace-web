@@ -7,11 +7,9 @@ import { cn } from '@/utils/cn'
 export function CategoryCarousel({
   categories,
   activeSlug,
-  search,
 }: {
   categories: ServiceCategory[]
   activeSlug?: string
-  search?: Record<string, unknown>
 }) {
   return (
     <div className="no-scrollbar -mx-4 flex gap-6 overflow-x-auto px-4 md:mx-0 md:px-0">
@@ -21,12 +19,11 @@ export function CategoryCarousel({
         return (
           <Link
             key={category.id}
-            to="/buscar"
-            search={{
-              ...search,
+            to="/"
+            search={(current) => ({
+              ...current,
               categoria: isActive ? undefined : category.slug,
-              pagina: undefined,
-            }}
+            })}
             className={cn(
               'group flex w-20 shrink-0 flex-col items-center gap-2 border-b-2 pb-2.5 text-center transition-colors',
               isActive

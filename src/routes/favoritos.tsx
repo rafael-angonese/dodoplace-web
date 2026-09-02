@@ -77,7 +77,7 @@ function Favoritos() {
             aqui.
           </p>
           <Button asChild className="mt-5">
-            <Link to="/buscar">Explorar serviços</Link>
+            <Link to="/">Explorar serviços</Link>
           </Button>
         </div>
       ) : (

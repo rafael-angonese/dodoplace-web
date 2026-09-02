@@ -7,8 +7,8 @@ import { UserMenu } from '@/components/layout/user-menu'
 import { Button } from '@/components/ui/button'
 
 const NAV_ITEMS = [
-  { to: '/buscar', label: 'Buscar' },
-  { to: '/servicos', label: 'Categorias' },
+  { to: '/', label: 'Buscar', exact: true },
+  { to: '/servicos', label: 'Categorias', exact: false },
 ] as const
 
 export function AppHeader() {
@@ -25,6 +25,7 @@ export function AppHeader() {
             <Link
               key={item.to}
               to={item.to}
+              activeOptions={{ exact: item.exact }}
               className="rounded-md py-1 text-muted-foreground transition-colors hover:text-foreground"
               activeProps={{ className: 'font-semibold text-foreground' }}
             >

@@ -21,7 +21,7 @@ export function NotFound() {
           <Link to="/">Voltar para o início</Link>
         </Button>
         <Button asChild variant="outline">
-          <Link to="/buscar">Buscar serviços</Link>
+          <Link to="/">Buscar serviços</Link>
         </Button>
       </div>
     </section>
