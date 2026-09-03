@@ -1,21 +1,24 @@
-import { Play, Trash2 } from 'lucide-react'
+import { Loader2, RotateCw, Trash2 } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 
 import { Dropzone } from '@/components/ui/dropzone'
+import { apiErrorMessage } from '@/lib/form-errors'
 import { formatFileSize } from '@/lib/format'
 import {
   SERVICE_IMAGE_EXTENSIONS,
   SERVICE_MEDIA_MAX_COUNT,
   SERVICE_PHOTO_MAX_BYTES,
-  SERVICE_VIDEO_EXTENSIONS,
-  SERVICE_VIDEO_MAX_BYTES,
   type ServiceMediaKind,
+  serviceImageContentType,
+  uploadServicePhotoFile,
 } from '@/lib/services'
+import { useAuth } from '@/providers/auth-context'
 
 const ACCEPT = {
   'image/*': SERVICE_IMAGE_EXTENSIONS,
-  'video/*': SERVICE_VIDEO_EXTENSIONS,
+  // Upload de vídeo desabilitado temporariamente:
+  // 'video/*': SERVICE_VIDEO_EXTENSIONS,
 }
 
 export type PendingServiceMedia = {
@@ -23,26 +26,34 @@ export type PendingServiceMedia = {
   file: File
   previewUrl: string
   kind: ServiceMediaKind
+  status: 'uploading' | 'ready' | 'error'
+  key: string | null
 }
 
-function mediaKind(file: File): ServiceMediaKind {
-  if (file.type) {
-    return file.type.startsWith('video/') ? 'video' : 'image'
+// Enquanto o vídeo está desabilitado todo arquivo aceito é imagem:
+// function mediaKind(file: File): ServiceMediaKind {
+//   if (file.type) {
+//     return file.type.startsWith('video/') ? 'video' : 'image'
+//   }
+//
+//   return SERVICE_VIDEO_EXTENSIONS.some((extension) =>
+//     file.name.toLowerCase().endsWith(extension),
+//   )
+//     ? 'video'
+//     : 'image'
+// }
+const MEDIA_KIND: ServiceMediaKind = 'image'
+
+function rejectionReason(file: File) {
+  if (!serviceImageContentType(file)) {
+    return `${file.name} não é uma imagem JPG, PNG ou WEBP.`
   }
 
-  return SERVICE_VIDEO_EXTENSIONS.some((extension) =>
-    file.name.toLowerCase().endsWith(extension),
-  )
-    ? 'video'
-    : 'image'
-}
-
-function rejectionReason(file: File, kind: ServiceMediaKind) {
-  const limit =
-    kind === 'video' ? SERVICE_VIDEO_MAX_BYTES : SERVICE_PHOTO_MAX_BYTES
-
-  if (file.size > limit) {
-    return `${file.name} passa do limite de ${kind === 'video' ? '60' : '8'} MB.`
+  // Upload de vídeo desabilitado temporariamente:
+  // const limit =
+  //   kind === 'video' ? SERVICE_VIDEO_MAX_BYTES : SERVICE_PHOTO_MAX_BYTES
+  if (file.size > SERVICE_PHOTO_MAX_BYTES) {
+    return `${file.name} passa do limite de 8 MB.`
   }
 
   return null
@@ -54,9 +65,10 @@ export function ServiceMediaInput({
   disabled,
 }: {
   media: PendingServiceMedia[]
-  onChange: (media: PendingServiceMedia[]) => void
+  onChange: React.Dispatch<React.SetStateAction<PendingServiceMedia[]>>
   disabled?: boolean
 }) {
+  const { token } = useAuth()
   const nextId = useRef(0)
   const mediaRef = useRef<PendingServiceMedia[]>([])
 
@@ -70,13 +82,32 @@ export function ServiceMediaInput({
     }
   }, [])
 
+  function patch(id: string, changes: Partial<PendingServiceMedia>) {
+    onChange((current) =>
+      current.map((item) => (item.id === id ? { ...item, ...changes } : item)),
+    )
+  }
+
+  async function upload(id: string, file: File) {
+    if (!token) {
+      return
+    }
+
+    try {
+      const key = await uploadServicePhotoFile(token, file)
+      patch(id, { status: 'ready', key })
+    } catch (error) {
+      patch(id, { status: 'error', key: null })
+      toast.error(apiErrorMessage(error))
+    }
+  }
+
   function addFiles(files: File[]) {
     const accepted: PendingServiceMedia[] = []
     let slots = SERVICE_MEDIA_MAX_COUNT - media.length
 
     for (const file of files) {
-      const kind = mediaKind(file)
-      const reason = rejectionReason(file, kind)
+      const reason = rejectionReason(file)
 
       if (reason) {
         toast.error(reason)
@@ -85,7 +116,7 @@ export function ServiceMediaInput({
 
       if (slots <= 0) {
         toast.error(
-          `Você pode enviar até ${SERVICE_MEDIA_MAX_COUNT} arquivos por serviço.`,
+          `Você pode enviar até ${SERVICE_MEDIA_MAX_COUNT} fotos por serviço.`,
         )
         break
       }
@@ -96,13 +127,26 @@ export function ServiceMediaInput({
         id: `media-${nextId.current}`,
         file,
         previewUrl: URL.createObjectURL(file),
-        kind,
+        kind: MEDIA_KIND,
+        status: 'uploading',
+        key: null,
       })
     }
 
-    if (accepted.length > 0) {
-      onChange([...media, ...accepted])
+    if (accepted.length === 0) {
+      return
     }
+
+    onChange((current) => [...current, ...accepted])
+
+    for (const item of accepted) {
+      void upload(item.id, item.file)
+    }
+  }
+
+  function retry(item: PendingServiceMedia) {
+    patch(item.id, { status: 'uploading' })
+    void upload(item.id, item.file)
   }
 
   function remove(id: string) {
@@ -112,23 +156,27 @@ export function ServiceMediaInput({
       URL.revokeObjectURL(target.previewUrl)
     }
 
-    onChange(media.filter((item) => item.id !== id))
+    onChange((current) => current.filter((item) => item.id !== id))
   }
 
   function move(id: string, direction: -1 | 1) {
-    const index = media.findIndex((item) => item.id === id)
-    const target = index + direction
+    onChange((current) => {
+      const index = current.findIndex((item) => item.id === id)
+      const target = index + direction
 
-    if (index < 0 || target < 0 || target >= media.length) {
-      return
-    }
+      if (index < 0 || target < 0 || target >= current.length) {
+        return current
+      }
 
-    const reordered = [...media]
-    const [moved] = reordered.splice(index, 1)
-    reordered.splice(target, 0, moved)
+      const reordered = [...current]
+      const [moved] = reordered.splice(index, 1)
+      reordered.splice(target, 0, moved)
 
-    onChange(reordered)
+      return reordered
+    })
   }
+
+  const uploading = media.filter((item) => item.status === 'uploading').length
 
   return (
     <div className="grid gap-3">
@@ -138,16 +186,16 @@ export function ServiceMediaInput({
         disabled={disabled || media.length >= SERVICE_MEDIA_MAX_COUNT}
         onDrop={addFiles}
         onDropRejected={() =>
-          toast.error('Envie apenas fotos (JPG, PNG, WEBP) ou vídeos (MP4, WEBM, MOV).')
+          toast.error('Envie apenas fotos (JPG, PNG, WEBP).')
         }
-        placeholder="Clique ou arraste fotos e vídeos aqui"
+        placeholder="Clique ou arraste fotos aqui"
         dropZoneClassName="rounded-2xl"
       />
 
       <p className="text-xs text-muted-foreground">
-        {media.length}/{SERVICE_MEDIA_MAX_COUNT} arquivos · a primeira foto é a
-        capa do anúncio · fotos até 8 MB (JPG, PNG, WEBP) e vídeos até 60 MB
-        (MP4, WEBM, MOV).
+        {media.length}/{SERVICE_MEDIA_MAX_COUNT} fotos · a primeira foto é a
+        capa do anúncio · até 8 MB por foto (JPG, PNG, WEBP).
+        {uploading > 0 ? ` · enviando ${uploading}...` : null}
       </p>
 
       {media.length > 0 ? (
@@ -157,28 +205,45 @@ export function ServiceMediaInput({
               key={item.id}
               className="group relative overflow-hidden rounded-xl bg-surface-muted"
             >
+              {/* Preview de vídeo desabilitado temporariamente:
               {item.kind === 'video' ? (
-                <>
-                  <video
-                    src={item.previewUrl}
-                    muted
-                    playsInline
-                    preload="metadata"
-                    className="aspect-square w-full object-cover"
-                  >
-                    <track kind="captions" />
-                  </video>
-                  <span className="pointer-events-none absolute inset-0 grid place-items-center bg-black/25 text-white">
-                    <Play aria-hidden="true" className="size-6" />
-                  </span>
-                </>
-              ) : (
-                <img
+                <video
                   src={item.previewUrl}
-                  alt={item.file.name}
+                  muted
+                  playsInline
+                  preload="metadata"
                   className="aspect-square w-full object-cover"
-                />
-              )}
+                >
+                  <track kind="captions" />
+                </video>
+              ) : null} */}
+              <img
+                src={item.previewUrl}
+                alt={item.file.name}
+                className={
+                  item.status === 'ready'
+                    ? 'aspect-square w-full object-cover'
+                    : 'aspect-square w-full object-cover opacity-50'
+                }
+              />
+
+              {item.status === 'uploading' ? (
+                <span className="pointer-events-none absolute inset-0 grid place-items-center bg-black/25 text-white">
+                  <Loader2 aria-hidden="true" className="size-6 animate-spin" />
+                  <span className="sr-only">Enviando {item.file.name}</span>
+                </span>
+              ) : null}
+
+              {item.status === 'error' ? (
+                <button
+                  type="button"
+                  onClick={() => retry(item)}
+                  className="absolute inset-0 grid place-items-center gap-1 bg-danger/70 text-xs font-semibold text-white"
+                >
+                  <RotateCw aria-hidden="true" className="size-5" />
+                  Tentar de novo
+                </button>
+              ) : null}
 
               {index === 0 ? (
                 <span className="absolute top-2 left-2 rounded-full bg-background px-2 py-0.5 text-[11px] font-bold">

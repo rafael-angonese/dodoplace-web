@@ -8,24 +8,28 @@ import {
   SERVICE_IMAGE_EXTENSIONS,
   SERVICE_MEDIA_MAX_COUNT,
   SERVICE_PHOTO_MAX_BYTES,
-  SERVICE_VIDEO_EXTENSIONS,
-  SERVICE_VIDEO_MAX_BYTES,
   type ServicePhoto,
+  serviceImageContentType,
   servicesApi,
+  uploadServicePhoto,
 } from '@/lib/services'
 import { useAuth } from '@/providers/auth-context'
 
 const MAX_PHOTOS = SERVICE_MEDIA_MAX_COUNT
-const ACCEPT = [...SERVICE_IMAGE_EXTENSIONS, ...SERVICE_VIDEO_EXTENSIONS].join(
-  ',',
-)
+// Upload de vídeo desabilitado temporariamente:
+// const ACCEPT = [...SERVICE_IMAGE_EXTENSIONS, ...SERVICE_VIDEO_EXTENSIONS].join(',')
+const ACCEPT = SERVICE_IMAGE_EXTENSIONS.join(',')
 
 function rejectionReason(file: File) {
-  const isVideo = file.type.startsWith('video/')
-  const limit = isVideo ? SERVICE_VIDEO_MAX_BYTES : SERVICE_PHOTO_MAX_BYTES
+  if (!serviceImageContentType(file)) {
+    return `${file.name} não é uma imagem JPG, PNG ou WEBP.`
+  }
 
-  if (file.size > limit) {
-    return `${file.name} passa do limite de ${isVideo ? '60' : '8'} MB.`
+  // Upload de vídeo desabilitado temporariamente:
+  // const isVideo = file.type.startsWith('video/')
+  // const limit = isVideo ? SERVICE_VIDEO_MAX_BYTES : SERVICE_PHOTO_MAX_BYTES
+  if (file.size > SERVICE_PHOTO_MAX_BYTES) {
+    return `${file.name} passa do limite de 8 MB.`
   }
 
   return null
@@ -55,9 +59,7 @@ export function ServicePhotoManager({
     const room = MAX_PHOTOS - photos.length
 
     if (room <= 0) {
-      toast.error(
-        `Cada serviço aceita no máximo ${MAX_PHOTOS} fotos e vídeos.`,
-      )
+      toast.error(`Cada serviço aceita no máximo ${MAX_PHOTOS} fotos.`)
       return
     }
 
@@ -72,7 +74,7 @@ export function ServicePhotoManager({
       }
 
       try {
-        const photo = await servicesApi.addPhoto(token, serviceId, file)
+        const photo = await uploadServicePhoto(token, serviceId, file)
         setPhotos((current) => [...current, photo])
       } catch (error) {
         toast.error(apiErrorMessage(error))
@@ -133,7 +135,7 @@ export function ServicePhotoManager({
     <div className="grid gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="font-semibold">Fotos e vídeos do serviço</p>
+          <p className="font-semibold">Fotos do serviço</p>
           <p className="text-sm text-muted-foreground">
             {photos.length}/{MAX_PHOTOS} · a primeira foto é a capa do anúncio.
           </p>
@@ -159,14 +161,14 @@ export function ServicePhotoManager({
           ) : (
             <ImagePlus aria-hidden="true" />
           )}
-          {isUploading ? 'Enviando...' : 'Adicionar arquivos'}
+          {isUploading ? 'Enviando...' : 'Adicionar fotos'}
         </Button>
       </div>
 
       {photos.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-          Anúncios com fotos e vídeos recebem muito mais contatos. Envie ao
-          menos uma foto.
+          Anúncios com fotos recebem muito mais contatos. Envie ao menos uma
+          foto.
         </p>
       ) : (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">

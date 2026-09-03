@@ -1,4 +1,5 @@
 import {
+  ApiError,
   type CursorPage,
   type Paginated,
   apiCursorPage,
@@ -31,17 +32,35 @@ export const SERVICE_MEDIA_MAX_COUNT = 10
 
 export const SERVICE_PHOTO_MAX_BYTES = 8 * 1024 * 1024
 
-export const SERVICE_VIDEO_MAX_BYTES = 60 * 1024 * 1024
-
 export const SERVICE_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp']
 
-export const SERVICE_VIDEO_EXTENSIONS = ['.mp4', '.webm', '.mov', '.m4v']
+export const SERVICE_IMAGE_CONTENT_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+]
+
+// Upload de vídeo desabilitado temporariamente. Reabilitar junto com o backend:
+// export const SERVICE_VIDEO_MAX_BYTES = 60 * 1024 * 1024
+// export const SERVICE_VIDEO_EXTENSIONS = ['.mp4', '.webm', '.mov', '.m4v']
+// export const SERVICE_VIDEO_CONTENT_TYPES = [
+//   'video/mp4',
+//   'video/webm',
+//   'video/quicktime',
+//   'video/x-m4v',
+// ]
 
 export type ServicePhoto = {
   id: number
   kind: ServiceMediaKind
   url: string | null
   position: number
+}
+
+export type ServicePhotoUpload = {
+  key: string
+  uploadUrl: string
+  headers: Record<string, string>
 }
 
 export type UserSummary = {
@@ -153,7 +172,10 @@ export const servicesApi = {
     return apiRequest<PublicProfile>(`/profiles/${id}`, { signal })
   },
 
-  create(token: string, input: ServiceInput & { publish?: boolean }) {
+  create(
+    token: string,
+    input: ServiceInput & { publish?: boolean; photoKeys?: string[] },
+  ) {
     return apiRequest<Service>('/services', {
       method: 'POST',
       body: input,
@@ -177,13 +199,21 @@ export const servicesApi = {
     return apiRequest<void>(`/services/${id}`, { method: 'DELETE', token })
   },
 
-  addPhoto(token: string, id: number, file: File) {
-    const body = new FormData()
-    body.append('photo', file)
+  createPhotoUploadUrl(
+    token: string,
+    input: { contentType: string; size: number },
+  ) {
+    return apiRequest<ServicePhotoUpload>('/services/photos/upload-url', {
+      method: 'POST',
+      body: input,
+      token,
+    })
+  },
 
+  addPhoto(token: string, id: number, key: string) {
     return apiRequest<ServicePhoto>(`/services/${id}/photos`, {
       method: 'POST',
-      body,
+      body: { key },
       token,
     })
   },
@@ -247,4 +277,74 @@ export const servicesApi = {
   favoriteIds(token: string, signal?: AbortSignal) {
     return apiRequest<number[]>('/account/favorites/ids', { token, signal })
   },
+}
+
+const EXTENSION_CONTENT_TYPES: Record<string, string> = {
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.png': 'image/png',
+  '.webp': 'image/webp',
+}
+
+export function serviceImageContentType(file: File) {
+  const type = file.type === 'image/jpg' ? 'image/jpeg' : file.type
+
+  if (SERVICE_IMAGE_CONTENT_TYPES.includes(type)) {
+    return type
+  }
+
+  const extension = file.name.toLowerCase().match(/\.[a-z0-9]+$/)?.[0]
+
+  return extension ? (EXTENSION_CONTENT_TYPES[extension] ?? null) : null
+}
+
+async function putToStorage(upload: ServicePhotoUpload, file: File) {
+  let response: Response
+
+  try {
+    response = await fetch(upload.uploadUrl, {
+      method: 'PUT',
+      headers: upload.headers,
+      body: file,
+    })
+  } catch {
+    throw new ApiError(0, [
+      { message: 'Não foi possível enviar o arquivo para o armazenamento.' },
+    ])
+  }
+
+  if (!response.ok) {
+    throw new ApiError(response.status, [
+      { message: 'Não foi possível enviar o arquivo para o armazenamento.' },
+    ])
+  }
+}
+
+export async function uploadServicePhotoFile(token: string, file: File) {
+  const contentType = serviceImageContentType(file)
+
+  if (!contentType) {
+    throw new ApiError(0, [
+      { message: `${file.name} não é uma imagem JPG, PNG ou WEBP.` },
+    ])
+  }
+
+  const upload = await servicesApi.createPhotoUploadUrl(token, {
+    contentType,
+    size: file.size,
+  })
+
+  await putToStorage(upload, file)
+
+  return upload.key
+}
+
+export async function uploadServicePhoto(
+  token: string,
+  serviceId: number,
+  file: File,
+) {
+  const key = await uploadServicePhotoFile(token, file)
+
+  return servicesApi.addPhoto(token, serviceId, key)
 }

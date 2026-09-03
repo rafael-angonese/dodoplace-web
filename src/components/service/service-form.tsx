@@ -33,7 +33,7 @@ import type {
 
 export type ServiceFormValues = ServiceInput & {
   publish: boolean
-  media: File[]
+  photoKeys: string[]
 }
 
 type FieldErrors = Partial<
@@ -70,7 +70,7 @@ type ServiceCopy = {
 
 const COPY: Record<ServiceType, ServiceCopy> = {
   offer: {
-    mediaLabel: 'Fotos e vídeos',
+    mediaLabel: 'Fotos',
     mediaHint: null,
     mediaRequired: true,
     mediaError: 'Envie pelo menos uma foto do serviço.',
@@ -92,7 +92,7 @@ const COPY: Record<ServiceType, ServiceCopy> = {
     publishDescription: 'Desligue para salvar como rascunho e publicar depois.',
   },
   request: {
-    mediaLabel: 'Fotos e vídeos (opcional)',
+    mediaLabel: 'Fotos (opcional)',
     mediaHint:
       'Fotos ajudam os profissionais a entender o que você precisa e a dar um orçamento mais preciso.',
     mediaRequired: false,
@@ -133,10 +133,14 @@ function validate(
 ): FieldErrors {
   const errors: FieldErrors = {}
 
-  if (
+  if (media?.some((item) => item.status === 'uploading')) {
+    errors.media = 'Aguarde o envio das fotos terminar.'
+  } else if (media?.some((item) => item.status === 'error')) {
+    errors.media = 'Reenvie as fotos que falharam ou remova-as.'
+  } else if (
     media &&
     copy.mediaRequired &&
-    !media.some((item) => item.kind === 'image')
+    !media.some((item) => item.status === 'ready')
   ) {
     errors.media = copy.mediaError
   }
@@ -210,6 +214,7 @@ export function ServiceForm({
   const copy = COPY[type]
   const isEditing = service !== undefined
   const requiresPrice = priceType !== 'quote'
+  const isUploading = media.some((item) => item.status === 'uploading')
 
   async function submit(event: React.FormEvent) {
     event.preventDefault()
@@ -226,7 +231,9 @@ export function ServiceForm({
       coverageRadiusKm: coverage ? Number(coverage) : null,
       neighborhood: neighborhood.trim() || null,
       publish: isEditing ? publish : true,
-      media: media.map((item) => item.file),
+      photoKeys: media
+        .filter((item) => item.status === 'ready' && item.key !== null)
+        .map((item) => item.key as string),
     }
 
     const found = validate(values, isEditing ? null : media, copy)
@@ -431,8 +438,10 @@ export function ServiceForm({
             Voltar
           </Button>
         ) : null}
-        <Button type="submit" size="lg" disabled={isSaving}>
-          {isSaving ? 'Salvando...' : submitLabel}
+        <Button type="submit" size="lg" disabled={isSaving || isUploading}>
+          {isUploading ? 'Enviando fotos...' : null}
+          {isSaving ? 'Salvando...' : null}
+          {isSaving || isUploading ? null : submitLabel}
         </Button>
       </div>
     </form>

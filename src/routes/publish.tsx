@@ -44,20 +44,6 @@ const STEP_COPY: Record<
   },
 }
 
-async function uploadMedia(token: string, serviceId: number, files: File[]) {
-  let failed = 0
-
-  for (const file of files) {
-    try {
-      await servicesApi.addPhoto(token, serviceId, file)
-    } catch {
-      failed += 1
-    }
-  }
-
-  return failed
-}
-
 function StepIndicator({ step }: { step: number }) {
   return (
     <ol className="flex flex-wrap items-center gap-3 text-sm">
@@ -165,17 +151,10 @@ function Publicar() {
               initialCity={city}
               submitLabel={copy.submitLabel}
               onBack={() => setType(null)}
-              onSubmit={async ({ media, ...input }) => {
+              onSubmit={async (input) => {
                 const service = await servicesApi.create(token, input)
-                const failed = await uploadMedia(token, service.id, media)
 
-                if (failed > 0) {
-                  toast.error(
-                    `Anúncio publicado, mas ${failed} arquivo(s) não foram enviados. Tente novamente na edição.`,
-                  )
-                } else {
-                  toast.success(copy.success)
-                }
+                toast.success(copy.success)
 
                 navigate({
                   to: '/account/services/$serviceId',
