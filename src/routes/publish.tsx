@@ -33,14 +33,14 @@ const STEP_COPY: Record<
     description:
       'Descreva o que você faz. Você pode publicar quantos serviços quiser no mesmo perfil.',
     submitLabel: 'Publicar serviço',
-    success: 'Serviço publicado.',
+    success: 'Serviço enviado para análise.',
   },
   request: {
     heading: 'Publicar um pedido de serviço',
     description:
       'Conte o que você precisa. Profissionais da sua região vão ver o pedido e entrar em contato.',
     submitLabel: 'Publicar pedido',
-    success: 'Pedido publicado.',
+    success: 'Pedido enviado para análise.',
   },
 }
 

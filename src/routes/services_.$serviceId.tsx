@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 import { CategoryIcon } from '@/components/discovery/category-icon'
 import { FavoriteButton } from '@/components/discovery/favorite-button'
 import { UserReviews } from '@/components/profile/user-reviews'
+import { ServiceModerationNotice } from '@/components/service/service-moderation-notice'
 import { ProviderPanel } from '@/components/service/provider-panel'
 import { ServiceGallery } from '@/components/service/service-gallery'
 import { Badge } from '@/components/ui/badge'
@@ -79,6 +80,12 @@ function ServiceDetail() {
 
   return (
     <article className="mx-auto max-w-7xl px-4 py-8 md:px-6">
+      {isOwner ? (
+        <div className="mb-4">
+          <ServiceModerationNotice service={service} />
+        </div>
+      ) : null}
+
       <nav className="mb-4 flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
         <Link to="/" className="hover:underline">
           Serviços

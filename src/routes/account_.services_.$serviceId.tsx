@@ -1,9 +1,10 @@
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 import { ServiceForm } from '@/components/service/service-form'
+import { ServiceModerationNotice } from '@/components/service/service-moderation-notice'
 import { ServicePhotoManager } from '@/components/service/service-photo-manager'
 import { ServiceTypeCards } from '@/components/service/service-type-cards'
 import { Button } from '@/components/ui/button'
@@ -41,29 +42,36 @@ function EditarServico() {
     }
   }, [status, navigate, serviceId])
 
-  useEffect(() => {
-    if (!token) {
-      return
-    }
+  const load = useCallback(
+    (signal?: AbortSignal) => {
+      if (!token) {
+        return
+      }
 
+      servicesApi
+        .show(id, { token, signal })
+        .then((found) => {
+          setService(found)
+          setError(null)
+        })
+        .catch((cause: unknown) => {
+          if (isAbortError(cause)) {
+            return
+          }
+
+          setError(apiErrorMessage(cause))
+        })
+    },
+    [id, token],
+  )
+
+  useEffect(() => {
     const controller = new AbortController()
 
-    servicesApi
-      .show(id, { token, signal: controller.signal })
-      .then((found) => {
-        setService(found)
-        setError(null)
-      })
-      .catch((cause: unknown) => {
-        if (isAbortError(cause)) {
-          return
-        }
-
-        setError(apiErrorMessage(cause))
-      })
+    load(controller.signal)
 
     return () => controller.abort()
-  }, [id, token])
+  }, [load])
 
   if (error) {
     return (
@@ -119,9 +127,14 @@ function EditarServico() {
       <p className="mt-2 text-muted-foreground">{service.title}</p>
 
       <div className="mt-8">
+        <ServiceModerationNotice service={service} />
+      </div>
+
+      <div className="mt-8">
         <ServicePhotoManager
           serviceId={service.id}
           photos={service.photos ?? []}
+          onPhotosChanged={() => load()}
         />
       </div>
 

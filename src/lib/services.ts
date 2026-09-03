@@ -16,7 +16,33 @@ export type PriceType = 'hourly' | 'daily' | 'fixed' | 'quote'
 
 export type ServiceMode = 'at_client' | 'at_provider' | 'remote'
 
-export type ServiceStatus = 'draft' | 'published' | 'archived'
+export type ServiceStatus =
+  | 'draft'
+  | 'pending'
+  | 'published'
+  | 'rejected'
+  | 'archived'
+
+export type ServiceOwnerStatus = 'draft' | 'published' | 'archived'
+
+export const SERVICE_STATUS_LABEL: Record<ServiceStatus, string> = {
+  draft: 'Rascunho',
+  pending: 'Em análise',
+  published: 'Publicado',
+  rejected: 'Recusado',
+  archived: 'Arquivado',
+}
+
+export const SERVICE_STATUS_BADGE: Record<
+  ServiceStatus,
+  'success' | 'warning' | 'danger' | 'secondary'
+> = {
+  draft: 'secondary',
+  pending: 'warning',
+  published: 'success',
+  rejected: 'danger',
+  archived: 'secondary',
+}
 
 export type ServiceSort =
   | 'relevance'
@@ -95,6 +121,8 @@ export type Service = {
   city?: City
   photos?: ServicePhoto[]
   provider?: UserSummary
+  rejectionReason: string | null
+  moderatedAt: string | null
   publishedAt: string | null
   createdAt: string
   updatedAt: string | null
@@ -186,7 +214,7 @@ export const servicesApi = {
   update(
     token: string,
     id: number,
-    input: Partial<ServiceInput> & { status?: ServiceStatus },
+    input: Partial<ServiceInput> & { status?: ServiceOwnerStatus },
   ) {
     return apiRequest<Service>(`/services/${id}`, {
       method: 'PUT',

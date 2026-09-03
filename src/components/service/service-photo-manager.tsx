@@ -38,9 +38,11 @@ function rejectionReason(file: File) {
 export function ServicePhotoManager({
   serviceId,
   photos: initial,
+  onPhotosChanged,
 }: {
   serviceId: number
   photos: ServicePhoto[]
+  onPhotosChanged?: () => void
 }) {
   const { token } = useAuth()
   const inputRef = useRef<HTMLInputElement>(null)
@@ -82,6 +84,7 @@ export function ServicePhotoManager({
     }
 
     setIsUploading(false)
+    onPhotosChanged?.()
   }
 
   async function remove(photoId: number) {

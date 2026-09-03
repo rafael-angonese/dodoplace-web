@@ -22,7 +22,9 @@ import { apiErrorMessage } from '@/lib/form-errors'
 import { SERVICE_TYPE_BADGE, formatServicePrice } from '@/lib/format'
 import {
   type Service,
-  type ServiceStatus,
+  SERVICE_STATUS_BADGE,
+  SERVICE_STATUS_LABEL,
+  type ServiceOwnerStatus,
   serviceCover,
   servicesApi,
 } from '@/lib/services'
@@ -35,11 +37,7 @@ export const Route = createFileRoute('/account_/services')({
 
 const SKELETON_KEYS = ['s1', 's2', 's3']
 
-const STATUS_LABEL: Record<ServiceStatus, string> = {
-  published: 'Publicado',
-  draft: 'Rascunho',
-  archived: 'Arquivado',
-}
+
 
 function MeusServicos() {
   const navigate = useNavigate()
@@ -81,8 +79,10 @@ function MeusServicos() {
       return
     }
 
-    const next: ServiceStatus =
-      service.status === 'published' ? 'draft' : 'published'
+    const next: ServiceOwnerStatus =
+      service.status === 'published' || service.status === 'pending'
+        ? 'draft'
+        : 'published'
 
     try {
       const updated = await servicesApi.update(token, service.id, {
@@ -94,7 +94,9 @@ function MeusServicos() {
       )
 
       toast.success(
-        next === 'published' ? 'Anúncio publicado.' : 'Anúncio despublicado.',
+        next === 'published'
+          ? 'Anúncio enviado para análise.'
+          : 'Anúncio despublicado.',
       )
     } catch (error) {
       toast.error(apiErrorMessage(error))
@@ -195,12 +197,8 @@ function MeusServicos() {
                     >
                       {SERVICE_TYPE_BADGE[service.type]}
                     </Badge>
-                    <Badge
-                      variant={
-                        service.status === 'published' ? 'success' : 'secondary'
-                      }
-                    >
-                      {STATUS_LABEL[service.status]}
+                    <Badge variant={SERVICE_STATUS_BADGE[service.status]}>
+                      {SERVICE_STATUS_LABEL[service.status]}
                     </Badge>
                     <span className="text-sm text-muted-foreground">
                       {service.category?.name}
@@ -215,8 +213,22 @@ function MeusServicos() {
                   </p>
 
                   <p className="text-sm text-muted-foreground">
-                    {service.photos?.length ?? 0} arquivos
+                    {service.photos?.length ?? 0} fotos
                   </p>
+
+                  {service.status === 'pending' ? (
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Só você vê este anúncio enquanto a revisão de conteúdo não
+                      termina.
+                    </p>
+                  ) : null}
+
+                  {service.status === 'rejected' ? (
+                    <p className="mt-1 text-sm text-danger">
+                      {service.rejectionReason ??
+                        'O anúncio não passou na revisão de conteúdo.'}
+                    </p>
+                  ) : null}
 
                   <div className="mt-3 flex flex-wrap gap-2">
                     <Button asChild variant="outline" size="sm">
@@ -244,7 +256,8 @@ function MeusServicos() {
                       size="sm"
                       onClick={() => togglePublish(service)}
                     >
-                      {service.status === 'published'
+                      {service.status === 'published' ||
+                      service.status === 'pending'
                         ? 'Despublicar'
                         : 'Publicar'}
                     </Button>

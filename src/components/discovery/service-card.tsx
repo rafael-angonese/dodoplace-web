@@ -8,7 +8,11 @@ import {
   formatRating,
   formatServicePrice,
 } from '@/lib/format'
-import { type Service, serviceCover } from '@/lib/services'
+import {
+  SERVICE_STATUS_LABEL,
+  type Service,
+  serviceCover,
+} from '@/lib/services'
 import { cn } from '@/utils/cn'
 
 function Cover({ service }: { service: Service }) {
@@ -63,11 +67,11 @@ export function ServiceCard({
               Pedido
             </span>
           ) : null}
-          {service.status === 'draft' ? (
+          {service.status === 'published' ? null : (
             <span className="rounded-full bg-background px-2.5 py-1 text-[11px] font-bold">
-              Rascunho
+              {SERVICE_STATUS_LABEL[service.status]}
             </span>
-          ) : null}
+          )}
         </div>
       </div>
 
