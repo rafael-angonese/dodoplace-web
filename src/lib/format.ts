@@ -1,7 +1,7 @@
 import { format, formatDistanceToNowStrict, isToday, isYesterday } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
-import type { PriceType, ServiceMode } from '@/lib/services'
+import type { PriceType, ServiceMode, ServiceType } from '@/lib/services'
 
 const currency = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
@@ -33,6 +33,23 @@ export const SERVICE_MODE_LABEL: Record<ServiceMode, string> = {
   at_client: 'Atende em domicílio',
   at_provider: 'No local do profissional',
   remote: 'Atende a distância',
+}
+
+export const SERVICE_REQUEST_MODE_LABEL: Record<ServiceMode, string> = {
+  at_client: 'No meu endereço',
+  at_provider: 'Posso ir até o profissional',
+  remote: 'Pode ser feito a distância',
+}
+
+export const SERVICE_TYPE_BADGE: Record<ServiceType, string> = {
+  offer: 'Serviço',
+  request: 'Pedido',
+}
+
+export function serviceModeLabel(mode: ServiceMode, type: ServiceType) {
+  return type === 'request'
+    ? SERVICE_REQUEST_MODE_LABEL[mode]
+    : SERVICE_MODE_LABEL[mode]
 }
 
 export function formatPrice(cents: number | null) {

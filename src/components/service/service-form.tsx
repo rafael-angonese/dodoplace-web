@@ -21,13 +21,14 @@ import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/text-area'
 import { ApiError } from '@/lib/api'
 import type { ServiceCategory } from '@/lib/categories'
-import { PRICE_TYPE_LABEL, SERVICE_MODE_LABEL } from '@/lib/format'
+import { PRICE_TYPE_LABEL, serviceModeLabel } from '@/lib/format'
 import type { City } from '@/lib/locations'
 import type {
   PriceType,
   Service,
   ServiceInput,
   ServiceMode,
+  ServiceType,
 } from '@/lib/services'
 
 export type ServiceFormValues = ServiceInput & {
@@ -40,10 +41,80 @@ type FieldErrors = Partial<
 >
 
 const PRICE_TYPES = Object.keys(PRICE_TYPE_LABEL) as PriceType[]
-const SERVICE_MODES = Object.keys(SERVICE_MODE_LABEL) as ServiceMode[]
+const SERVICE_MODES: ServiceMode[] = ['at_client', 'at_provider', 'remote']
 
 const MIN_TITLE = 6
 const MIN_DESCRIPTION = 30
+
+type ServiceCopy = {
+  mediaLabel: string
+  mediaHint: string | null
+  mediaRequired: boolean
+  mediaError: string
+  titleLabel: string
+  titlePlaceholder: string
+  titleError: string
+  descriptionLabel: string
+  descriptionPlaceholder: string
+  descriptionError: string
+  cityLabel: string
+  cityError: string
+  priceTypeLabel: string
+  priceLabel: string
+  priceQuoteLabel: string
+  modeLabel: string
+  coverageLabel: string
+  publishTitle: string
+  publishDescription: string
+}
+
+const COPY: Record<ServiceType, ServiceCopy> = {
+  offer: {
+    mediaLabel: 'Fotos e vídeos',
+    mediaHint: null,
+    mediaRequired: true,
+    mediaError: 'Envie pelo menos uma foto do serviço.',
+    titleLabel: 'Título do serviço',
+    titlePlaceholder: 'Ex.: Instalação de chuveiro elétrico',
+    titleError: `O título precisa ter ao menos ${MIN_TITLE} caracteres.`,
+    descriptionLabel: 'Descrição',
+    descriptionPlaceholder:
+      'Explique o que está incluído, como você trabalha, o que o cliente precisa providenciar e o prazo médio.',
+    descriptionError: `Descreva o serviço com ao menos ${MIN_DESCRIPTION} caracteres.`,
+    cityLabel: 'Cidade base',
+    cityError: 'Escolha a cidade onde você atende.',
+    priceTypeLabel: 'Como você cobra',
+    priceLabel: 'Valor (R$)',
+    priceQuoteLabel: 'Valor (definido no orçamento)',
+    modeLabel: 'Forma de atendimento',
+    coverageLabel: 'Raio de atendimento em km (opcional)',
+    publishTitle: 'Publicar agora',
+    publishDescription: 'Desligue para salvar como rascunho e publicar depois.',
+  },
+  request: {
+    mediaLabel: 'Fotos e vídeos (opcional)',
+    mediaHint:
+      'Fotos ajudam os profissionais a entender o que você precisa e a dar um orçamento mais preciso.',
+    mediaRequired: false,
+    mediaError: '',
+    titleLabel: 'O que você precisa?',
+    titlePlaceholder: 'Ex.: Preciso instalar um chuveiro elétrico',
+    titleError: `O resumo precisa ter ao menos ${MIN_TITLE} caracteres.`,
+    descriptionLabel: 'Detalhes do pedido',
+    descriptionPlaceholder:
+      'Explique o problema, o que você já tentou, o prazo desejado e o que já tem em casa (materiais, peças, ferramentas).',
+    descriptionError: `Detalhe o pedido com ao menos ${MIN_DESCRIPTION} caracteres.`,
+    cityLabel: 'Cidade do serviço',
+    cityError: 'Escolha a cidade onde o serviço será feito.',
+    priceTypeLabel: 'Como pretende pagar',
+    priceLabel: 'Valor previsto (R$)',
+    priceQuoteLabel: 'Valor (a combinar no orçamento)',
+    modeLabel: 'Onde o serviço será feito',
+    coverageLabel: 'Distância máxima que você aceita em km (opcional)',
+    publishTitle: 'Publicar agora',
+    publishDescription: 'Desligue para salvar como rascunho e publicar depois.',
+  },
+}
 
 function centsToInput(cents: number | null) {
   return cents === null ? '' : String(cents / 100).replace('.', ',')
@@ -58,19 +129,24 @@ function inputToCents(value: string) {
 function validate(
   values: ServiceFormValues,
   media: PendingServiceMedia[] | null,
+  copy: ServiceCopy,
 ): FieldErrors {
   const errors: FieldErrors = {}
 
-  if (media && !media.some((item) => item.kind === 'image')) {
-    errors.media = 'Envie pelo menos uma foto do serviço.'
+  if (
+    media &&
+    copy.mediaRequired &&
+    !media.some((item) => item.kind === 'image')
+  ) {
+    errors.media = copy.mediaError
   }
 
   if (values.title.trim().length < MIN_TITLE) {
-    errors.title = `O título precisa ter ao menos ${MIN_TITLE} caracteres.`
+    errors.title = copy.titleError
   }
 
   if (values.description.trim().length < MIN_DESCRIPTION) {
-    errors.description = `Descreva o serviço com ao menos ${MIN_DESCRIPTION} caracteres.`
+    errors.description = copy.descriptionError
   }
 
   if (!values.categoryId) {
@@ -78,7 +154,7 @@ function validate(
   }
 
   if (!values.cityId) {
-    errors.cityId = 'Escolha a cidade onde você atende.'
+    errors.cityId = copy.cityError
   }
 
   if (values.priceType !== 'quote' && values.priceCents === null) {
@@ -88,25 +164,33 @@ function validate(
   return errors
 }
 
+function defaultPriceType(type: ServiceType) {
+  return type === 'request' ? 'quote' : 'fixed'
+}
+
 export function ServiceForm({
+  type,
   categories,
   service,
   initialCity,
   submitLabel,
   onSubmit,
+  onBack,
 }: {
+  type: ServiceType
   categories: ServiceCategory[]
   service?: Service
   initialCity?: City | null
   submitLabel: string
   onSubmit: (values: ServiceFormValues) => Promise<void>
+  onBack?: () => void
 }) {
   const [city, setCity] = useState<City | null>(initialCity ?? null)
   const [title, setTitle] = useState(service?.title ?? '')
   const [description, setDescription] = useState(service?.description ?? '')
   const [categoryId, setCategoryId] = useState(service?.categoryId ?? 0)
   const [priceType, setPriceType] = useState<PriceType>(
-    service?.priceType ?? 'fixed',
+    service?.priceType ?? defaultPriceType(type),
   )
   const [price, setPrice] = useState(centsToInput(service?.priceCents ?? null))
   const [serviceMode, setServiceMode] = useState<ServiceMode>(
@@ -123,6 +207,7 @@ export function ServiceForm({
   const [errors, setErrors] = useState<FieldErrors>({})
   const [isSaving, setIsSaving] = useState(false)
 
+  const copy = COPY[type]
   const isEditing = service !== undefined
   const requiresPrice = priceType !== 'quote'
 
@@ -130,6 +215,7 @@ export function ServiceForm({
     event.preventDefault()
 
     const values: ServiceFormValues = {
+      type,
       title: title.trim(),
       description: description.trim(),
       categoryId,
@@ -143,7 +229,7 @@ export function ServiceForm({
       media: media.map((item) => item.file),
     }
 
-    const found = validate(values, isEditing ? null : media)
+    const found = validate(values, isEditing ? null : media, copy)
     setErrors(found)
 
     if (Object.keys(found).length > 0) {
@@ -159,7 +245,7 @@ export function ServiceForm({
         setErrors(error.fieldErrors as FieldErrors)
         toast.error(error.generalMessage ?? error.message)
       } else {
-        toast.error('Não foi possível salvar o serviço.')
+        toast.error('Não foi possível salvar o anúncio.')
       }
     } finally {
       setIsSaving(false)
@@ -170,23 +256,26 @@ export function ServiceForm({
     <form onSubmit={submit} className="grid gap-6" noValidate>
       {isEditing ? null : (
         <div className="grid gap-1.5">
-          <Label>Fotos e vídeos</Label>
+          <Label>{copy.mediaLabel}</Label>
           <ServiceMediaInput
             media={media}
             onChange={setMedia}
             disabled={isSaving}
           />
+          {copy.mediaHint ? (
+            <p className="text-xs text-muted-foreground">{copy.mediaHint}</p>
+          ) : null}
           <FieldError message={errors.media} />
         </div>
       )}
 
       <div className="grid gap-1.5">
-        <Label htmlFor="service-title">Título do serviço</Label>
+        <Label htmlFor="service-title">{copy.titleLabel}</Label>
         <Input
           id="service-title"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
-          placeholder="Ex.: Instalação de chuveiro elétrico"
+          placeholder={copy.titlePlaceholder}
           maxLength={120}
         />
         <FieldError message={errors.title} />
@@ -216,12 +305,12 @@ export function ServiceForm({
       </div>
 
       <div className="grid gap-1.5">
-        <Label htmlFor="service-description">Descrição</Label>
+        <Label htmlFor="service-description">{copy.descriptionLabel}</Label>
         <Textarea
           id="service-description"
           value={description}
           onChange={(event) => setDescription(event.target.value)}
-          placeholder="Explique o que está incluído, como você trabalha, o que o cliente precisa providenciar e o prazo médio."
+          placeholder={copy.descriptionPlaceholder}
           rows={7}
           maxLength={5000}
         />
@@ -233,7 +322,7 @@ export function ServiceForm({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="grid gap-1.5">
-          <Label htmlFor="service-city">Cidade base</Label>
+          <Label htmlFor="service-city">{copy.cityLabel}</Label>
           <CityCombobox id="service-city" value={city} onChange={setCity} />
           <FieldError message={errors.cityId} />
         </div>
@@ -252,7 +341,7 @@ export function ServiceForm({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="grid gap-1.5">
-          <Label htmlFor="service-price-type">Como você cobra</Label>
+          <Label htmlFor="service-price-type">{copy.priceTypeLabel}</Label>
           <Select
             value={priceType}
             onValueChange={(next) => setPriceType(next as PriceType)}
@@ -261,9 +350,9 @@ export function ServiceForm({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {PRICE_TYPES.map((type) => (
-                <SelectItem key={type} value={type}>
-                  {PRICE_TYPE_LABEL[type]}
+              {PRICE_TYPES.map((entry) => (
+                <SelectItem key={entry} value={entry}>
+                  {PRICE_TYPE_LABEL[entry]}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -272,7 +361,7 @@ export function ServiceForm({
 
         <div className="grid gap-1.5">
           <Label htmlFor="service-price">
-            Valor {requiresPrice ? '(R$)' : '(definido no orçamento)'}
+            {requiresPrice ? copy.priceLabel : copy.priceQuoteLabel}
           </Label>
           <Input
             id="service-price"
@@ -288,7 +377,7 @@ export function ServiceForm({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="grid gap-1.5">
-          <Label htmlFor="service-mode">Forma de atendimento</Label>
+          <Label htmlFor="service-mode">{copy.modeLabel}</Label>
           <Select
             value={serviceMode}
             onValueChange={(next) => setServiceMode(next as ServiceMode)}
@@ -299,7 +388,7 @@ export function ServiceForm({
             <SelectContent>
               {SERVICE_MODES.map((mode) => (
                 <SelectItem key={mode} value={mode}>
-                  {SERVICE_MODE_LABEL[mode]}
+                  {serviceModeLabel(mode, type)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -307,9 +396,7 @@ export function ServiceForm({
         </div>
 
         <div className="grid gap-1.5">
-          <Label htmlFor="service-coverage">
-            Raio de atendimento em km (opcional)
-          </Label>
+          <Label htmlFor="service-coverage">{copy.coverageLabel}</Label>
           <Input
             id="service-coverage"
             value={coverage}
@@ -323,9 +410,9 @@ export function ServiceForm({
       {isEditing ? (
         <div className="flex items-center justify-between rounded-2xl border border-border p-4">
           <div>
-            <p className="font-semibold">Publicar agora</p>
+            <p className="font-semibold">{copy.publishTitle}</p>
             <p className="text-sm text-muted-foreground">
-              Desligue para salvar como rascunho e publicar depois.
+              {copy.publishDescription}
             </p>
           </div>
           <Switch checked={publish} onCheckedChange={setPublish} />
@@ -333,6 +420,17 @@ export function ServiceForm({
       ) : null}
 
       <div className="flex flex-wrap gap-3">
+        {onBack ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            onClick={onBack}
+            disabled={isSaving}
+          >
+            Voltar
+          </Button>
+        ) : null}
         <Button type="submit" size="lg" disabled={isSaving}>
           {isSaving ? 'Salvando...' : submitLabel}
         </Button>

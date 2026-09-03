@@ -11,23 +11,28 @@ import {
   instagramLink,
   whatsappLink,
 } from '@/lib/format'
-import type { PublicProfile } from '@/lib/services'
+import type { PublicProfile, ServiceType } from '@/lib/services'
 
 export function ProviderPanel({
   provider,
   serviceId,
   serviceTitle,
+  serviceType = 'offer',
   showProfileLink = true,
 }: {
   provider: PublicProfile
   serviceId?: number
   serviceTitle?: string
+  serviceType?: ServiceType
   showProfileLink?: boolean
 }) {
+  const isRequest = serviceType === 'request'
   const whatsapp = whatsappLink(
     provider.whatsapp,
     serviceTitle
-      ? `Olá! Vi seu serviço "${serviceTitle}" no FazPerto e gostaria de um orçamento.`
+      ? isRequest
+        ? `Olá! Vi seu pedido "${serviceTitle}" no FazPerto e posso te atender.`
+        : `Olá! Vi seu serviço "${serviceTitle}" no FazPerto e gostaria de um orçamento.`
       : 'Olá! Vi seu perfil no FazPerto e gostaria de um orçamento.',
   )
   const instagram = instagramLink(provider.instagram)
@@ -50,7 +55,7 @@ export function ProviderPanel({
 
         <div className="min-w-0">
           <Heading variant="h4" className="truncate">
-            {provider.name ?? 'Profissional'}
+            {provider.name ?? (isRequest ? 'Cliente' : 'Profissional')}
           </Heading>
           {provider.headline ? (
             <p className="text-sm text-muted-foreground">{provider.headline}</p>

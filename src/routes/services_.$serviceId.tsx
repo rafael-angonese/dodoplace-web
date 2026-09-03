@@ -6,21 +6,22 @@ import { toast } from 'sonner'
 
 import { CategoryIcon } from '@/components/discovery/category-icon'
 import { FavoriteButton } from '@/components/discovery/favorite-button'
+import { UserReviews } from '@/components/profile/user-reviews'
 import { ProviderPanel } from '@/components/service/provider-panel'
 import { ServiceGallery } from '@/components/service/service-gallery'
-import { UserReviews } from '@/components/profile/user-reviews'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
 import { ApiError } from '@/lib/api'
 import {
-  PRICE_TYPE_LABEL,
-  SERVICE_MODE_LABEL,
   formatRating,
   formatReviewsCount,
   formatServicePrice,
+  PRICE_TYPE_LABEL,
+  serviceModeLabel,
 } from '@/lib/format'
-import { servicesApi } from '@/lib/services'
+import { type ServiceType, servicesApi } from '@/lib/services'
 import { useAuth } from '@/providers/auth-context'
 
 export const Route = createFileRoute('/services_/$serviceId')({
@@ -61,6 +62,7 @@ function ServiceDetail() {
   const { user } = useAuth()
 
   const isOwner = user?.id === service.userId
+  const isRequest = service.type === 'request'
   const photos = service.photos ?? []
 
   async function share() {
@@ -116,6 +118,12 @@ function ServiceDetail() {
           />
 
           <header className="space-y-3">
+            {isRequest ? (
+              <Badge variant="primary" className="rounded-full">
+                Pedido de serviço
+              </Badge>
+            ) : null}
+
             <Heading variant="h1" className="text-3xl font-extrabold md:text-4xl">
               {service.title}
             </Heading>
@@ -133,12 +141,16 @@ function ServiceDetail() {
                   />
                   {formatRating(provider.ratingAverage)}
                   <span className="font-normal text-muted-foreground">
-                    · {formatReviewsCount(provider.reviewsCount)} do
-                    profissional
+                    · {formatReviewsCount(provider.reviewsCount)}{' '}
+                    {isRequest ? 'do cliente' : 'do profissional'}
                   </span>
                 </Link>
               ) : (
-                <span>Profissional ainda sem avaliações</span>
+                <span>
+                  {isRequest
+                    ? 'Cliente ainda sem avaliações'
+                    : 'Profissional ainda sem avaliações'}
+                </span>
               )}
 
               {service.category ? (
@@ -160,7 +172,7 @@ function ServiceDetail() {
                 </span>
               ) : null}
 
-              <span>{SERVICE_MODE_LABEL[service.serviceMode]}</span>
+              <span>{serviceModeLabel(service.serviceMode, service.type)}</span>
             </div>
 
             <div className="flex flex-wrap items-center gap-2 pt-1">
@@ -190,7 +202,7 @@ function ServiceDetail() {
 
           <section className="space-y-3">
             <Heading variant="h3" className="font-extrabold">
-              Sobre o serviço
+              {isRequest ? 'Sobre o pedido' : 'Sobre o serviço'}
             </Heading>
             <p className="leading-relaxed whitespace-pre-line text-muted-foreground">
               {service.description}
@@ -203,6 +215,7 @@ function ServiceDetail() {
             provider={provider}
             serviceId={service.id}
             serviceTitle={service.title}
+            serviceType={service.type}
           />
 
           <Separator />
@@ -218,13 +231,17 @@ function ServiceDetail() {
 
           <section className="space-y-3">
             <Heading variant="h3" className="font-extrabold">
-              Onde este serviço é atendido
+              {isRequest
+                ? 'Onde o serviço precisa ser feito'
+                : 'Onde este serviço é atendido'}
             </Heading>
             <p className="text-muted-foreground">
-              {SERVICE_MODE_LABEL[service.serviceMode]}
+              {serviceModeLabel(service.serviceMode, service.type)}
               {service.city ? ` em ${service.city.label}` : ''}
               {service.coverageRadiusKm
-                ? `, com atendimento em até ${service.coverageRadiusKm} km da cidade.`
+                ? isRequest
+                  ? `, aceitando profissionais em até ${service.coverageRadiusKm} km da cidade.`
+                  : `, com atendimento em até ${service.coverageRadiusKm} km da cidade.`
                 : '.'}
             </p>
             <p className="text-sm text-muted-foreground">
@@ -234,7 +251,10 @@ function ServiceDetail() {
                 "d 'de' MMMM 'de' yyyy",
                 { locale: ptBR },
               )}
-              . Combine o local exato diretamente com o profissional.
+              .{' '}
+              {isRequest
+                ? 'Combine o local exato diretamente com o cliente.'
+                : 'Combine o local exato diretamente com o profissional.'}
             </p>
           </section>
         </div>
@@ -267,12 +287,14 @@ function ServiceDetail() {
               <ProviderContact
                 provider={provider}
                 serviceTitle={service.title}
+                serviceType={service.type}
               />
             </div>
 
             <p className="mt-4 text-xs text-muted-foreground">
-              O FazPerto conecta você ao profissional. O combinado de preço,
-              data e pagamento é feito diretamente entre vocês.
+              {isRequest
+                ? 'O FazPerto conecta você ao cliente. O combinado de preço, data e pagamento é feito diretamente entre vocês.'
+                : 'O FazPerto conecta você ao profissional. O combinado de preço, data e pagamento é feito diretamente entre vocês.'}
             </p>
           </div>
         </aside>
@@ -284,14 +306,20 @@ function ServiceDetail() {
 function ProviderContact({
   provider,
   serviceTitle,
+  serviceType,
 }: {
   provider: { whatsapp: string | null; id: number; name: string | null }
   serviceTitle: string
+  serviceType: ServiceType
 }) {
+  const isRequest = serviceType === 'request'
   const digits = provider.whatsapp?.replace(/\D/g, '') ?? ''
+  const message = isRequest
+    ? `Olá! Vi seu pedido "${serviceTitle}" no FazPerto e posso te atender.`
+    : `Olá! Vi seu serviço "${serviceTitle}" no FazPerto e gostaria de um orçamento.`
   const link = digits
     ? `https://wa.me/${digits.startsWith('55') ? digits : `55${digits}`}?text=${encodeURIComponent(
-        `Olá! Vi seu serviço "${serviceTitle}" no FazPerto e gostaria de um orçamento.`,
+        message,
       )}`
     : null
 
@@ -299,7 +327,9 @@ function ProviderContact({
     return (
       <Button asChild fullWidth variant="outline">
         <Link to="/profile/$userId" params={{ userId: String(provider.id) }}>
-          Ver contatos do profissional
+          {isRequest
+            ? 'Ver contatos do cliente'
+            : 'Ver contatos do profissional'}
         </Link>
       </Button>
     )
@@ -308,7 +338,9 @@ function ProviderContact({
   return (
     <Button asChild fullWidth size="lg">
       <a href={link} target="_blank" rel="noreferrer noopener">
-        Falar com {provider.name?.split(' ')[0] ?? 'o profissional'}
+        Falar com{' '}
+        {provider.name?.split(' ')[0] ??
+          (isRequest ? 'o cliente' : 'o profissional')}
       </a>
     </Button>
   )

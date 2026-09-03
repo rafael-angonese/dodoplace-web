@@ -5,18 +5,19 @@ import { toast } from 'sonner'
 
 import { ServiceForm } from '@/components/service/service-form'
 import { ServicePhotoManager } from '@/components/service/service-photo-manager'
+import { ServiceTypeCards } from '@/components/service/service-type-cards'
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { type ServiceCategory, categoriesApi } from '@/lib/categories'
 import { apiErrorMessage, isAbortError } from '@/lib/form-errors'
-import { type Service, servicesApi } from '@/lib/services'
+import { type Service, type ServiceType, servicesApi } from '@/lib/services'
 import { useAuth } from '@/providers/auth-context'
 
 export const Route = createFileRoute('/account_/services_/$serviceId')({
   component: EditarServico,
-  head: () => ({ meta: [{ title: 'Editar serviço | FazPerto' }] }),
+  head: () => ({ meta: [{ title: 'Editar anúncio | FazPerto' }] }),
   loader: async () => ({ categories: await categoriesApi.list() }),
 })
 
@@ -68,7 +69,7 @@ function EditarServico() {
     return (
       <section className="mx-auto w-full max-w-3xl px-4 py-10 md:px-6">
         <Heading variant="h1" className="text-2xl font-extrabold">
-          Não foi possível abrir este serviço
+          Não foi possível abrir este anúncio
         </Heading>
         <p className="mt-2 text-muted-foreground">{error}</p>
         <Button asChild variant="outline" className="mt-6">
@@ -113,7 +114,7 @@ function EditarServico() {
       </Button>
 
       <Heading variant="h1" className="mt-3 text-3xl font-extrabold">
-        Editar serviço
+        {service.type === 'request' ? 'Editar pedido' : 'Editar serviço'}
       </Heading>
       <p className="mt-2 text-muted-foreground">{service.title}</p>
 
@@ -131,7 +132,7 @@ function EditarServico() {
         service={service}
         onSaved={(updated) => {
           setService(updated)
-          toast.success('Serviço atualizado.')
+          toast.success('Anúncio atualizado.')
         }}
         token={token}
       />
@@ -150,28 +151,41 @@ function EditForm({
   token: string
   onSaved: (service: Service) => void
 }) {
-  return (
-    <ServiceForm
-      categories={categories}
-      service={service}
-      initialCity={service.city ?? null}
-      submitLabel="Salvar alterações"
-      onSubmit={async (values) => {
-        const updated = await servicesApi.update(token, service.id, {
-          title: values.title,
-          description: values.description,
-          categoryId: values.categoryId,
-          cityId: values.cityId,
-          priceType: values.priceType,
-          priceCents: values.priceCents,
-          serviceMode: values.serviceMode,
-          coverageRadiusKm: values.coverageRadiusKm,
-          neighborhood: values.neighborhood,
-          status: values.publish ? 'published' : 'draft',
-        })
+  const [type, setType] = useState<ServiceType>(service.type)
 
-        onSaved({ ...updated, photos: service.photos })
-      }}
-    />
+  return (
+    <div className="grid gap-6">
+      <div className="grid gap-3">
+        <Heading variant="h4" className="font-extrabold">
+          Tipo de anúncio
+        </Heading>
+        <ServiceTypeCards value={type} onChange={setType} />
+      </div>
+
+      <ServiceForm
+        type={type}
+        categories={categories}
+        service={service}
+        initialCity={service.city ?? null}
+        submitLabel="Salvar alterações"
+        onSubmit={async (values) => {
+          const updated = await servicesApi.update(token, service.id, {
+            type: values.type,
+            title: values.title,
+            description: values.description,
+            categoryId: values.categoryId,
+            cityId: values.cityId,
+            priceType: values.priceType,
+            priceCents: values.priceCents,
+            serviceMode: values.serviceMode,
+            coverageRadiusKm: values.coverageRadiusKm,
+            neighborhood: values.neighborhood,
+            status: values.publish ? 'published' : 'draft',
+          })
+
+          onSaved({ ...updated, photos: service.photos })
+        }}
+      />
+    </div>
   )
 }

@@ -18,8 +18,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import { Skeleton } from '@/components/ui/skeleton'
-import { formatServicePrice } from '@/lib/format'
 import { apiErrorMessage } from '@/lib/form-errors'
+import { SERVICE_TYPE_BADGE, formatServicePrice } from '@/lib/format'
 import {
   type Service,
   type ServiceStatus,
@@ -94,7 +94,7 @@ function MeusServicos() {
       )
 
       toast.success(
-        next === 'published' ? 'Serviço publicado.' : 'Serviço despublicado.',
+        next === 'published' ? 'Anúncio publicado.' : 'Anúncio despublicado.',
       )
     } catch (error) {
       toast.error(apiErrorMessage(error))
@@ -113,7 +113,7 @@ function MeusServicos() {
       setServices((current) =>
         current.filter((entry) => entry.id !== pendingDelete.id),
       )
-      toast.success('Serviço removido.')
+      toast.success('Anúncio removido.')
       setPendingDelete(null)
     } catch (error) {
       toast.error(apiErrorMessage(error))
@@ -127,17 +127,17 @@ function MeusServicos() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <Heading variant="h1" className="text-3xl font-extrabold">
-            Meus serviços
+            Meus anúncios
           </Heading>
           <p className="mt-2 text-muted-foreground">
-            Gerencie seus anúncios, fotos e disponibilidade.
+            Gerencie os serviços que você oferece e os pedidos que publicou.
           </p>
         </div>
 
         <Button asChild>
           <Link to="/publish">
             <Plus aria-hidden="true" />
-            Novo serviço
+            Novo anúncio
           </Link>
         </Button>
       </div>
@@ -150,12 +150,13 @@ function MeusServicos() {
         </div>
       ) : services.length === 0 ? (
         <div className="mt-8 rounded-2xl border border-dashed border-border p-10 text-center">
-          <Heading variant="h4">Você ainda não publicou serviços.</Heading>
+          <Heading variant="h4">Você ainda não publicou nada.</Heading>
           <p className="mt-2 text-muted-foreground">
-            Publique o primeiro e comece a receber contatos na sua região.
+            Ofereça um serviço ou publique um pedido e comece a receber contatos
+            na sua região.
           </p>
           <Button asChild className="mt-5">
-            <Link to="/publish">Publicar serviço</Link>
+            <Link to="/publish">Publicar anúncio</Link>
           </Button>
         </div>
       ) : (
@@ -187,6 +188,13 @@ function MeusServicos() {
 
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
+                    <Badge
+                      variant={
+                        service.type === 'request' ? 'primary' : 'outline'
+                      }
+                    >
+                      {SERVICE_TYPE_BADGE[service.type]}
+                    </Badge>
                     <Badge
                       variant={
                         service.status === 'published' ? 'success' : 'secondary'

@@ -57,11 +57,18 @@ export function ServiceCard({
           className="absolute top-2.5 right-2.5"
         />
 
-        {service.status === 'draft' ? (
-          <span className="absolute top-2.5 left-2.5 rounded-full bg-background px-2.5 py-1 text-[11px] font-bold">
-            Rascunho
-          </span>
-        ) : null}
+        <div className="absolute top-2.5 left-2.5 flex flex-wrap items-center gap-1.5">
+          {service.type === 'request' ? (
+            <span className="rounded-full bg-brand-coral px-2.5 py-1 text-[11px] font-bold text-white">
+              Pedido
+            </span>
+          ) : null}
+          {service.status === 'draft' ? (
+            <span className="rounded-full bg-background px-2.5 py-1 text-[11px] font-bold">
+              Rascunho
+            </span>
+          ) : null}
+        </div>
       </div>
 
       <div className="mt-3 space-y-1">
@@ -108,7 +115,11 @@ export function ServiceCard({
             <span className="font-semibold">Orçamento a combinar</span>
           ) : (
             <>
-              <span className="text-muted-foreground">A partir de </span>
+              <span className="text-muted-foreground">
+                {service.type === 'request'
+                  ? 'Pretende pagar '
+                  : 'A partir de '}
+              </span>
               <span className="font-semibold underline">
                 {formatServicePrice(service.priceType, service.priceCents)}
               </span>

@@ -9,6 +9,8 @@ import {
 import type { ServiceCategory } from '@/lib/categories'
 import type { City } from '@/lib/locations'
 
+export type ServiceType = 'offer' | 'request'
+
 export type PriceType = 'hourly' | 'daily' | 'fixed' | 'quote'
 
 export type ServiceMode = 'at_client' | 'at_provider' | 'remote'
@@ -55,6 +57,7 @@ export type UserSummary = {
 
 export type Service = {
   id: number
+  type: ServiceType
   title: string
   description: string
   priceType: PriceType
@@ -100,6 +103,7 @@ export function serviceCover(service: Service) {
 }
 
 export type SearchServicesParams = {
+  type?: ServiceType
   q?: string
   category?: string
   cityId?: number
@@ -118,6 +122,7 @@ export type SearchServicesParams = {
 }
 
 export type ServiceInput = {
+  type: ServiceType
   title: string
   description: string
   categoryId: number
@@ -156,7 +161,11 @@ export const servicesApi = {
     })
   },
 
-  update(token: string, id: number, input: Partial<ServiceInput> & { status?: ServiceStatus }) {
+  update(
+    token: string,
+    id: number,
+    input: Partial<ServiceInput> & { status?: ServiceStatus },
+  ) {
     return apiRequest<Service>(`/services/${id}`, {
       method: 'PUT',
       body: input,
@@ -210,7 +219,12 @@ export const servicesApi = {
 
   mine(
     token: string,
-    params: { status?: ServiceStatus; page?: number; perPage?: number } = {},
+    params: {
+      type?: ServiceType
+      status?: ServiceStatus
+      page?: number
+      perPage?: number
+    } = {},
     signal?: AbortSignal,
   ): Promise<Paginated<Service>> {
     return apiPaginated<Service>(`/account/services${toQueryString(params)}`, {
