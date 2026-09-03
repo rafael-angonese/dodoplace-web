@@ -125,5 +125,7 @@ export function validateServiceSearch(
 }
 
 export function hasActiveFilters(search: ServiceSearch) {
-  return Object.values(search).some((value) => value !== undefined)
+  return Object.entries(search).some(
+    ([key, value]) => key !== 'sort' && value !== undefined,
+  )
 }

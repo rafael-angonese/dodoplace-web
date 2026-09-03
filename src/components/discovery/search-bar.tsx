@@ -1,10 +1,18 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router'
-import { Search } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { cn } from '@/utils/cn'
+import { AnimatedPlaceholderInput } from '@/components/ui/animated-placeholder-input'
 
 const DEBOUNCE_MS = 350
+
+const PLACEHOLDERS = [
+  'Eletricista para instalar chuveiro',
+  'Diarista para faxina semanal',
+  'Encanador para vazamento na pia',
+  'Pintor para dois quartos',
+  'Montador de móveis',
+  'Jardineiro para poda de árvore',
+]
 
 export function SearchBar({
   defaultQuery = '',
@@ -58,47 +66,14 @@ export function SearchBar({
     return () => clearTimeout(timeout)
   }, [query, push])
 
-  function submit(event: React.FormEvent) {
-    event.preventDefault()
-    push(query.trim())
-  }
-
-  const isCompact = variant === 'compact'
-
   return (
-    <form
-      onSubmit={submit}
-      className="flex items-center gap-1 rounded-full border border-border bg-card p-2 shadow-sm transition-shadow hover:shadow-md"
-    >
-      <label
-        className={cn(
-          'flex w-full min-w-0 flex-col justify-center rounded-full px-5 py-2 hover:bg-accent/50',
-          isCompact && 'py-1.5',
-        )}
-      >
-        <span
-          className={cn(
-            'text-[11px] font-bold tracking-wide',
-            isCompact && 'sr-only',
-          )}
-        >
-          O que você precisa
-        </span>
-        <input
-          type="search"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Eletricista, diarista, encanador..."
-          className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground [&::-webkit-search-cancel-button]:hidden"
-        />
-      </label>
-
-      <span
-        aria-hidden="true"
-        className="ml-auto grid size-11 shrink-0 place-items-center rounded-full bg-brand-coral text-white"
-      >
-        <Search className="size-4" />
-      </span>
-    </form>
+    <AnimatedPlaceholderInput
+      placeholders={PLACEHOLDERS}
+      label="O que você precisa"
+      labelHidden={variant === 'compact'}
+      value={query}
+      onChange={setQuery}
+      onSubmit={push}
+    />
   )
 }

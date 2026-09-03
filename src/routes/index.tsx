@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
-import { MapPin } from 'lucide-react'
+import { MapPin, X } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 
 import { CategoryCarousel } from '@/components/discovery/category-carousel'
@@ -254,8 +254,8 @@ function Home() {
           </div>
         </div>
 
-        {search.q || activeCategories.length > 0 || cityLabel ? (
-          <div className="mt-4 flex flex-wrap gap-2">
+        {hasActiveFilters(search) ? (
+          <div className="mt-4 flex flex-wrap items-center gap-2">
             {search.q ? (
               <Link to="/" search={(current) => ({ ...current, q: undefined })}>
                 <Badge variant="secondary">“{search.q}” ✕</Badge>
@@ -284,6 +284,13 @@ function Home() {
                 </Badge>
               </Link>
             ) : null}
+
+            <Link to="/" search={{}}>
+              <Badge variant="outline" className="cursor-pointer gap-1">
+                <X aria-hidden="true" className="size-3" />
+                Limpar
+              </Badge>
+            </Link>
           </div>
         ) : null}
 
