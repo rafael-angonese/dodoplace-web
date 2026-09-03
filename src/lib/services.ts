@@ -42,12 +42,14 @@ export type ServicePhoto = {
   position: number
 }
 
-export type ServiceProvider = {
+export type UserSummary = {
   id: number
   name: string | null
   avatarUrl: string | null
   initials: string
   headline: string | null
+  ratingAverage: number
+  reviewsCount: number
   createdAt: string
 }
 
@@ -61,8 +63,6 @@ export type Service = {
   coverageRadiusKm: number | null
   neighborhood: string | null
   status: ServiceStatus
-  ratingAverage: number
-  reviewsCount: number
   favoritesCount: number
   distanceKm: number | null
   isFavorited: boolean
@@ -72,19 +72,8 @@ export type Service = {
   category?: ServiceCategory
   city?: City
   photos?: ServicePhoto[]
-  provider?: ServiceProvider
+  provider?: UserSummary
   publishedAt: string | null
-  createdAt: string
-  updatedAt: string | null
-}
-
-export type ServiceReview = {
-  id: number
-  rating: number
-  comment: string | null
-  serviceId: number
-  userId: number
-  author?: ServiceProvider
   createdAt: string
   updatedAt: string | null
 }
@@ -99,6 +88,8 @@ export type PublicProfile = {
   whatsapp: string | null
   instagram: string | null
   website: string | null
+  ratingAverage: number
+  reviewsCount: number
   city?: City
   services?: Service[]
   createdAt: string
@@ -157,17 +148,6 @@ export const servicesApi = {
     return apiRequest<PublicProfile>(`/profiles/${id}`, { signal })
   },
 
-  reviews(
-    id: number,
-    params: { page?: number; perPage?: number } = {},
-    signal?: AbortSignal,
-  ): Promise<Paginated<ServiceReview>> {
-    return apiPaginated<ServiceReview>(
-      `/services/${id}/reviews${toQueryString(params)}`,
-      { signal },
-    )
-  },
-
   create(token: string, input: ServiceInput & { publish?: boolean }) {
     return apiRequest<Service>('/services', {
       method: 'POST',
@@ -223,25 +203,6 @@ export const servicesApi = {
 
   unfavorite(token: string, id: number) {
     return apiRequest<Service>(`/services/${id}/favorite`, {
-      method: 'DELETE',
-      token,
-    })
-  },
-
-  saveReview(
-    token: string,
-    id: number,
-    input: { rating: number; comment: string | null },
-  ) {
-    return apiRequest<ServiceReview>(`/services/${id}/reviews`, {
-      method: 'POST',
-      body: input,
-      token,
-    })
-  },
-
-  removeReview(token: string, id: number) {
-    return apiRequest<void>(`/services/${id}/reviews`, {
       method: 'DELETE',
       token,
     })

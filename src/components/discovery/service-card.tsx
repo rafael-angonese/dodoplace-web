@@ -43,6 +43,7 @@ export function ServiceCard({
   className?: string
 }) {
   const distance = formatDistance(service.distanceKm)
+  const provider = service.provider
 
   return (
     <article className={cn('group relative', className)}>
@@ -80,16 +81,16 @@ export function ServiceCard({
         </p>
 
         <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-          {service.reviewsCount > 0 ? (
+          {provider && provider.reviewsCount > 0 ? (
             <>
               <Star
                 aria-hidden="true"
                 className="size-3.5 fill-foreground text-foreground"
               />
               <span className="font-semibold text-foreground">
-                {formatRating(service.ratingAverage)}
+                {formatRating(provider.ratingAverage)}
               </span>
-              <span>({service.reviewsCount})</span>
+              <span>({provider.reviewsCount})</span>
             </>
           ) : (
             <span>Sem avaliações ainda</span>

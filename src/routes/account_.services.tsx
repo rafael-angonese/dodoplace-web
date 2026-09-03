@@ -18,11 +18,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  formatRating,
-  formatReviewsCount,
-  formatServicePrice,
-} from '@/lib/format'
+import { formatServicePrice } from '@/lib/format'
 import { apiErrorMessage } from '@/lib/form-errors'
 import {
   type Service,
@@ -211,10 +207,6 @@ function MeusServicos() {
                   </p>
 
                   <p className="text-sm text-muted-foreground">
-                    {service.reviewsCount > 0
-                      ? `★ ${formatRating(service.ratingAverage)} · ${formatReviewsCount(service.reviewsCount)}`
-                      : 'Sem avaliações'}
-                    {' · '}
                     {service.photos?.length ?? 0} arquivos
                   </p>
 

@@ -8,7 +8,7 @@ import { CategoryIcon } from '@/components/discovery/category-icon'
 import { FavoriteButton } from '@/components/discovery/favorite-button'
 import { ProviderPanel } from '@/components/service/provider-panel'
 import { ServiceGallery } from '@/components/service/service-gallery'
-import { ServiceReviews } from '@/components/service/service-reviews'
+import { UserReviews } from '@/components/profile/user-reviews'
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
@@ -121,19 +121,24 @@ function ServiceDetail() {
             </Heading>
 
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-              {service.reviewsCount > 0 ? (
-                <span className="inline-flex items-center gap-1 font-semibold text-foreground">
+              {provider.reviewsCount > 0 ? (
+                <Link
+                  to="/profile/$userId"
+                  params={{ userId: String(provider.id) }}
+                  className="inline-flex items-center gap-1 font-semibold text-foreground"
+                >
                   <Star
                     aria-hidden="true"
                     className="size-4 fill-foreground text-foreground"
                   />
-                  {formatRating(service.ratingAverage)}
+                  {formatRating(provider.ratingAverage)}
                   <span className="font-normal text-muted-foreground">
-                    · {formatReviewsCount(service.reviewsCount)}
+                    · {formatReviewsCount(provider.reviewsCount)} do
+                    profissional
                   </span>
-                </span>
+                </Link>
               ) : (
-                <span>Ainda sem avaliações</span>
+                <span>Profissional ainda sem avaliações</span>
               )}
 
               {service.category ? (
@@ -202,11 +207,11 @@ function ServiceDetail() {
 
           <Separator />
 
-          <ServiceReviews
-            serviceId={service.id}
-            ratingAverage={service.ratingAverage}
-            reviewsCount={service.reviewsCount}
-            isOwner={isOwner}
+          <UserReviews
+            userId={provider.id}
+            name={provider.name}
+            ratingAverage={provider.ratingAverage}
+            reviewsCount={provider.reviewsCount}
           />
 
           <Separator />
@@ -243,17 +248,17 @@ function ServiceDetail() {
               {formatServicePrice(service.priceType, service.priceCents)}
             </p>
 
-            {service.reviewsCount > 0 ? (
+            {provider.reviewsCount > 0 ? (
               <p className="mt-2 inline-flex items-center gap-1 text-sm">
                 <Star
                   aria-hidden="true"
                   className="size-4 fill-foreground text-foreground"
                 />
                 <span className="font-semibold">
-                  {formatRating(service.ratingAverage)}
+                  {formatRating(provider.ratingAverage)}
                 </span>
                 <span className="text-muted-foreground">
-                  · {formatReviewsCount(service.reviewsCount)}
+                  · {formatReviewsCount(provider.reviewsCount)}
                 </span>
               </p>
             ) : null}

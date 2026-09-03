@@ -5,19 +5,19 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/text-area'
 import { apiErrorMessage } from '@/lib/form-errors'
-import { type ServiceReview, servicesApi } from '@/lib/services'
+import { type UserReview, reviewsApi } from '@/lib/reviews'
 import { useAuth } from '@/providers/auth-context'
 import { cn } from '@/utils/cn'
 
 export function ReviewForm({
-  serviceId,
+  userId,
   existing,
   onSaved,
   onRemoved,
 }: {
-  serviceId: number
-  existing: ServiceReview | null
-  onSaved: (review: ServiceReview) => void
+  userId: number
+  existing: UserReview | null
+  onSaved: (review: UserReview) => void
   onRemoved: () => void
 }) {
   const { token } = useAuth()
@@ -41,7 +41,7 @@ export function ReviewForm({
     setIsSaving(true)
 
     try {
-      const review = await servicesApi.saveReview(token, serviceId, {
+      const review = await reviewsApi.save(token, userId, {
         rating,
         comment: comment.trim() || null,
       })
@@ -63,7 +63,7 @@ export function ReviewForm({
     setIsSaving(true)
 
     try {
-      await servicesApi.removeReview(token, serviceId)
+      await reviewsApi.remove(token, userId)
       setRating(0)
       setComment('')
       onRemoved()
@@ -80,7 +80,7 @@ export function ReviewForm({
   return (
     <form onSubmit={submit} className="rounded-2xl border border-border p-5">
       <p className="font-bold">
-        {existing ? 'Sua avaliação' : 'Avalie este serviço'}
+        {existing ? 'Sua avaliação' : 'Avalie este profissional'}
       </p>
 
       <div className="mt-3 flex gap-1">
@@ -111,7 +111,7 @@ export function ReviewForm({
       <Textarea
         value={comment}
         onChange={(event) => setComment(event.target.value)}
-        placeholder="Conte como foi o serviço (opcional)."
+        placeholder="Conte como foi o atendimento (opcional)."
         rows={4}
         className="mt-4"
       />

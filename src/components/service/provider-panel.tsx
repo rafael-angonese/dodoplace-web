@@ -1,11 +1,16 @@
 import { Link } from '@tanstack/react-router'
-import { Globe, MessageCircle } from 'lucide-react'
+import { Globe, MessageCircle, Star } from 'lucide-react'
 
 import { StartConversationButton } from '@/components/chat/start-conversation-button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
-import { instagramLink, whatsappLink } from '@/lib/format'
+import {
+  formatRating,
+  formatReviewsCount,
+  instagramLink,
+  whatsappLink,
+} from '@/lib/format'
 import type { PublicProfile } from '@/lib/services'
 
 export function ProviderPanel({
@@ -55,6 +60,27 @@ export function ProviderPanel({
               {provider.city.label}
             </p>
           ) : null}
+
+          <p className="mt-1 flex items-center gap-1 text-sm">
+            {provider.reviewsCount > 0 ? (
+              <>
+                <Star
+                  aria-hidden="true"
+                  className="size-3.5 fill-foreground text-foreground"
+                />
+                <span className="font-semibold">
+                  {formatRating(provider.ratingAverage)}
+                </span>
+                <span className="text-muted-foreground">
+                  · {formatReviewsCount(provider.reviewsCount)}
+                </span>
+              </>
+            ) : (
+              <span className="text-muted-foreground">
+                Sem avaliações ainda
+              </span>
+            )}
+          </p>
         </div>
       </div>
 

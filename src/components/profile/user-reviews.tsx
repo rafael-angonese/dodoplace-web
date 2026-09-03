@@ -4,17 +4,17 @@ import { ptBR } from 'date-fns/locale'
 import { useEffect, useState } from 'react'
 
 import { RatingStars } from '@/components/discovery/rating-stars'
-import { ReviewForm } from '@/components/service/review-form'
+import { ReviewForm } from '@/components/profile/review-form'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import { formatRating, formatReviewsCount } from '@/lib/format'
-import { type ServiceReview, servicesApi } from '@/lib/services'
+import { type UserReview, reviewsApi } from '@/lib/reviews'
 import { useAuth } from '@/providers/auth-context'
 
 const PAGE_SIZE = 6
 
-function ReviewItem({ review }: { review: ServiceReview }) {
+function ReviewItem({ review }: { review: UserReview }) {
   const author = review.author
 
   return (
@@ -56,31 +56,31 @@ function ReviewItem({ review }: { review: ServiceReview }) {
   )
 }
 
-export function ServiceReviews({
-  serviceId,
+export function UserReviews({
+  userId,
+  name,
   ratingAverage,
   reviewsCount,
-  isOwner,
 }: {
-  serviceId: number
+  userId: number
+  name: string | null
   ratingAverage: number
   reviewsCount: number
-  isOwner: boolean
 }) {
   const { status, user } = useAuth()
-  const [reviews, setReviews] = useState<ServiceReview[]>([])
+  const [reviews, setReviews] = useState<UserReview[]>([])
   const [page, setPage] = useState(1)
   const [lastPage, setLastPage] = useState(1)
   const [total, setTotal] = useState(reviewsCount)
-  const [average, setAverage] = useState(ratingAverage)
+  const [sum, setSum] = useState(ratingAverage * reviewsCount)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const controller = new AbortController()
     setIsLoading(true)
 
-    servicesApi
-      .reviews(serviceId, { page, perPage: PAGE_SIZE }, controller.signal)
+    reviewsApi
+      .list(userId, { page, perPage: PAGE_SIZE }, controller.signal)
       .then((result) => {
         setReviews((current) =>
           page === 1 ? result.data : [...current, ...result.data],
@@ -92,29 +92,34 @@ export function ServiceReviews({
       .finally(() => setIsLoading(false))
 
     return () => controller.abort()
-  }, [serviceId, page])
+  }, [userId, page])
 
-  const mine = user ? reviews.find((review) => review.userId === user.id) : null
+  const isOwnProfile = user?.id === userId
+  const mine = user
+    ? reviews.find((review) => review.authorId === user.id)
+    : null
+  const firstName = name?.split(' ')[0] ?? 'este profissional'
+  const average = total > 0 ? sum / total : 0
 
-  function onSaved(review: ServiceReview) {
-    setReviews((current) => {
-      const without = current.filter((entry) => entry.id !== review.id)
-      return [review, ...without]
-    })
+  function onSaved(review: UserReview) {
+    const previous = mine?.rating ?? 0
+
+    setReviews((current) => [
+      review,
+      ...current.filter((entry) => entry.id !== review.id),
+    ])
     setTotal((current) => (mine ? current : current + 1))
-    setAverage((current) =>
-      mine
-        ? current
-        : Math.round(((current * total + review.rating) / (total + 1)) * 100) /
-          100,
-    )
+    setSum((current) => current - previous + review.rating)
   }
 
   function onRemoved() {
+    const previous = mine?.rating ?? 0
+
     setReviews((current) =>
-      current.filter((entry) => entry.userId !== user?.id),
+      current.filter((entry) => entry.authorId !== user?.id),
     )
     setTotal((current) => Math.max(0, current - 1))
+    setSum((current) => Math.max(0, current - previous))
   }
 
   return (
@@ -133,7 +138,9 @@ export function ServiceReviews({
 
       {total === 0 && !isLoading ? (
         <p className="text-muted-foreground">
-          Este serviço ainda não recebeu avaliações.
+          {isOwnProfile
+            ? 'Você ainda não recebeu avaliações.'
+            : `${firstName} ainda não recebeu avaliações.`}
         </p>
       ) : null}
 
@@ -155,14 +162,10 @@ export function ServiceReviews({
         </Button>
       ) : null}
 
-      {isOwner ? (
-        <p className="text-sm text-muted-foreground">
-          Você não pode avaliar o seu próprio serviço.
-        </p>
-      ) : status === 'authenticated' ? (
+      {isOwnProfile ? null : status === 'authenticated' ? (
         <ReviewForm
           key={mine?.id ?? 'new'}
-          serviceId={serviceId}
+          userId={userId}
           existing={mine ?? null}
           onSaved={onSaved}
           onRemoved={onRemoved}
@@ -173,7 +176,7 @@ export function ServiceReviews({
             <Link to="/signin" className="font-semibold underline">
               Entre na sua conta
             </Link>{' '}
-            para avaliar este serviço.
+            para avaliar {firstName}.
           </p>
         </div>
       )}
