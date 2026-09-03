@@ -1,4 +1,9 @@
-import type { PriceType, ServiceMode, ServiceSort } from '@/lib/services'
+import type {
+  PriceType,
+  ServiceMode,
+  ServiceSort,
+  ServiceType,
+} from '@/lib/services'
 
 const SORTS: ServiceSort[] = [
   'relevance',
@@ -11,6 +16,8 @@ const SORTS: ServiceSort[] = [
 
 const MODES: ServiceMode[] = ['at_client', 'at_provider', 'remote']
 
+const TYPES: ServiceType[] = ['offer', 'request']
+
 const PRICE_TYPES: PriceType[] = ['hourly', 'daily', 'fixed', 'quote']
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
@@ -18,6 +25,7 @@ const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 export const MAX_CATEGORY_FILTERS = 10
 
 export type ServiceSearch = {
+  type?: ServiceType
   q?: string
   category?: string
   cityId?: number
@@ -99,6 +107,7 @@ export function validateServiceSearch(
   const minRating = positive(search.minRating)
 
   return {
+    type: oneOf(search.type, TYPES),
     q: text(search.q),
     category: categories.length > 0 ? categories.join(',') : undefined,
     cityId: positive(search.cityId),

@@ -14,6 +14,7 @@ import {
   ServiceCard,
   ServiceCardSkeleton,
 } from '@/components/discovery/service-card'
+import { ServiceTypeTabs } from '@/components/discovery/service-type-tabs'
 import { SortSelect } from '@/components/discovery/sort-select'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -34,6 +35,12 @@ import {
 import { cn } from '@/utils/cn'
 
 const SKELETON_KEYS = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8']
+
+const RESULT_NOUN = {
+  all: { titlePrefix: 'Anúncios', singular: 'anúncio', plural: 'anúncios' },
+  offer: { titlePrefix: 'Serviços', singular: 'serviço', plural: 'serviços' },
+  request: { titlePrefix: 'Pedidos', singular: 'pedido', plural: 'pedidos' },
+}
 
 const STEPS = [
   {
@@ -154,11 +161,13 @@ function Home() {
         ? `${activeCategories.length} categorias`
         : null
 
+  const noun = RESULT_NOUN[search.type ?? 'all']
+
   const title = categoryLabel
     ? `${categoryLabel}${cityLabel ? ` em ${cityLabel}` : ''}`
     : cityLabel
-      ? `Serviços em ${cityLabel}`
-      : 'Serviços perto de você'
+      ? `${noun.titlePrefix} em ${cityLabel}`
+      : `${noun.titlePrefix} perto de você`
 
   function update(next: Partial<ServiceSearch>) {
     navigate({ to: '/', search: (current) => ({ ...current, ...next }) })
@@ -210,14 +219,18 @@ function Home() {
             </Heading>
             <p className="mt-1 text-sm text-muted-foreground">
               {isInitialLoading
-                ? 'Carregando serviços...'
+                ? `Carregando ${noun.plural}...`
                 : services.length === 0
                   ? 'Nenhum resultado'
-                  : `${services.length}${hasNextPage ? '+' : ''} ${services.length === 1 ? 'serviço encontrado' : 'serviços encontrados'}`}
+                  : `${services.length}${hasNextPage ? '+' : ''} ${services.length === 1 ? `${noun.singular} encontrado` : `${noun.plural} encontrados`}`}
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            <ServiceTypeTabs
+              value={search.type}
+              onChange={(type) => update({ type })}
+            />
             <SearchFilters
               city={city ?? null}
               value={{
@@ -287,7 +300,7 @@ function Home() {
             ) : (
               <Card className="rounded-2xl p-8 text-center">
                 <Heading variant="h4">
-                  Ainda não há serviços publicados por aqui.
+                  Ainda não há {noun.plural} publicados por aqui.
                 </Heading>
                 <p className="mt-2 text-muted-foreground">
                   Seja o primeiro a anunciar na sua cidade.
