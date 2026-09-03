@@ -23,8 +23,21 @@ export type ServiceSort =
   | 'price_desc'
   | 'recent'
 
+export type ServiceMediaKind = 'image' | 'video'
+
+export const SERVICE_MEDIA_MAX_COUNT = 10
+
+export const SERVICE_PHOTO_MAX_BYTES = 8 * 1024 * 1024
+
+export const SERVICE_VIDEO_MAX_BYTES = 60 * 1024 * 1024
+
+export const SERVICE_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp']
+
+export const SERVICE_VIDEO_EXTENSIONS = ['.mp4', '.webm', '.mov', '.m4v']
+
 export type ServicePhoto = {
   id: number
+  kind: ServiceMediaKind
   url: string | null
   position: number
 }
@@ -89,6 +102,10 @@ export type PublicProfile = {
   city?: City
   services?: Service[]
   createdAt: string
+}
+
+export function serviceCover(service: Service) {
+  return service.photos?.find((photo) => photo.kind === 'image') ?? null
 }
 
 export type SearchServicesParams = {

@@ -8,11 +8,11 @@ import {
   formatRating,
   formatServicePrice,
 } from '@/lib/format'
-import type { Service } from '@/lib/services'
+import { type Service, serviceCover } from '@/lib/services'
 import { cn } from '@/utils/cn'
 
 function Cover({ service }: { service: Service }) {
-  const photo = service.photos?.[0]
+  const photo = serviceCover(service)
 
   if (photo?.url) {
     return (

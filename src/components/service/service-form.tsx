@@ -3,6 +3,10 @@ import { toast } from 'sonner'
 
 import { CategoryIcon } from '@/components/discovery/category-icon'
 import { CityCombobox } from '@/components/location/city-combobox'
+import {
+  type PendingServiceMedia,
+  ServiceMediaInput,
+} from '@/components/service/service-media-input'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -26,9 +30,14 @@ import type {
   ServiceMode,
 } from '@/lib/services'
 
-export type ServiceFormValues = ServiceInput & { publish: boolean }
+export type ServiceFormValues = ServiceInput & {
+  publish: boolean
+  media: File[]
+}
 
-type FieldErrors = Partial<Record<keyof ServiceInput | 'general', string>>
+type FieldErrors = Partial<
+  Record<keyof ServiceInput | 'general' | 'media', string>
+>
 
 const PRICE_TYPES = Object.keys(PRICE_TYPE_LABEL) as PriceType[]
 const SERVICE_MODES = Object.keys(SERVICE_MODE_LABEL) as ServiceMode[]
@@ -46,8 +55,15 @@ function inputToCents(value: string) {
   return Number.isFinite(parsed) && parsed >= 0 ? Math.round(parsed * 100) : null
 }
 
-function validate(values: ServiceFormValues): FieldErrors {
+function validate(
+  values: ServiceFormValues,
+  media: PendingServiceMedia[] | null,
+): FieldErrors {
   const errors: FieldErrors = {}
+
+  if (media && !media.some((item) => item.kind === 'image')) {
+    errors.media = 'Envie pelo menos uma foto do serviço.'
+  }
 
   if (values.title.trim().length < MIN_TITLE) {
     errors.title = `O título precisa ter ao menos ${MIN_TITLE} caracteres.`
@@ -100,10 +116,14 @@ export function ServiceForm({
     service?.coverageRadiusKm ? String(service.coverageRadiusKm) : '',
   )
   const [neighborhood, setNeighborhood] = useState(service?.neighborhood ?? '')
-  const [publish, setPublish] = useState(service ? service.status === 'published' : true)
+  const [publish, setPublish] = useState(
+    service ? service.status === 'published' : true,
+  )
+  const [media, setMedia] = useState<PendingServiceMedia[]>([])
   const [errors, setErrors] = useState<FieldErrors>({})
   const [isSaving, setIsSaving] = useState(false)
 
+  const isEditing = service !== undefined
   const requiresPrice = priceType !== 'quote'
 
   async function submit(event: React.FormEvent) {
@@ -119,10 +139,11 @@ export function ServiceForm({
       serviceMode,
       coverageRadiusKm: coverage ? Number(coverage) : null,
       neighborhood: neighborhood.trim() || null,
-      publish,
+      publish: isEditing ? publish : true,
+      media: media.map((item) => item.file),
     }
 
-    const found = validate(values)
+    const found = validate(values, isEditing ? null : media)
     setErrors(found)
 
     if (Object.keys(found).length > 0) {
@@ -147,6 +168,18 @@ export function ServiceForm({
 
   return (
     <form onSubmit={submit} className="grid gap-6" noValidate>
+      {isEditing ? null : (
+        <div className="grid gap-1.5">
+          <Label>Fotos e vídeos</Label>
+          <ServiceMediaInput
+            media={media}
+            onChange={setMedia}
+            disabled={isSaving}
+          />
+          <FieldError message={errors.media} />
+        </div>
+      )}
+
       <div className="grid gap-1.5">
         <Label htmlFor="service-title">Título do serviço</Label>
         <Input
@@ -287,15 +320,17 @@ export function ServiceForm({
         </div>
       </div>
 
-      <div className="flex items-center justify-between rounded-2xl border border-border p-4">
-        <div>
-          <p className="font-semibold">Publicar agora</p>
-          <p className="text-sm text-muted-foreground">
-            Desligue para salvar como rascunho e publicar depois.
-          </p>
+      {isEditing ? (
+        <div className="flex items-center justify-between rounded-2xl border border-border p-4">
+          <div>
+            <p className="font-semibold">Publicar agora</p>
+            <p className="text-sm text-muted-foreground">
+              Desligue para salvar como rascunho e publicar depois.
+            </p>
+          </div>
+          <Switch checked={publish} onCheckedChange={setPublish} />
         </div>
-        <Switch checked={publish} onCheckedChange={setPublish} />
-      </div>
+      ) : null}
 
       <div className="flex flex-wrap gap-3">
         <Button type="submit" size="lg" disabled={isSaving}>

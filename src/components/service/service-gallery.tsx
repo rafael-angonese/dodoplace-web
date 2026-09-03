@@ -1,9 +1,48 @@
+import { Play } from 'lucide-react'
 import { useState } from 'react'
 
 import { CategoryIcon } from '@/components/discovery/category-icon'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import type { ServicePhoto } from '@/lib/services'
 import { cn } from '@/utils/cn'
+
+function Thumbnail({
+  photo,
+  title,
+  eager,
+}: {
+  photo: ServicePhoto
+  title: string
+  eager?: boolean
+}) {
+  if (photo.kind === 'video') {
+    return (
+      <span className="relative block size-full">
+        <video
+          src={photo.url ?? ''}
+          muted
+          playsInline
+          preload="metadata"
+          className="size-full object-cover transition hover:brightness-95"
+        >
+          <track kind="captions" />
+        </video>
+        <span className="pointer-events-none absolute inset-0 grid place-items-center bg-black/25 text-white">
+          <Play aria-hidden="true" className="size-8" />
+        </span>
+      </span>
+    )
+  }
+
+  return (
+    <img
+      src={photo.url ?? ''}
+      alt={title}
+      loading={eager ? 'eager' : 'lazy'}
+      className="size-full object-cover transition hover:brightness-95"
+    />
+  )
+}
 
 export function ServiceGallery({
   photos,
@@ -39,11 +78,7 @@ export function ServiceGallery({
           onClick={() => setActive(cover)}
           className="aspect-[4/3] overflow-hidden bg-surface-muted md:aspect-auto md:h-full"
         >
-          <img
-            src={cover.url ?? ''}
-            alt={title}
-            className="size-full object-cover transition hover:brightness-95"
-          />
+          <Thumbnail photo={cover} title={title} eager />
         </button>
 
         {secondary.length > 0 ? (
@@ -64,12 +99,7 @@ export function ServiceGallery({
                 onClick={() => setActive(photo)}
                 className="aspect-square overflow-hidden bg-surface-muted md:aspect-auto md:h-full"
               >
-                <img
-                  src={photo.url ?? ''}
-                  alt={title}
-                  loading="lazy"
-                  className="size-full object-cover transition hover:brightness-95"
-                />
+                <Thumbnail photo={photo} title={title} />
               </button>
             ))}
           </div>
@@ -85,12 +115,7 @@ export function ServiceGallery({
               onClick={() => setActive(photo)}
               className="size-20 shrink-0 overflow-hidden rounded-xl bg-surface-muted"
             >
-              <img
-                src={photo.url ?? ''}
-                alt={title}
-                loading="lazy"
-                className="size-full object-cover"
-              />
+              <Thumbnail photo={photo} title={title} />
             </button>
           ))}
         </div>
@@ -102,13 +127,23 @@ export function ServiceGallery({
       >
         <DialogContent className="max-w-4xl p-2">
           <DialogTitle className="sr-only">{title}</DialogTitle>
-          {active ? (
+          {active === null ? null : active.kind === 'video' ? (
+            <video
+              src={active.url ?? ''}
+              controls
+              autoPlay
+              playsInline
+              className="max-h-[80vh] w-full rounded-lg object-contain"
+            >
+              <track kind="captions" />
+            </video>
+          ) : (
             <img
               src={active.url ?? ''}
               alt={title}
               className="max-h-[80vh] w-full rounded-lg object-contain"
             />
-          ) : null}
+          )}
         </DialogContent>
       </Dialog>
     </>

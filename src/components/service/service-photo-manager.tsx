@@ -1,15 +1,35 @@
-import { ImagePlus, Loader2, Trash2 } from 'lucide-react'
+import { ImagePlus, Loader2, Play, Trash2 } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { apiErrorMessage } from '@/lib/form-errors'
-import { type ServicePhoto, servicesApi } from '@/lib/services'
+import {
+  SERVICE_IMAGE_EXTENSIONS,
+  SERVICE_MEDIA_MAX_COUNT,
+  SERVICE_PHOTO_MAX_BYTES,
+  SERVICE_VIDEO_EXTENSIONS,
+  SERVICE_VIDEO_MAX_BYTES,
+  type ServicePhoto,
+  servicesApi,
+} from '@/lib/services'
 import { useAuth } from '@/providers/auth-context'
 
-const MAX_PHOTOS = 10
-const MAX_SIZE_IN_MB = 8
-const ACCEPT = '.jpg,.jpeg,.png,.webp'
+const MAX_PHOTOS = SERVICE_MEDIA_MAX_COUNT
+const ACCEPT = [...SERVICE_IMAGE_EXTENSIONS, ...SERVICE_VIDEO_EXTENSIONS].join(
+  ',',
+)
+
+function rejectionReason(file: File) {
+  const isVideo = file.type.startsWith('video/')
+  const limit = isVideo ? SERVICE_VIDEO_MAX_BYTES : SERVICE_PHOTO_MAX_BYTES
+
+  if (file.size > limit) {
+    return `${file.name} passa do limite de ${isVideo ? '60' : '8'} MB.`
+  }
+
+  return null
+}
 
 export function ServicePhotoManager({
   serviceId,
@@ -35,15 +55,19 @@ export function ServicePhotoManager({
     const room = MAX_PHOTOS - photos.length
 
     if (room <= 0) {
-      toast.error(`Cada serviço aceita no máximo ${MAX_PHOTOS} fotos.`)
+      toast.error(
+        `Cada serviço aceita no máximo ${MAX_PHOTOS} fotos e vídeos.`,
+      )
       return
     }
 
     setIsUploading(true)
 
     for (const file of files.slice(0, room)) {
-      if (file.size > MAX_SIZE_IN_MB * 1024 * 1024) {
-        toast.error(`${file.name} passa de ${MAX_SIZE_IN_MB} MB.`)
+      const reason = rejectionReason(file)
+
+      if (reason) {
+        toast.error(reason)
         continue
       }
 
@@ -109,7 +133,7 @@ export function ServicePhotoManager({
     <div className="grid gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="font-semibold">Fotos do serviço</p>
+          <p className="font-semibold">Fotos e vídeos do serviço</p>
           <p className="text-sm text-muted-foreground">
             {photos.length}/{MAX_PHOTOS} · a primeira foto é a capa do anúncio.
           </p>
@@ -135,13 +159,14 @@ export function ServicePhotoManager({
           ) : (
             <ImagePlus aria-hidden="true" />
           )}
-          {isUploading ? 'Enviando...' : 'Adicionar fotos'}
+          {isUploading ? 'Enviando...' : 'Adicionar arquivos'}
         </Button>
       </div>
 
       {photos.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-          Anúncios com fotos recebem muito mais contatos. Envie ao menos uma.
+          Anúncios com fotos e vídeos recebem muito mais contatos. Envie ao
+          menos uma foto.
         </p>
       ) : (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
@@ -150,11 +175,28 @@ export function ServicePhotoManager({
               key={photo.id}
               className="group relative overflow-hidden rounded-xl bg-surface-muted"
             >
-              <img
-                src={photo.url ?? ''}
-                alt=""
-                className="aspect-square w-full object-cover"
-              />
+              {photo.kind === 'video' ? (
+                <>
+                  <video
+                    src={photo.url ?? ''}
+                    muted
+                    playsInline
+                    preload="metadata"
+                    className="aspect-square w-full object-cover"
+                  >
+                    <track kind="captions" />
+                  </video>
+                  <span className="pointer-events-none absolute inset-0 grid place-items-center bg-black/25 text-white">
+                    <Play aria-hidden="true" className="size-6" />
+                  </span>
+                </>
+              ) : (
+                <img
+                  src={photo.url ?? ''}
+                  alt=""
+                  className="aspect-square w-full object-cover"
+                />
+              )}
 
               {index === 0 ? (
                 <span className="absolute top-2 left-2 rounded-full bg-background px-2 py-0.5 text-[11px] font-bold">

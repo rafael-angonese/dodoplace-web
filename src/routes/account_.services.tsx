@@ -24,7 +24,12 @@ import {
   formatServicePrice,
 } from '@/lib/format'
 import { apiErrorMessage } from '@/lib/form-errors'
-import { type Service, type ServiceStatus, servicesApi } from '@/lib/services'
+import {
+  type Service,
+  type ServiceStatus,
+  serviceCover,
+  servicesApi,
+} from '@/lib/services'
 import { useAuth } from '@/providers/auth-context'
 
 export const Route = createFileRoute('/account_/services')({
@@ -160,7 +165,7 @@ function MeusServicos() {
       ) : (
         <ul className="mt-8 grid gap-4">
           {services.map((service) => {
-            const cover = service.photos?.[0]
+            const cover = serviceCover(service)
 
             return (
               <li
@@ -210,7 +215,7 @@ function MeusServicos() {
                       ? `★ ${formatRating(service.ratingAverage)} · ${formatReviewsCount(service.reviewsCount)}`
                       : 'Sem avaliações'}
                     {' · '}
-                    {service.photos?.length ?? 0} fotos
+                    {service.photos?.length ?? 0} arquivos
                   </p>
 
                   <div className="mt-3 flex flex-wrap gap-2">

@@ -1,10 +1,9 @@
-import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
 
 import { useLocation } from '@/components/location/location-context'
 import { ServiceForm } from '@/components/service/service-form'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Heading } from '@/components/ui/heading'
 import { Skeleton } from '@/components/ui/skeleton'
 import { categoriesApi } from '@/lib/categories'
@@ -17,10 +16,24 @@ export const Route = createFileRoute('/publish')({
   loader: async () => ({ categories: await categoriesApi.list() }),
 })
 
+async function uploadMedia(token: string, serviceId: number, files: File[]) {
+  let failed = 0
+
+  for (const file of files) {
+    try {
+      await servicesApi.addPhoto(token, serviceId, file)
+    } catch {
+      failed += 1
+    }
+  }
+
+  return failed
+}
+
 function Publicar() {
   const navigate = useNavigate()
   const { categories } = Route.useLoaderData()
-  const { status, token, user } = useAuth()
+  const { status, token } = useAuth()
   const { city } = useLocation()
 
   useEffect(() => {
@@ -53,31 +66,22 @@ function Publicar() {
         mesmo perfil.
       </p>
 
-      {!user?.whatsapp ? (
-        <Alert className="mt-6">
-          <AlertDescription>
-            Adicione seu WhatsApp em{' '}
-            <Link to="/account" className="font-semibold underline">
-              Meu perfil
-            </Link>{' '}
-            para que os clientes consigam falar com você.
-          </AlertDescription>
-        </Alert>
-      ) : null}
-
       <div className="mt-8">
         <ServiceForm
           categories={categories}
           initialCity={city}
           submitLabel="Publicar serviço"
-          onSubmit={async (values) => {
-            const service = await servicesApi.create(token, values)
+          onSubmit={async ({ media, ...input }) => {
+            const service = await servicesApi.create(token, input)
+            const failed = await uploadMedia(token, service.id, media)
 
-            toast.success(
-              values.publish
-                ? 'Serviço publicado. Agora adicione fotos.'
-                : 'Rascunho salvo. Agora adicione fotos.',
-            )
+            if (failed > 0) {
+              toast.error(
+                `Serviço publicado, mas ${failed} arquivo(s) não foram enviados. Tente novamente na edição.`,
+              )
+            } else {
+              toast.success('Serviço publicado.')
+            }
 
             navigate({
               to: '/account/services/$serviceId',
