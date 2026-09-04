@@ -15,7 +15,7 @@ import { useAuth } from '@/providers/auth-context'
 
 export const Route = createFileRoute('/publish')({
   component: Publicar,
-  head: () => ({ meta: [{ title: 'Publicar | FazPerto' }] }),
+  head: () => ({ meta: [{ title: 'Publicar | DodoPlace' }] }),
   loader: async () => ({ categories: await categoriesApi.list() }),
 })
 
@@ -57,7 +57,7 @@ function StepIndicator({ step }: { step: number }) {
             <span
               className={
                 isActive || isDone
-                  ? 'grid size-6 place-items-center rounded-full bg-brand-coral text-xs font-bold text-white'
+                  ? 'grid size-6 place-items-center rounded-full bg-dodo-orange text-xs font-bold text-dodo-blue-deep'
                   : 'grid size-6 place-items-center rounded-full bg-surface-muted text-xs font-bold text-muted-foreground'
               }
             >

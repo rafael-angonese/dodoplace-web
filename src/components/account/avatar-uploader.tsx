@@ -103,7 +103,7 @@ export function AvatarUploader({ user }: { user: User }) {
               className="object-cover"
             />
           ) : null}
-          <AvatarFallback className="bg-brand-yellow text-xl font-extrabold text-[#202124]">
+          <AvatarFallback className="bg-dodo-orange text-xl font-extrabold text-dodo-blue-deep">
             {user.initials}
           </AvatarFallback>
         </Avatar>

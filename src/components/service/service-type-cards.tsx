@@ -58,7 +58,7 @@ export function ServiceTypeCards({
               'relative flex h-full cursor-pointer flex-col items-start gap-3 rounded-2xl border p-6 transition',
               'hover:-translate-y-0.5 hover:shadow-md has-focus-visible:ring-2 has-focus-visible:ring-ring',
               isSelected
-                ? 'border-brand-coral bg-brand-coral/5 shadow-sm'
+                ? 'border-dodo-orange bg-dodo-orange/10 shadow-sm'
                 : 'border-border bg-background',
             )}
           >
@@ -72,7 +72,7 @@ export function ServiceTypeCards({
             />
 
             {isSelected ? (
-              <span className="absolute top-4 right-4 grid size-6 place-items-center rounded-full bg-brand-coral text-white">
+              <span className="absolute top-4 right-4 grid size-6 place-items-center rounded-full bg-dodo-orange text-dodo-blue-deep">
                 <Check aria-hidden="true" className="size-4" />
               </span>
             ) : null}
@@ -81,8 +81,8 @@ export function ServiceTypeCards({
               className={cn(
                 'grid size-12 place-items-center rounded-xl transition',
                 isSelected
-                  ? 'bg-brand-coral text-white'
-                  : 'bg-surface-muted text-brand-coral',
+                  ? 'bg-dodo-orange text-dodo-blue-deep'
+                  : 'bg-surface-muted text-primary',
               )}
             >
               <Icon aria-hidden="true" className="size-6" />

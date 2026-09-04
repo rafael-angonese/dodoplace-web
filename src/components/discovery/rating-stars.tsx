@@ -25,7 +25,7 @@ export function RatingStars({
             size={size}
             className={cn(
               star <= rounded
-                ? 'fill-brand-coral text-brand-coral'
+                ? 'fill-dodo-orange text-dodo-orange'
                 : 'text-muted-foreground/40',
             )}
           />

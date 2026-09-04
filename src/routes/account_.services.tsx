@@ -32,7 +32,7 @@ import { useAuth } from '@/providers/auth-context'
 
 export const Route = createFileRoute('/account_/services')({
   component: MeusServicos,
-  head: () => ({ meta: [{ title: 'Meus serviços | FazPerto' }] }),
+  head: () => ({ meta: [{ title: 'Meus serviços | DodoPlace' }] }),
 })
 
 const SKELETON_KEYS = ['s1', 's2', 's3']

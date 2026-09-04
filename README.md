@@ -144,8 +144,21 @@ sem formulário (`apiErrorMessage`).
   `src/routes/__root.tsx` applies it before first paint to avoid a flash.
 - **`cn()`** (clsx + tailwind-merge) lives in `src/utils/cn.ts`.
 - **Brand:** `src/styles/brand.css` loads after `ui.css` and re-points the shadcn
-  tokens at the FazPerto palette (yellow `--primary`, coral accent), and adds the
-  `bg-brand-yellow` / `text-brand-coral` / `bg-surface-muted` utilities.
+  tokens at the DodoPlace palette from the *Guia de Identidade Visual v1.0*:
+  Azul Dodo `#002E4C` as `--primary`, Laranja Dodo `#FEB20C` as the action
+  colour, Ink `#102B3A` for text, Surface `#F4F7F9` and Border `#DDE5EA`. It
+  exposes `bg-dodo-blue` / `bg-dodo-orange` / `text-dodo-ink` /
+  `bg-surface-muted` and friends.
+  - Orange is a *fill* on light backgrounds (buttons, badges, avatars) and a
+    *text* colour only on the deep blue; blue carries structure, links and
+    primary buttons.
+  - Typography: **Nunito Sans** (`font-display`, applied to every heading and
+    `Button`/`Badge`) for titles, campaigns and CTAs; **Inter** (`font-sans`)
+    for interface copy and long text.
+- **Logo:** official artwork only — never rebuild the wordmark from a font.
+  `src/components/brand/logo.tsx` exposes `Logo` (linked lockup, swaps to the
+  negative version under `.dark`), `LogoLockup` and `LogoMark` (isolated symbol,
+  with `onDark` for the white variant). Files live in `public/brand/`.
 - `src/routes/ui.tsx` (`/ui`) is a live gallery of the kit.
 
 ```tsx

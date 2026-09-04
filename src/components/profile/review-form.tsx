@@ -100,7 +100,7 @@ export function ReviewForm({
               className={cn(
                 'size-7 transition',
                 star <= shown
-                  ? 'fill-brand-coral text-brand-coral'
+                  ? 'fill-dodo-orange text-dodo-orange'
                   : 'text-muted-foreground/40',
               )}
             />

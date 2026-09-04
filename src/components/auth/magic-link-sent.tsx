@@ -16,7 +16,7 @@ export function MagicLinkSent({
 }) {
   return (
     <div className="flex flex-col items-center gap-4 py-4 text-center">
-      <span className="grid size-14 place-items-center rounded-full bg-brand-yellow text-[#202124]">
+      <span className="grid size-14 place-items-center rounded-full bg-dodo-orange text-dodo-blue-deep">
         <MailCheck aria-hidden="true" className="size-7" />
       </span>
 

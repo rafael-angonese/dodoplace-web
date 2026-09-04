@@ -18,7 +18,7 @@ import { useAuth } from '@/providers/auth-context'
 
 export const Route = createFileRoute('/account_/services_/$serviceId')({
   component: EditarServico,
-  head: () => ({ meta: [{ title: 'Editar anúncio | FazPerto' }] }),
+  head: () => ({ meta: [{ title: 'Editar anúncio | DodoPlace' }] }),
   loader: async () => ({ categories: await categoriesApi.list() }),
 })
 

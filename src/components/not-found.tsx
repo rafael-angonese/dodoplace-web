@@ -6,7 +6,7 @@ import { Heading } from '@/components/ui/heading'
 export function NotFound() {
   return (
     <section className="mx-auto max-w-7xl px-4 py-20 md:px-6">
-      <p className="mb-3 text-sm font-bold tracking-[0.18em] text-brand-coral uppercase">
+      <p className="mb-3 text-sm font-bold tracking-[0.18em] text-primary uppercase">
         Erro 404
       </p>
       <Heading variant="h1" className="text-3xl font-extrabold md:text-4xl">

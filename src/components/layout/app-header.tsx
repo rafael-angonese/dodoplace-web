@@ -26,7 +26,7 @@ function ChatButton() {
       <Link to="/chats" aria-label="Conversas">
         <MessagesSquare aria-hidden="true" />
         {unreadTotal > 0 ? (
-          <span className="absolute top-1 right-1 grid min-w-4 place-items-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+          <span className="absolute top-1 right-1 grid min-w-4 place-items-center rounded-full bg-dodo-orange px-1 font-display text-[10px] font-extrabold text-dodo-blue-deep">
             {unreadTotal > 99 ? '99+' : unreadTotal}
           </span>
         ) : null}
@@ -39,11 +39,11 @@ export function AppHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
       <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-6">
-        <Logo className="text-xl" />
+        <Logo className="h-9 md:h-10" />
 
         <nav
           aria-label="Principal"
-          className="hidden items-center gap-5 text-sm font-medium md:flex"
+          className="hidden items-center gap-6 font-display text-sm font-bold md:flex"
         >
           {NAV_ITEMS.map((item) => (
             <Link
@@ -51,7 +51,7 @@ export function AppHeader() {
               to={item.to}
               activeOptions={{ exact: item.exact }}
               className="rounded-md py-1 text-muted-foreground transition-colors hover:text-foreground"
-              activeProps={{ className: 'font-semibold text-foreground' }}
+              activeProps={{ className: 'text-primary dark:text-dodo-orange' }}
             >
               {item.label}
             </Link>
@@ -61,9 +61,9 @@ export function AppHeader() {
         <div className="flex items-center gap-1 md:gap-2">
           <Button
             asChild
-            variant="ghost"
+            variant="brand"
             size="sm"
-            className="hidden h-10 rounded-full font-semibold md:inline-flex"
+            className="hidden h-10 px-5 text-sm md:inline-flex"
           >
             <Link to="/publish">Publicar serviço</Link>
           </Button>

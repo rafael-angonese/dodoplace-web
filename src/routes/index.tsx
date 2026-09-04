@@ -3,6 +3,7 @@ import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { MapPin, X } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 
+import { LogoMark } from '@/components/brand/logo'
 import { CategoryCarousel } from '@/components/discovery/category-carousel'
 import { SearchBar } from '@/components/discovery/search-bar'
 import { SearchEmptyState } from '@/components/discovery/search-empty-state'
@@ -67,7 +68,7 @@ export const Route = createFileRoute('/')({
   component: Home,
   head: () => ({
     meta: [
-      { title: 'FazPerto | Serviços perto de você' },
+      { title: 'DodoPlace | Serviços perto de você' },
       {
         name: 'description',
         content:
@@ -187,23 +188,36 @@ function Home() {
 
   return (
     <>
-      <section className="mx-auto max-w-7xl px-4 pt-10 pb-8 md:px-6 md:pt-14">
-        <p className="mb-3 text-sm font-bold tracking-[0.18em] text-brand-coral uppercase">
-          Marketplace de serviços
-        </p>
-        <Heading
-          variant="h1"
-          className="max-w-3xl text-4xl font-extrabold tracking-tight md:text-6xl"
-        >
-          Encontre quem faz perto de você. ⚡
-        </Heading>
-        <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
-          Diaristas, eletricistas, encanadores, pintores e muito mais — com
-          preço, foto e avaliação de quem já contratou.
-        </p>
+      <section className="bg-dodo-blue text-white dark:bg-dodo-blue-deep">
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 pt-10 pb-12 md:flex-row md:items-center md:px-6 md:pt-14 md:pb-16">
+          <div className="min-w-0 flex-1">
+            <p className="mb-3 font-display text-sm font-bold tracking-[0.18em] text-dodo-orange uppercase">
+              Marketplace de serviços
+            </p>
+            <Heading
+              variant="h1"
+              className="max-w-3xl text-4xl font-extrabold tracking-tight text-white md:text-6xl"
+            >
+              Encontre <span className="text-dodo-orange">quem faz</span> perto
+              de você.
+            </Heading>
+            <p className="mt-5 max-w-2xl text-lg text-white/75">
+              Diaristas, eletricistas, encanadores, pintores e muito mais — com
+              preço, foto e avaliação de quem já contratou.
+            </p>
 
-        <div className="mt-8 max-w-3xl">
-          <SearchBar defaultQuery={search.q ?? ''} category={search.category} />
+            <div className="mt-8 max-w-3xl">
+              <SearchBar
+                defaultQuery={search.q ?? ''}
+                category={search.category}
+              />
+            </div>
+          </div>
+
+          <LogoMark
+            onDark
+            className="hidden h-auto w-56 shrink-0 drop-shadow-2xl lg:block xl:w-64"
+          />
         </div>
       </section>
 
@@ -351,13 +365,16 @@ function Home() {
         <>
           <section className="bg-surface-muted">
             <div className="mx-auto max-w-7xl px-4 py-14 md:px-6">
+              <p className="mb-3 font-display text-sm font-bold tracking-[0.18em] text-primary uppercase">
+                Simples assim
+              </p>
               <Heading variant="h2" className="font-extrabold">
                 Resolver um serviço deve ser simples.
               </Heading>
               <div className="mt-6 grid gap-4 md:grid-cols-3">
                 {STEPS.map((step) => (
                   <Card key={step.number} className="rounded-2xl p-6">
-                    <span className="grid size-9 place-items-center rounded-full bg-brand-yellow font-extrabold text-[#202124]">
+                    <span className="grid size-9 place-items-center rounded-full bg-dodo-orange font-extrabold text-dodo-blue-deep">
                       {step.number}
                     </span>
                     <Heading variant="h4" className="mt-4">
@@ -373,32 +390,29 @@ function Home() {
           </section>
 
           <section className="mx-auto grid max-w-7xl gap-4 px-4 py-14 md:grid-cols-2 md:px-6">
-            <div className="rounded-3xl border border-border p-7">
+            <div className="rounded-3xl border border-border bg-card p-7">
               <Heading variant="h2" className="font-extrabold">
                 Precisa de um serviço?
               </Heading>
               <p className="mt-2 text-muted-foreground">
-                Pesquise por category e cidade e fale direto com o profissional.
+                Pesquise por categoria e cidade e fale direto com o profissional.
               </p>
               <div className="mt-5 flex flex-wrap gap-3">
-                <Button asChild variant="ghost">
+                <Button asChild variant="outline-primary">
                   <Link to="/services">Ver categorias</Link>
                 </Button>
               </div>
             </div>
 
-            <div className="rounded-3xl bg-[#202124] p-7 text-white dark:bg-card dark:text-card-foreground">
-              <Heading
-                variant="h2"
-                className="font-extrabold text-white dark:text-card-foreground"
-              >
+            <div className="rounded-3xl bg-dodo-blue p-7 text-white dark:bg-dodo-blue-deep">
+              <Heading variant="h2" className="font-extrabold text-white">
                 Você presta serviços?
               </Heading>
-              <p className="mt-2 text-white/70 dark:text-muted-foreground">
+              <p className="mt-2 text-white/70">
                 Publique quantos serviços quiser, com fotos e preço, e receba
                 contatos de clientes da sua região.
               </p>
-              <Button asChild className="mt-5">
+              <Button asChild variant="brand" className="mt-5">
                 <Link to="/publish">Publicar serviço</Link>
               </Button>
             </div>

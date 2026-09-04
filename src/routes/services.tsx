@@ -8,7 +8,7 @@ import { categoriesApi } from '@/lib/categories'
 
 export const Route = createFileRoute('/services')({
   component: Servicos,
-  head: () => ({ meta: [{ title: 'Categorias de serviços | FazPerto' }] }),
+  head: () => ({ meta: [{ title: 'Categorias de serviços | DodoPlace' }] }),
   loader: async () => ({ categories: await categoriesApi.list() }),
 })
 
@@ -21,7 +21,7 @@ function Servicos() {
         O que você precisa resolver?
       </Heading>
       <p className="mt-2 text-muted-foreground">
-        Escolha uma category e veja quem atende na sua região.
+        Escolha uma categoria e veja quem atende na sua região.
       </p>
 
       <div className="mt-6 max-w-3xl">
@@ -40,7 +40,7 @@ function Servicos() {
               <span className="grid size-10 place-items-center rounded-xl bg-surface-muted">
                 <CategoryIcon
                   name={category.icon}
-                  className="size-5 text-brand-coral"
+                  className="size-5 text-primary"
                 />
               </span>
               <span className="mt-3 block font-semibold">{category.name}</span>

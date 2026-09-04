@@ -21,7 +21,7 @@ export function ChatAvatar({
             className="object-cover"
           />
         ) : null}
-        <AvatarFallback className="bg-brand-yellow text-sm font-extrabold text-[#202124]">
+        <AvatarFallback className="bg-dodo-orange text-sm font-extrabold text-dodo-blue-deep">
           {user?.initials ?? '?'}
         </AvatarFallback>
       </Avatar>

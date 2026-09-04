@@ -71,7 +71,7 @@ export function AnimatedPlaceholderInput({
 		<form
 			onSubmit={submit}
 			className={cn(
-				'rounded-full border border-border bg-card p-2 shadow-sm transition-shadow hover:shadow-md',
+				'rounded-full border border-border bg-card p-2 text-card-foreground shadow-md transition-shadow hover:shadow-lg',
 				className,
 			)}
 		>
@@ -84,7 +84,7 @@ export function AnimatedPlaceholderInput({
 				>
 					<span
 						className={cn(
-							'text-[11px] font-bold tracking-wide',
+							'font-display text-[11px] font-bold tracking-wide',
 							labelHidden && 'sr-only',
 						)}
 					>
@@ -120,7 +120,7 @@ export function AnimatedPlaceholderInput({
 
 				<button
 					type="submit"
-					className="grid size-11 shrink-0 place-items-center rounded-full text-muted-foreground transition hover:bg-accent hover:text-foreground"
+					className="grid size-11 shrink-0 place-items-center rounded-full bg-dodo-orange text-dodo-blue-deep transition hover:bg-dodo-orange-strong"
 				>
 					<Search aria-hidden="true" className="size-4" />
 					<span className="sr-only">Buscar</span>

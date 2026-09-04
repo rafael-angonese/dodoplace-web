@@ -23,21 +23,36 @@ const THEME_INIT_SCRIPT = `(function(){try{var stored=window.localStorage.getIte
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
+      { charSet: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { title: 'DodoPlace | Encontre quem faz perto de você' },
       {
-        charSet: 'utf-8',
+        name: 'description',
+        content:
+          'DodoPlace é o marketplace para encontrar profissionais e serviços perto de você.',
       },
+      { name: 'theme-color', content: '#002E4C' },
+      { name: 'apple-mobile-web-app-title', content: 'DodoPlace' },
+      { property: 'og:site_name', content: 'DodoPlace' },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:title', content: 'DodoPlace | Encontre quem faz perto de você' },
       {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
+        property: 'og:description',
+        content:
+          'DodoPlace é o marketplace para encontrar profissionais e serviços perto de você.',
       },
-      {
-        title: 'FazPerto | Serviços perto de você',
-      },
+      { property: 'og:image', content: '/brand/dodoplace-og.png' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:image', content: '/brand/dodoplace-og.png' },
     ],
     links: [
+      { rel: 'stylesheet', href: appCss },
+      { rel: 'icon', href: '/favicon.ico', sizes: '16x16 32x32 48x48' },
+      { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
       {
-        rel: 'stylesheet',
-        href: appCss,
+        rel: 'preconnect',
+        href: 'https://fonts.gstatic.com',
+        crossOrigin: 'anonymous',
       },
     ],
   }),

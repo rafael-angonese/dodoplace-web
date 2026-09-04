@@ -63,7 +63,7 @@ export function ServiceCard({
 
         <div className="absolute top-2.5 left-2.5 flex flex-wrap items-center gap-1.5">
           {service.type === 'request' ? (
-            <span className="rounded-full bg-brand-coral px-2.5 py-1 text-[11px] font-bold text-white">
+            <span className="rounded-full bg-dodo-orange px-2.5 py-1 text-[11px] font-bold text-dodo-blue-deep">
               Pedido
             </span>
           ) : null}

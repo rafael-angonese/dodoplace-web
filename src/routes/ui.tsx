@@ -68,14 +68,17 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/text-area'
 import { Tooltip } from '@/components/ui/tooltip'
+import { LogoLockup, LogoMark } from '@/components/brand/logo'
 
 export const Route = createFileRoute('/ui')({
   component: UiShowcase,
-  head: () => ({ meta: [{ title: 'UI Kit — mkt-web' }] }),
+  head: () => ({ meta: [{ title: 'Design system | DodoPlace' }] }),
 })
 
 const BUTTON_VARIANTS = [
   'default',
+  'brand',
+  'outline-brand',
   'secondary',
   'success',
   'warning',
@@ -89,11 +92,51 @@ const BUTTON_VARIANTS = [
 
 const BADGE_VARIANTS = [
   'primary',
+  'brand',
   'secondary',
   'success',
   'warning',
   'danger',
   'outline',
+] as const
+
+const PALETTE = [
+  {
+    name: 'Azul Dodo',
+    hex: '#002E4C',
+    role: 'Confiança e estrutura',
+    swatch: 'bg-[#002E4C] text-white',
+  },
+  {
+    name: 'Laranja Dodo',
+    hex: '#FEB20C',
+    role: 'Energia, ação e destaque',
+    swatch: 'bg-[#FEB20C] text-[#00223A]',
+  },
+  {
+    name: 'Branco',
+    hex: '#FFFFFF',
+    role: 'Respiro e fundos claros',
+    swatch: 'bg-white text-[#102B3A]',
+  },
+  {
+    name: 'Ink',
+    hex: '#102B3A',
+    role: 'Neutro de texto',
+    swatch: 'bg-[#102B3A] text-white',
+  },
+  {
+    name: 'Surface',
+    hex: '#F4F7F9',
+    role: 'Fundo de interface',
+    swatch: 'bg-[#F4F7F9] text-[#102B3A]',
+  },
+  {
+    name: 'Border',
+    hex: '#DDE5EA',
+    role: 'Divisórias e contornos',
+    swatch: 'bg-[#DDE5EA] text-[#102B3A]',
+  },
 ] as const
 
 const PLANS = [
@@ -132,15 +175,110 @@ function UiShowcase() {
   return (
     <main className="mx-auto flex max-w-7xl flex-col gap-10 px-4 py-10 md:px-6">
       <header className="flex flex-col gap-2">
-        <span className="text-sm font-bold tracking-[0.18em] text-brand-coral uppercase">
+        <span className="font-display text-sm font-bold tracking-[0.18em] text-primary uppercase">
           Design system
         </span>
-        <Heading variant="h1">UI Kit</Heading>
+        <Heading variant="h1">DodoPlace UI</Heading>
         <p className="max-w-2xl text-sm text-muted-foreground">
-          Componentes shadcn/ui portados de <code>loytrustweb</code>, sobre
-          Tailwind CSS v4 e TanStack Start.
+          Componentes e tokens alinhados ao Guia de Identidade Visual DodoPlace
+          v1.0.
         </p>
       </header>
+
+      <Section
+        title="Marca"
+        description="Use sempre o artwork oficial. O logotipo nunca deve ser refeito com uma fonte."
+      >
+        <div className="grid gap-3 md:grid-cols-3">
+          <Card className="flex min-h-40 flex-col justify-between gap-4 bg-white p-6 dark:bg-white">
+            <LogoLockup variant="principal" className="h-9" />
+            <div>
+              <p className="font-display text-sm font-bold text-[#102B3A]">
+                Principal
+              </p>
+              <p className="text-xs text-[#5A7183]">
+                Fundos claros e materiais institucionais.
+              </p>
+            </div>
+          </Card>
+          <Card className="flex min-h-40 flex-col justify-between gap-4 bg-[#002E4C] p-6 dark:bg-[#002E4C]">
+            <LogoLockup variant="negativa" className="h-9" />
+            <div>
+              <p className="font-display text-sm font-bold text-white">
+                Negativa
+              </p>
+              <p className="text-xs text-white/70">
+                Fundos escuros e interfaces em modo escuro.
+              </p>
+            </div>
+          </Card>
+          <Card className="flex min-h-40 flex-col justify-between gap-4 bg-white p-6 dark:bg-white">
+            <LogoMark className="h-16" alt="Símbolo DodoPlace" />
+            <div>
+              <p className="font-display text-sm font-bold text-[#102B3A]">
+                Símbolo
+              </p>
+              <p className="text-xs text-[#5A7183]">
+                Avatar, favicon, ícone de app e espaços reduzidos.
+              </p>
+            </div>
+          </Card>
+        </div>
+      </Section>
+
+      <Section
+        title="Paleta cromática"
+        description="Azul para confiança e estrutura; laranja para energia, ação e reconhecimento."
+      >
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {PALETTE.map((color) => (
+            <div
+              key={color.hex}
+              className="overflow-hidden rounded-xl border border-border"
+            >
+              <div className={`flex h-28 items-end p-4 ${color.swatch}`}>
+                <div>
+                  <p className="font-display text-sm font-extrabold uppercase">
+                    {color.name}
+                  </p>
+                  <p className="text-xs opacity-80">{color.hex}</p>
+                </div>
+              </div>
+              <p className="bg-card px-4 py-3 text-xs text-muted-foreground">
+                {color.role}
+              </p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        title="Tipografia"
+        description="Nunito Sans para títulos, campanhas e botões. Inter para interface e textos longos."
+      >
+        <div className="grid gap-3 md:grid-cols-2">
+          <Card className="p-6">
+            <p className="font-display text-3xl font-extrabold">Nunito Sans</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Títulos, campanhas, botões e chamadas. Pesos 700 e 800.
+            </p>
+            <p className="mt-4 font-display text-2xl font-extrabold text-dodo-orange-strong">
+              Encontre quem faz.
+            </p>
+          </Card>
+          <Card className="p-6">
+            <p className="text-3xl font-bold">Inter</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Interface, formulários, descrição de serviços e textos longos.
+              Pesos 400 a 700.
+            </p>
+            <p className="mt-4 text-sm">
+              Diaristas, eletricistas, encanadores e pintores perto de você, com
+              preço, foto e avaliação de quem já contratou.
+            </p>
+          </Card>
+        </div>
+      </Section>
 
       <Section title="Buttons">
         <div className="flex flex-wrap items-center gap-2">

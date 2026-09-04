@@ -40,7 +40,7 @@ import { useAuth } from '@/providers/auth-context'
 
 export const Route = createFileRoute('/account')({
   component: Conta,
-  head: () => ({ meta: [{ title: 'Meu perfil | FazPerto' }] }),
+  head: () => ({ meta: [{ title: 'Meu perfil | DodoPlace' }] }),
 })
 
 const FIELDS = [

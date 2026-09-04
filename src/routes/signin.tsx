@@ -3,6 +3,7 @@ import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
+import { LogoMark } from '@/components/brand/logo'
 import { MagicLinkSent } from '@/components/auth/magic-link-sent'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -33,7 +34,7 @@ type LoginSearch = { redirect?: string }
 
 export const Route = createFileRoute('/signin')({
   component: Entrar,
-  head: () => ({ meta: [{ title: 'Entrar | FazPerto' }] }),
+  head: () => ({ meta: [{ title: 'Entrar | DodoPlace' }] }),
   validateSearch: (search: Record<string, unknown>): LoginSearch => {
     const redirect = search.redirect
     return typeof redirect === 'string' && redirect.startsWith('/')
@@ -76,6 +77,7 @@ function Entrar() {
 
   return (
     <section className="mx-auto w-full max-w-md px-4 py-12 md:px-6 md:py-16">
+      <LogoMark className="mb-5 h-14" alt="DodoPlace" />
       <Heading variant="h1" className="text-3xl font-extrabold">
         Entrar
       </Heading>

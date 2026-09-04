@@ -17,7 +17,7 @@ function ItemIcon({
     <span
       className={cn(
         primary &&
-          'grid size-10 place-items-center rounded-full bg-brand-yellow text-[#202124]',
+          'grid size-10 place-items-center rounded-full bg-dodo-orange text-dodo-blue-deep',
       )}
     >
       <LucideIcon aria-hidden="true" className="size-5" />

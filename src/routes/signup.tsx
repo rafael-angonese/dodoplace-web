@@ -3,6 +3,7 @@ import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
+import { LogoMark } from '@/components/brand/logo'
 import { MagicLinkSent } from '@/components/auth/magic-link-sent'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -31,7 +32,7 @@ import { useAuth } from '@/providers/auth-context'
 
 export const Route = createFileRoute('/signup')({
   component: Cadastro,
-  head: () => ({ meta: [{ title: 'Criar conta | FazPerto' }] }),
+  head: () => ({ meta: [{ title: 'Criar conta | DodoPlace' }] }),
 })
 
 function Cadastro() {
@@ -67,6 +68,7 @@ function Cadastro() {
 
   return (
     <section className="mx-auto w-full max-w-md px-4 py-12 md:px-6 md:py-16">
+      <LogoMark className="mb-5 h-14" alt="DodoPlace" />
       <Heading variant="h1" className="text-3xl font-extrabold">
         Criar conta
       </Heading>

@@ -31,9 +31,9 @@ export function ProviderPanel({
     provider.whatsapp,
     serviceTitle
       ? isRequest
-        ? `Olá! Vi seu pedido "${serviceTitle}" no FazPerto e posso te atender.`
-        : `Olá! Vi seu serviço "${serviceTitle}" no FazPerto e gostaria de um orçamento.`
-      : 'Olá! Vi seu perfil no FazPerto e gostaria de um orçamento.',
+        ? `Olá! Vi seu pedido "${serviceTitle}" no DodoPlace e posso te atender.`
+        : `Olá! Vi seu serviço "${serviceTitle}" no DodoPlace e gostaria de um orçamento.`
+      : 'Olá! Vi seu perfil no DodoPlace e gostaria de um orçamento.',
   )
   const instagram = instagramLink(provider.instagram)
 
@@ -48,7 +48,7 @@ export function ProviderPanel({
               className="object-cover"
             />
           ) : null}
-          <AvatarFallback className="bg-brand-yellow text-lg font-extrabold text-[#202124]">
+          <AvatarFallback className="bg-dodo-orange text-lg font-extrabold text-dodo-blue-deep">
             {provider.initials}
           </AvatarFallback>
         </Avatar>

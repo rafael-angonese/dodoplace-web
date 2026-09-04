@@ -140,8 +140,8 @@ export function CategoryCarousel({
                   className={cn(
                     'grid size-11 place-items-center rounded-2xl transition',
                     isActive
-                      ? 'bg-brand-yellow/40'
-                      : 'bg-surface-muted group-hover:bg-brand-yellow/30',
+                      ? 'bg-dodo-orange/30'
+                      : 'bg-surface-muted group-hover:bg-dodo-orange/20',
                   )}
                 >
                   <CategoryIcon name={category.icon} className="size-5" />

@@ -32,7 +32,7 @@ export const Route = createFileRoute('/profile/$userId')({
   head: ({ loaderData }) => ({
     meta: [
       {
-        title: `${loaderData?.profile.name ?? 'Perfil'} | FazPerto`,
+        title: `${loaderData?.profile.name ?? 'Perfil'} | DodoPlace`,
       },
     ],
   }),
@@ -49,7 +49,7 @@ function Perfil() {
           <ProviderPanel provider={profile} showProfileLink={false} />
 
           <p className="mt-4 px-1 text-sm text-muted-foreground">
-            No FazPerto desde{' '}
+            No DodoPlace desde{' '}
             {format(new Date(profile.createdAt), "MMMM 'de' yyyy", {
               locale: ptBR,
             })}

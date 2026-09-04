@@ -12,7 +12,7 @@ type VerifySearch = { token?: string }
 
 export const Route = createFileRoute('/signin_/verify')({
   component: Verificar,
-  head: () => ({ meta: [{ title: 'Confirmando acesso | FazPerto' }] }),
+  head: () => ({ meta: [{ title: 'Confirmando acesso | DodoPlace' }] }),
   validateSearch: (search: Record<string, unknown>): VerifySearch => {
     return typeof search.token === 'string' && search.token
       ? { token: search.token }

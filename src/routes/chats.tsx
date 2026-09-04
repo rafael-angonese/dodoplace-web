@@ -15,7 +15,7 @@ import { cn } from '@/utils/cn'
 
 export const Route = createFileRoute('/chats')({
   component: Conversas,
-  head: () => ({ meta: [{ title: 'Conversas | FazPerto' }] }),
+  head: () => ({ meta: [{ title: 'Conversas | DodoPlace' }] }),
 })
 
 function Conversas() {

@@ -28,14 +28,14 @@ function ReviewItem({ review }: { review: UserReview }) {
               className="object-cover"
             />
           ) : null}
-          <AvatarFallback className="bg-brand-yellow text-xs font-extrabold text-[#202124]">
+          <AvatarFallback className="bg-dodo-orange text-xs font-extrabold text-dodo-blue-deep">
             {author?.initials ?? '??'}
           </AvatarFallback>
         </Avatar>
 
         <div className="min-w-0">
           <p className="truncate font-semibold">
-            {author?.name ?? 'Usuário do FazPerto'}
+            {author?.name ?? 'Usuário do DodoPlace'}
           </p>
           <p className="text-xs text-muted-foreground">
             {format(new Date(review.createdAt), "MMMM 'de' yyyy", {

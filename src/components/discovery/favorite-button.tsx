@@ -62,7 +62,7 @@ export function FavoriteButton({
         size={size}
         className={cn(
           'transition-colors',
-          favorited ? 'fill-brand-coral text-brand-coral' : 'text-foreground',
+          favorited ? 'fill-dodo-orange text-dodo-orange' : 'text-foreground',
         )}
       />
     </button>

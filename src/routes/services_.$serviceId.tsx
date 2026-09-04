@@ -49,7 +49,7 @@ export const Route = createFileRoute('/services_/$serviceId')({
   },
   head: ({ loaderData }) => ({
     meta: [
-      { title: `${loaderData?.service.title ?? 'Serviço'} | FazPerto` },
+      { title: `${loaderData?.service.title ?? 'Serviço'} | DodoPlace` },
       {
         name: 'description',
         content: loaderData?.service.description.slice(0, 160) ?? '',
@@ -300,8 +300,8 @@ function ServiceDetail() {
 
             <p className="mt-4 text-xs text-muted-foreground">
               {isRequest
-                ? 'O FazPerto conecta você ao cliente. O combinado de preço, data e pagamento é feito diretamente entre vocês.'
-                : 'O FazPerto conecta você ao profissional. O combinado de preço, data e pagamento é feito diretamente entre vocês.'}
+                ? 'O DodoPlace conecta você ao cliente. O combinado de preço, data e pagamento é feito diretamente entre vocês.'
+                : 'O DodoPlace conecta você ao profissional. O combinado de preço, data e pagamento é feito diretamente entre vocês.'}
             </p>
           </div>
         </aside>
@@ -322,8 +322,8 @@ function ProviderContact({
   const isRequest = serviceType === 'request'
   const digits = provider.whatsapp?.replace(/\D/g, '') ?? ''
   const message = isRequest
-    ? `Olá! Vi seu pedido "${serviceTitle}" no FazPerto e posso te atender.`
-    : `Olá! Vi seu serviço "${serviceTitle}" no FazPerto e gostaria de um orçamento.`
+    ? `Olá! Vi seu pedido "${serviceTitle}" no DodoPlace e posso te atender.`
+    : `Olá! Vi seu serviço "${serviceTitle}" no DodoPlace e gostaria de um orçamento.`
   const link = digits
     ? `https://wa.me/${digits.startsWith('55') ? digits : `55${digits}`}?text=${encodeURIComponent(
         message,

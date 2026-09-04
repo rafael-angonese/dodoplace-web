@@ -50,7 +50,7 @@ export function UserMenu() {
                 className="object-cover"
               />
             ) : null}
-            <AvatarFallback className="bg-brand-yellow text-xs font-extrabold text-[#202124]">
+            <AvatarFallback className="bg-dodo-orange text-xs font-extrabold text-dodo-blue-deep">
               {user.initials}
             </AvatarFallback>
           </Avatar>

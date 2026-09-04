@@ -13,7 +13,7 @@ import { useAuth } from '@/providers/auth-context'
 export function StartConversationButton({
   recipientId,
   serviceId,
-  label = 'Conversar pelo FazPerto',
+  label = 'Conversar pelo DodoPlace',
   ...props
 }: ButtonProps & {
   recipientId: number

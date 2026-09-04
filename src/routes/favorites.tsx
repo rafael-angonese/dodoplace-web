@@ -15,7 +15,7 @@ const SKELETON_KEYS = ['s1', 's2', 's3', 's4', 's5']
 
 export const Route = createFileRoute('/favorites')({
   component: Favoritos,
-  head: () => ({ meta: [{ title: 'Favoritos | FazPerto' }] }),
+  head: () => ({ meta: [{ title: 'Favoritos | DodoPlace' }] }),
 })
 
 function Favoritos() {
