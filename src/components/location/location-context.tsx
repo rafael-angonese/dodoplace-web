@@ -9,7 +9,7 @@ import {
 
 import { type City, locationsApi } from '@/lib/locations'
 
-const STORAGE_KEY = 'mkt.location.city'
+const STORAGE_KEY = 'dodoplace.location.city'
 
 export type GeolocationStatus =
   | 'idle'

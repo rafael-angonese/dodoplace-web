@@ -1,4 +1,4 @@
-const TOKEN_KEY = 'mkt.auth.token'
+const TOKEN_KEY = 'dodoplace.auth.token'
 
 export const authStorage = {
   get(): string | null {

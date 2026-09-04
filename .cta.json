@@ -1,5 +1,5 @@
 {
-  "projectName": "mkt-web",
+  "projectName": "dodoplace-web",
   "mode": "file-router",
   "typescript": true,
   "packageManager": "npm",

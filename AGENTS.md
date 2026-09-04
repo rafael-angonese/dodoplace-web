@@ -1,4 +1,4 @@
-# mkt-web Agent Contract
+# dodoplace-web Agent Contract
 
 TanStack Start + React 19 + Tailwind + Biome.
 
